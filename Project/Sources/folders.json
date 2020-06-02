@@ -1,0 +1,118 @@
+﻿{
+	"_API": {
+		"methods": [
+			"Compiler_Methods",
+			"MobileAppServer"
+		]
+	},
+	"action": {
+		"methods": [
+			"Compiler_action",
+			"MA Action GetParentEntity",
+			"Mobile App Action",
+			"Mobile App Action DropEntity",
+			"Mobile App Action GetDataClass",
+			"Mobile App Action GetEntity",
+			"Mobile App Action Link",
+			"Mobile App Action NewEntity",
+			"Mobile App Action Unlink"
+		],
+		"classes": [
+			"Action"
+		]
+	},
+	"auth": {
+		"methods": [
+			"Compiler_auth",
+			"Mobile App Authentication",
+			"Mobile App Session Object"
+		],
+		"classes": [
+			"Authentication"
+		]
+	},
+	"devTool": {
+		"methods": [
+			"COMPILER_dev",
+			"dev IndexName",
+			"dev UpdateStructure"
+		],
+		"classes": [
+			"Dev"
+		]
+	},
+	"ds": {
+		"methods": [
+			"Compiler_ds",
+			"QueryByPrimaryKey"
+		]
+	},
+	"err": {
+		"methods": [
+			"COMPILER_err",
+			"err",
+			"errors_CAPTURE",
+			"noError"
+		]
+	},
+	"mail": {
+		"methods": [
+			"Activate Sessions",
+			"Compiler_mail",
+			"GET ERROR INFO",
+			"Get settings",
+			"Mobile App Active Session",
+			"Mobile App Email Checker",
+			"SEND EMAIL",
+			"SESSION INIT"
+		]
+	},
+	"push": {
+		"methods": [
+			"apple_sendNotification",
+			"authJWT",
+			"buildNotification",
+			"buildRecipients",
+			"checkXCodeVersionForPushNotif",
+			"Compiler_push",
+			"getXCodeVersion",
+			"isEmail",
+			"manageEntryRecipient",
+			"Mobile App Push Notification",
+			"reviewIssues",
+			"sim_sendNotification"
+		],
+		"classes": [
+			"jwt",
+			"PushNotification"
+		]
+	},
+	"session": {
+		"methods": [
+			"Compiler_session",
+			"MA Get all mailAddresses",
+			"MOBILE APP Get all bundleIds",
+			"MOBILE APP Get all deviceTokens",
+			"MOBILE APP Get session info",
+			"MOBILE APP Get sessions info"
+		],
+		"classes": [
+			"Session"
+		]
+	},
+	"test": {
+		"tables": [
+			"Table_1",
+			"Table_2"
+		],
+		"methods": [
+			"test_action",
+			"test_authentication",
+			"test_dev",
+			"test_isEmail",
+			"test_manageEntryRecipient",
+			"test_push_notification"
+		]
+	},
+	"trash": {}
+}
