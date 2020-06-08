@@ -161,7 +161,7 @@ $response:=$pushNotification.send($notification;$recipients)
 
 ##### Extra
 
-You can use the [Session](./Session.md) class to retrieve information in session files, such as deviceTokens, mail addresses or more session information.
+You can use the [Session](./Session.md) class to retrieve information in session files, such as device tokens, mail addresses or more session information.
 
 ## Exploring results
 
