@@ -40,10 +40,6 @@ If (Asserted:C1132($Lon_parameters>=3;"Missing parameter"))
 		
 	End if 
 	
-Else   // Missing parameter
-	
-	ABORT:C156
-	
 End if 
 
 
@@ -76,12 +72,12 @@ If (Not:C34($isMissingRecipients))
 	
 	For each ($mailAndDeviceToken;$Obj_recipients_result.recipients)  // Sending a notification for every single deviceToken
 		
-		$notificationInput:=New object:C1471
-		$notificationInput.jwt:=$Obj_auth.jwt
-		$notificationInput.bundleId:=$Obj_auth.bundleId
-		$notificationInput.payload:=$payload
-		$notificationInput.deviceToken:=$mailAndDeviceToken.deviceToken
-		$notificationInput.isDevelopment:=$Obj_auth.isDevelopment
+		$notificationInput:=New object:C1471(\
+			"jwt";$Obj_auth.jwt;\
+			"bundleId";$Obj_auth.bundleId;\
+			"payload";$payload;\
+			"deviceToken";$mailAndDeviceToken.deviceToken;\
+			"isDevelopment";$Obj_auth.isDevelopment)
 		
 		If (Length:C16($mailAndDeviceToken.deviceToken)=64)
 			

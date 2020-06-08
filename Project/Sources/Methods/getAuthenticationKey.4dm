@@ -9,12 +9,7 @@ $Lon_parameters:=Count parameters:C259
 
 If (Asserted:C1132($Lon_parameters>=1;"Missing parameter"))
 	
-	$Obj_result:=New object:C1471
-	$Obj_result.success:=False:C215
-	
-Else 
-	
-	ABORT:C156
+	$Obj_result:=New object:C1471("success";False:C215)
 	
 End if 
 

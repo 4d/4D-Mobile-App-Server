@@ -14,12 +14,10 @@ ARRAY TEXT:C222($sessionFilesList;0)
 
 If (Asserted:C1132(Count parameters:C259>=1;"Missing parameter"))
 	
-	$Obj_result:=New object:C1471
-	$Obj_result.success:=False:C215
-	$Obj_result.deviceTokens:=New collection:C1472
+	$Obj_result:=New object:C1471(\
+		"success";False:C215;\
+		"deviceTokens";New collection:C1472)
 	
-Else 
-	ABORT:C156
 End if 
 
 If (Bool:C1537($1.isFolder) & Bool:C1537($1.exists))

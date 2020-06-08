@@ -40,7 +40,7 @@ $pushNotification:=MobileAppServer .PushNotification.new()
 $pushNotification:=MobileAppServer .PushNotification.new("TEAM123456.com.sample.myappname")
 ```
 
-###### Bundle ID
+##### Bundle ID
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new("com.sample.myappname")
 ```

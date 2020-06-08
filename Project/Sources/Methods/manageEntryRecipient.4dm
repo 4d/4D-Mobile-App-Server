@@ -27,9 +27,9 @@ Case of
 		
 	: (Value type:C1509($1)=Is collection:K8:32)
 		
-		$0:=New object:C1471
-		$0.mails:=New collection:C1472
-		$0.deviceTokens:=New collection:C1472
+		$0:=New object:C1471(\
+			"mails";New collection:C1472;\
+			"deviceTokens";New collection:C1472)
 		
 		C_VARIANT:C1683($item)
 		

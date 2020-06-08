@@ -4,9 +4,9 @@ ARRAY TEXT:C222($appFoldersList;0)
 
   // Define notification
 
-$notification:=New object:C1471
-$notification.title:="Testing notification"
-$notification.body:="This is the content of a test notification"
+$notification:=New object:C1471(\
+"title";"Testing notification";\
+"body";"This is the content of a test notification")
 
   // Check there is only one application for this test
 

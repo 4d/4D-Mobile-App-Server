@@ -16,53 +16,77 @@ Class constructor
 	C_VARIANT:C1683($1)
 	
 	C_OBJECT:C1216($session;$Obj_manifest;$Obj_authKey)
+	C_BOOLEAN:C305($isObject;$isText)
 	
-	This:C1470.auth:=New object:C1471
+	This:C1470.auth:=New object:C1471("isDevelopment";False:C215)
 	
-	This:C1470.auth.isDevelopment:=False:C215
+	$isObject:=False:C215
+	$isText:=False:C215
 	
-	If (($1=Null:C1517) | (Value type:C1509($1)=Is text:K8:3))
-		
-		$session:=MobileAppServer .Session.new($1)
-		
-		If ($session.sessionDir#Null:C1517)
+	Case of 
 			
-			$Obj_manifest:=getManifest ($session.sessionDir)
+		: (Count parameters:C259=0)
 			
-			If ($Obj_manifest.success)
-				
-				This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
-				This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
-				
-			Else 
-				
-				ASSERT:C1129(False:C215;"Could not get manifest info")
-				
-			End if 
+			$isText:=True:C214
 			
+			$session:=MobileAppServer .Session.new()
 			
-			$Obj_authKey:=getAuthenticationKey ($session.sessionDir)
+		: (Value type:C1509($1)=Is text:K8:3)
 			
-			If ($Obj_authKey.success)
-				
-				This:C1470.auth.authKey:=$Obj_authKey.authKey
-				This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
-				
-			Else 
-				
-				ASSERT:C1129(False:C215;"Could not find authentication key")
-				
-			End if 
+			$isText:=True:C214
+			
+			$session:=MobileAppServer .Session.new($1)
+			
+		: (Value type:C1509($1)=Is object:K8:27)
+			
+			$isObject:=True:C214
 			
 		Else 
 			
-			ASSERT:C1129(False:C215;"Could not find application info in Session")
+			  // Incompatible entry parameter type
 			
-		End if 
-		
-	Else 
-		
-		If ((Value type:C1509($1)=Is object:K8:27))
+	End case 
+	
+	Case of 
+			
+		: ($isText)
+			
+			If ($session.sessionDir#Null:C1517)
+				
+				$Obj_manifest:=getManifest ($session.sessionDir)
+				
+				If ($Obj_manifest.success)
+					
+					This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
+					This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
+					
+				Else 
+					
+					ASSERT:C1129(False:C215;"Could not get manifest info")
+					
+				End if 
+				
+				
+				$Obj_authKey:=getAuthenticationKey ($session.sessionDir)
+				
+				If ($Obj_authKey.success)
+					
+					This:C1470.auth.authKey:=$Obj_authKey.authKey
+					This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+					
+				Else 
+					
+					ASSERT:C1129(False:C215;"Could not find authentication key")
+					
+				End if 
+				
+			Else 
+				
+				ASSERT:C1129(False:C215;"Could not find application info in Session")
+				
+			End if 
+			
+		: ($isObject)
 			
 			If (Length:C16(String:C10($1.bundleId))>0)
 				
@@ -88,6 +112,8 @@ Class constructor
 			
 			$authKeySuccess:=False:C215
 			
+			  // Try to get the authentication key from the entry object
+			
 			If ($1.authKey#Null:C1517)
 				
 				$Obj_authKey:=getAuthenticationKey ($1.authKey)
@@ -102,6 +128,8 @@ Class constructor
 				End if 
 				
 			End if 
+			
+			  // If it failed, try to find the authentication key file in the appropriate session folder
 			
 			If (Not:C34($authKeySuccess))
 				
@@ -141,10 +169,7 @@ Class constructor
 			
 			ASSERT:C1129(False:C215;"Incompatible entry parameter type")
 			
-		End if 
-		
-	End if 
-	
+	End case 
 	
 	
 	
@@ -191,7 +216,6 @@ Function send
 	If (This:C1470.auth.jwt=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Class initialization failed")
-		ABORT:C156
 		
 	End if 
 	
@@ -231,7 +255,6 @@ Function sendAll
 	If (This:C1470.auth.jwt=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Class initialization failed")
-		ABORT:C156
 		
 	End if 
 	

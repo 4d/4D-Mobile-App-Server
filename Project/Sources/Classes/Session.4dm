@@ -165,7 +165,6 @@ Function getAllDeviceTokens
 	If (This:C1470.sessionDir=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Session folder could not be found")
-		ABORT:C156
 		
 	End if 
 	
@@ -179,7 +178,6 @@ Function getAllMailAddresses
 	If (This:C1470.sessionDir=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Session folder could not be found")
-		ABORT:C156
 		
 	End if 
 	
@@ -195,17 +193,12 @@ Function getSessionInfoFromMail
 	If (This:C1470.sessionDir=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Session folder could not be found")
-		ABORT:C156
 		
 	End if 
 	
 	If (Asserted:C1132(Count parameters:C259>=1;"Missing mail address parameter"))
 		
 		ASSERT:C1129(Value type:C1509($1)=Is text:K8:3;"The function requires a mail address, a text is expected")
-		
-	Else 
-		
-		ABORT:C156
 		
 	End if 
 	

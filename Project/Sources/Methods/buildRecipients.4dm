@@ -11,8 +11,6 @@ If (Asserted:C1132(Count parameters:C259>=3;"Missing parameter"))
 	ASSERT:C1129(Value type:C1509($2)=Is text:K8:3;"Second parameter is team ID, a text is expected")
 	ASSERT:C1129(Value type:C1509($3)=Is text:K8:3;"Third parameter is bundle ID, a text is expected")
 	
-Else 
-	ABORT:C156
 End if 
 
 $Obj_result:=New object:C1471("success";False:C215)

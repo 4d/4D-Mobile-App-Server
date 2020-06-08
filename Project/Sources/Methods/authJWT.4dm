@@ -14,10 +14,9 @@ $Obj_result:=New object:C1471("success";False:C215)
 C_OBJECT:C1216($settings;$key;$header;$payload;$status)
 C_TEXT:C284($signature;$message)
 
-$settings:=New object:C1471
-$settings.type:="PEM"
-$settings.pem:=$1.authKey.getText()
-
+$settings:=New object:C1471(\
+"type";"PEM";\
+"pem";$1.authKey.getText())
 
   // Get CryptoKey class reference
 

@@ -24,17 +24,17 @@ $simulators:=New collection:C1472(\
 
 C_OBJECT:C1216($input_Object)
 
-$input_Object:=New object:C1471
-$input_Object.mails:=$mails
-$input_Object.deviceTokens:=$deviceTokens
-$input_Object.simulators:=$simulators
+$input_Object:=New object:C1471(\
+"mails";$mails;\
+"deviceTokens";$deviceTokens;\
+"simulators";$simulators)
 $output_Object:=manageEntryRecipient ($input_Object)
 ASSERT:C1129($output_Object.deviceTokens.count()=($deviceTokens.count()+$simulators.count());"simulators collection was not merged into deviceTokens")
 
 
-$input_Object:=New object:C1471
-$input_Object.mails:=$mails
-$input_Object.simulators:=New collection:C1472
+$input_Object:=New object:C1471(\
+"mails";$mails;\
+"simulators";New collection:C1472)
 $output_Object:=manageEntryRecipient ($input_Object)
 ASSERT:C1129(Value type:C1509($output_Object.deviceTokens)=Is collection:K8:32;"deviceTokens collection was not created")
 $input_Object.simulators:=$simulators
@@ -46,10 +46,10 @@ ASSERT:C1129($output_Object.deviceTokens.count()=$simulators.count();"simulators
 
 C_COLLECTION:C1488($input_Col)
 
-$input_Col:=New collection:C1472
-$input_Col.push("abc@gmail.com")
-$input_Col.push("YYYYYf3d7358e36a99d7913d58a91f62660b30b8a2a1f013be86479c5db2657a")
-$input_Col.push("8354843-F30C-4F63-A295-BE352517A287")
+$input_Col:=New collection:C1472(\
+"abc@gmail.com";\
+"YYYYYf3d7358e36a99d7913d58a91f62660b30b8a2a1f013be86479c5db2657a";\
+"8354843-F30C-4F63-A295-BE352517A287")
 $output_Object:=manageEntryRecipient ($input_Col)
 ASSERT:C1129(Value type:C1509($output_Object.mails)=Is collection:K8:32;"mails collection was not created")
 ASSERT:C1129(Value type:C1509($output_Object.deviceTokens)=Is collection:K8:32;"deviceTokens collection was not created")
