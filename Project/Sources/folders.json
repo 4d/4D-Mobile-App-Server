@@ -113,8 +113,7 @@
 			"test_authentication",
 			"test_dev",
 			"test_isEmail",
-			"test_manageEntryRecipient",
-			"test_push_notification"
+			"test_manageEntryRecipient"
 		]
 	},
 	"trash": {}
