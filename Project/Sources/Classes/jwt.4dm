@@ -1,7 +1,7 @@
 /*
 Construct a jwt object.
 
-cs.jwt.new( settings) -> jwt
+MobileAppServer .jwt.new( settings ) -> jwt
 
 settings.type: "RSA" or "ECDSA" to generate new keys. "PEM" to load an existing key from settings.pem
 settings.size: size of RSA key to generate (2048 by default)

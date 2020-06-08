@@ -1,3 +1,17 @@
+/*
+Construct a PushNotification object.
+
+If you have only one application in your Session files (`MobileApps/`),
+you can call the constructor with no parameter. 
+However, if you have more than one, you will need to provide parameters 
+to identify which application you want to send push notifications to.
+
+MobileAppServer .PushNotification.new() -> pushNotification // only if one application
+MobileAppServer .PushNotification.new( "TEAM123456.com.sample.myappname" ) -> pushNotification
+MobileAppServer .PushNotification.new( "com.sample.myappname" ) -> pushNotification
+MobileAppServer .PushNotification.new( "myappname" ) -> pushNotification
+MobileAppServer .PushNotification.new( New object("bundleId";"com.sample.myappname";"teamId";"TEAM123456") ) -> pushNotification
+*/
 Class constructor
 	C_VARIANT:C1683($1)
 	

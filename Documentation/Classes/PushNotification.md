@@ -4,7 +4,9 @@ Utility class to send a push notification to one or multiple recipients.
 
 ## Usage
 
-In order to use the component to send push notification, it is required to have an authentication key file `AuthKey_XXXX.p8` from Apple.
+---
+
+In order to use the component to send push notification, it is required to have an authentication key file `AuthKey_XXXYYY.p8` from Apple.
 
 [Check how to generate your authentication key .p8 file](../Generate_p8.md)
 
@@ -13,21 +15,26 @@ To experiment the default behaviour, this file should be placed in your applicat
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new()
 
-$notification:=New object("title";"This is title")
+$notification:=New object
+$notification.title:="This is title"
 $notification.body:="Here is the content of this notification"
 
 $response:=$pushNotification.send($notification;"abc@4dmail.com")
 ```
 
-### Instanciate PushNotification class to authenticate
+### Instanciate the PushNotification class
 
 ---
 
-First of all, you will need to instanciate the `PushNotification` class.
+**NOTE**
 
-As it uses the [Session](./Session.md) class, you can provide the same parameters :
+If you have **only one application** in your Session files (`MobileApps/`), you can call the constructor with no parameter. However, if you have **more than one**, you will need to provide parameters to identify which application you want to send push notifications to.
 
-- none (only if you have exactly one application folder in `MobileApps` folder)
+---
+
+As it uses the [Session](./Session.md) class in its constructor, you can provide the same parameters :
+
+- none (if you have only one application folder in `MobileApps/` folder)
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new()
 ```

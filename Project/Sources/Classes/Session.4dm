@@ -1,3 +1,16 @@
+/*
+Construct a Session object.
+
+If you have only one application in your Session files (`MobileApps/`),
+you can call the constructor with no parameter. 
+However, if you have more than one, you will need to provide parameters 
+to identify which application you want to send push notifications to.
+
+MobileAppServer .Session.new() -> session // only if one application
+MobileAppServer .Session.new( "TEAM123456.com.sample.myappname" ) -> session
+MobileAppServer .Session.new( "com.sample.myappname" ) -> session
+MobileAppServer .Session.new( "myappname" ) -> session
+*/
 Class constructor
 	C_TEXT:C284($1)  // TeamId.BundleId or BundleId or AppName or empty entry
 	
