@@ -33,3 +33,12 @@ C_BOOLEAN:C305(checkXCodeVersionForPushNotif ;$0)
 
 C_OBJECT:C1216(sim_sendNotification ;$0)
 C_OBJECT:C1216(sim_sendNotification ;$1)
+
+C_OBJECT:C1216(getManifest ;$0)
+C_OBJECT:C1216(getManifest ;$1)
+
+C_OBJECT:C1216(getAuthenticationKey ;$0)
+C_VARIANT:C1683(getAuthenticationKey ;$1)
+
+C_OBJECT:C1216(getAuthKeyId ;$0)
+C_TEXT:C284(getAuthKeyId ;$1)

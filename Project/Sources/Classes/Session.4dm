@@ -1,20 +1,5 @@
 Class constructor
-	C_TEXT:C284($1)  // TeamId
-	C_TEXT:C284($2)  // BundleId
-	
-	If (Asserted:C1132(Count parameters:C259>=2;"Missing parameter"))
-		
-		ASSERT:C1129(Value type:C1509($1)=Is text:K8:3;"First parameter is TeamId, a text is expected")
-		ASSERT:C1129(Value type:C1509($2)=Is text:K8:3;"Second parameter is BundleId, a text is expected")
-		
-	Else 
-		
-		ABORT:C156
-		
-	End if 
-	
-	This:C1470.teamId:=$1
-	This:C1470.bundleId:=$2
+	C_TEXT:C284($1)  // TeamId.BundleId or BundleId or AppName or empty entry
 	
 	C_OBJECT:C1216($Dir_mobileApps;$appFolder)
 	C_LONGINT:C283($folder_indx)
@@ -27,21 +12,122 @@ Class constructor
 		  // Each folder corresponds to an application
 		FOLDER LIST:C473($Dir_mobileApps.platformPath;$appFoldersList)
 		
-		$folder_indx:=Find in array:C230($appFoldersList;This:C1470.teamId+"."+This:C1470.bundleId)
 		
-		If ($folder_indx>0)
+		
+		If (Length:C16(String:C10($1))=0)  // Empty entry
 			
-			$appFolder:=$Dir_mobileApps.folder($appFoldersList{$folder_indx})
+			Case of 
+					
+				: (Size of array:C274($appFoldersList)=0)
+					
+					ASSERT:C1129(False:C215;"There is no application folder found")
+					
+				: (Size of array:C274($appFoldersList)=1)
+					
+					$appFolder:=$Dir_mobileApps.folder($appFoldersList{1})
+					
+					This:C1470.sessionDir:=$appFolder
+					
+				Else 
+					
+					ASSERT:C1129(False:C215;"There are several application folders, can't select appropriate application")
+					
+			End case 
 			
-			If ($appFolder.exists)
+		Else   // TeamId.BundleId or BundleId or AppName entry
+			
+			$folder_indx:=Find in array:C230($appFoldersList;$1)
+			
+			
+			C_TEXT:C284($folder_name)
+			C_COLLECTION:C1488($Col_app)
+			C_LONGINT:C283($pos;$app_indx)
+			
+			
+			  // TeamId.BundleId
+			
+			If ($folder_indx>0)
 				
-				This:C1470.sessionDir:=$appFolder
+				$appFolder:=$Dir_mobileApps.folder($appFoldersList{$folder_indx})
 				
-				  // Else : application directory doesn't exist
+				If ($appFolder.exists)
+					
+					This:C1470.sessionDir:=$appFolder
+					
+					  // Else : application directory doesn't exist
+					
+				End if 
+				
+				  // Else : TeamId.BundleId not found
 				
 			End if 
 			
-			  // Else : couldn't find application directory
+			
+			  // AppName
+			
+			If (This:C1470.sessionDir=Null:C1517)
+				
+				For ($app_indx;1;Size of array:C274($appFoldersList);1)
+					
+					$folder_name:=$appFoldersList{$app_indx}
+					
+					$Col_app:=Split string:C1554($folder_name;".")
+					
+					If ($Col_app[$Col_app.length-1]=$1)
+						
+						$appFolder:=$Dir_mobileApps.folder($folder_name)
+						
+						If ($appFolder.exists)
+							
+							This:C1470.sessionDir:=$appFolder
+							
+							  // Else : application directory doesn't exist
+							
+						End if 
+						
+						  // Else : AppName not found
+						
+					End if 
+					
+				End for 
+				
+				  // Else : sessionDir already found
+				
+			End if 
+			
+			
+			  // BundleId
+			
+			If (This:C1470.sessionDir=Null:C1517)
+				
+				For ($app_indx;1;Size of array:C274($appFoldersList);1)
+					
+					$folder_name:=$appFoldersList{$app_indx}
+					
+					$pos:=Position:C15($1;$folder_name)
+					
+					If ($pos>0)
+						
+						$appFolder:=$Dir_mobileApps.folder($folder_name)
+						
+						If ($appFolder.exists)
+							
+							This:C1470.sessionDir:=$appFolder
+							
+							  // Else : application directory doesn't exist
+							
+						End if 
+						
+						  // Else : BundleId found
+						
+					End if 
+					
+				End for 
+				
+				  // Else : sessionDir already found
+				
+			End if 
+			
 			
 		End if 
 		
@@ -51,9 +137,12 @@ Class constructor
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"The specific session folder could not be found. Maybe it is not created yet")
+		ASSERT:C1129(False:C215;"Session folder could not be found")
 		
 	End if 
+	
+	
+	
 	
 	  //-------------------------------------------------------------------------
 Function getAllDeviceTokens
@@ -62,7 +151,7 @@ Function getAllDeviceTokens
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"The specific session folder could not be found. Maybe it is not created yet")
+		ASSERT:C1129(False:C215;"Session folder could not be found")
 		ABORT:C156
 		
 	End if 
@@ -76,7 +165,7 @@ Function getAllMailAddresses
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"The specific session folder could not be found. Maybe it is not created yet")
+		ASSERT:C1129(False:C215;"Session folder could not be found")
 		ABORT:C156
 		
 	End if 
@@ -92,7 +181,7 @@ Function getSessionInfoFromMail
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"The specific session folder could not be found. Maybe it is not created yet")
+		ASSERT:C1129(False:C215;"Session folder could not be found")
 		ABORT:C156
 		
 	End if 

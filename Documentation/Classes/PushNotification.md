@@ -4,52 +4,72 @@ Utility class to send a push notification to one or multiple recipients.
 
 ## Usage
 
-First of all, you will need to instanciate the `PushNotification` class with an authentication object.
+In order to use the component to send push notification, it is required to have an authentication key file `AuthKey_XXXX.p8` from Apple.
 
-To use the `send()`  and `sendAll()` functions from `PushNotification` class, you need a notification object that defines the content to send, and recipients.
+<a href="../Generate_p8.md">Check how to generate your authentication key .p8 file</a>
 
-### Build authentication object 
-
----
-
-In order to use the component to send push notification, it is required to have an authentication file `AuthKey_XXXX.p8` from Apple.
-This file should be placed in user database for convenience.
-It is important to note what are `$authKey`, `$authKeyId` and `$teamId` refering to.
-
-<a href="../Generate_p8.md">Check how to generate .p8 key file</a>
+To experiment the default behaviour, this file should be placed in your application sessions folder (`MobileApps/TEAM123456.com.sample.myappname`).
 
 ```4d
-$authKey:=File("/path_to_p8_file/AuthKey_XXXYYY.p8")  // AuthKey file
-$authKeyId=XXXYYY  // is the second part of the AuthKey filename
-$teamId=TEAM123456  // is the team related to the AuthKey file
+$pushNotification:=MobileAppServer .PushNotification.new()
+
+$notification:=New object("title";"This is title")
+$notification.body:="Here is the content of this notification"
+
+$response:=$pushNotification.send($notification;"abc@4dmail.com")
 ```
-
-```4d
-$bundleId:="com.sample.myappname"
-$authKey:=File("/path_to_p8_file/AuthKey_XXXYYY.p8")
-$authKeyId:="AuthKey_XXXYYY"
-$teamId:="TEAM123456"
-
-$auth:=New object
-$auth.bundleId:=$bundleId
-$auth.authKey:=$authKey
-$auth.authKeyId:=$authKeyId
-$auth.teamId:=$teamId
-$auth.isDevelopment:=False  // Optional value, defines whether you are in production or development mode. Default is False
-```
-
 
 ### Instanciate PushNotification class to authenticate
 
 ---
 
+First of all, you will need to instanciate the `PushNotification` class.
+
+As it uses the <a href="./Session.md">`Session`</a> class, you can provide the same parameters :
+
+- none (only if you have exactly one application folder in `MobileApps` folder)
 ```4d
+$pushNotification:=MobileAppServer .PushNotification.new()
+```
+
+- `teamId`.`bundleId`
+```4d
+$pushNotification:=MobileAppServer .PushNotification.new("TEAM123456.com.sample.myappname")
+```
+
+- `bundleId`
+```4d
+$pushNotification:=MobileAppServer .PushNotification.new("com.sample.myappname")
+```
+
+- `appName`
+```4d
+$pushNotification:=MobileAppServer .PushNotification.new("myappname")
+```
+
+But also :
+- an `object`
+```4d
+$pushNotification:=MobileAppServer .PushNotification.new(New object("bundleId";"com.sample.myappname";"teamId";"TEAM123456"))
+```
+
+Alternatively, you can instanciate the `PushNotification` class with an authentication object.
+
+```4d
+$auth:=New object
+$auth.bundleId:="com.sample.myappname"
+$auth.authKey:=File("/path_to_p8_file/AuthKey_XXXYYY.p8")  // authentication key .p8 file
+$auth.teamId:="TEAM123456"  // is the team related to the authentication key file
+$auth.isDevelopment:=False  // Optional value, defines whether you are in production or development mode. Default is False
+
 $pushNotification:=MobileAppServer .PushNotification.new($auth)
 ```
 
 ### Use PushNotification class to send push notifications
 
 ---
+
+To use the `send()`  and `sendAll()` functions from `PushNotification` class, you need a notification object that defines the content to send, and recipients.
 
 - #### `send()`
 
@@ -61,7 +81,7 @@ $response:=$pushNotification.send($notification;$recipients)
 
 - #### `sendAll()`
 
-This function will send `$notification` to any recipient that has a session file on the server for the app.
+This function will send `$notification` to any recipient that has a session file on the server for the app. **Be careful to who you send it, as it may be considered as spamming.**
 
 ```4d
 $response:=$pushNotification.sendAll($notification)
@@ -137,7 +157,7 @@ $response:=$pushNotification.send($notification;$recipients)
 
 - ##### Extra
 
-You can use the <a href="./Session.md">`Session` class</a> to retrieve information in session files, such as deviceTokens, mail addresses or more session information.
+You can use the <a href="./Session.md">`Session`</a> class to retrieve information in session files, such as deviceTokens, mail addresses or more session information.
 
 ### Exploring results
 

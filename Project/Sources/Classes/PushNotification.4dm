@@ -1,75 +1,171 @@
 Class constructor
-	C_OBJECT:C1216($1)
+	C_VARIANT:C1683($1)
 	
-	If ($1=Null:C1517)
-		
-		ASSERT:C1129(False:C215;"Failed to "+Current method name:C684)
-		
-	End if 
+	C_OBJECT:C1216($session;$Obj_manifest;$Obj_authKey)
 	
-	  // If authKey file is given as path
-	If (Value type:C1509($1.authKey)=Is text:K8:3)
-		
-		$1.authKey:=File:C1566($1.authKey)
-		
-	End if 
+	This:C1470.auth:=New object:C1471
 	
-	  // If authKey is not a file
-	If (Not:C34(Bool:C1537($1.authKey.isFile)))
-		
-		ASSERT:C1129(False:C215;"Unknown authentication key type : "+String:C10(Value type:C1509($1.authKey)))
-		
-	End if 
+	This:C1470.auth.isDevelopment:=False:C215
 	
-	  // If authKey file does not exist
-	If (Not:C34(Bool:C1537($1.authKey.exists)))
+	If (($1=Null:C1517) | (Value type:C1509($1)=Is text:K8:3))
 		
-		ASSERT:C1129(False:C215;"Could not find authentication key file")
+		$session:=MobileAppServer .Session.new($1)
 		
-	End if 
-	
-	  // Check if authKey file is an alias, and get original
-	If ($1.authKey.isAlias)
-		
-		$1.authKey:=$1.authKey.original
-		
-	End if 
-	
-	If ((Length:C16(String:C10($1.bundleId))=0)\
-		 | (Length:C16(String:C10($1.authKeyId))=0)\
-		 | (Length:C16(String:C10($1.teamId))=0))  // Incomplete authentication object
-		
-		ASSERT:C1129(False:C215;"Incomplete authentication object")
+		If ($session.sessionDir#Null:C1517)
+			
+			$Obj_manifest:=getManifest ($session.sessionDir)
+			
+			If ($Obj_manifest.success)
+				
+				This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
+				This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
+				
+			Else 
+				
+				ASSERT:C1129(False:C215;"Could not get manifest info")
+				
+			End if 
+			
+			
+			$Obj_authKey:=getAuthenticationKey ($session.sessionDir)
+			
+			If ($Obj_authKey.success)
+				
+				This:C1470.auth.authKey:=$Obj_authKey.authKey
+				This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+				
+			Else 
+				
+				ASSERT:C1129(False:C215;"Could not find authentication key")
+				
+			End if 
+			
+		Else 
+			
+			ASSERT:C1129(False:C215;"Could not find application info in Session")
+			
+		End if 
 		
 	Else 
+		
+		If ((Value type:C1509($1)=Is object:K8:27))
+			
+			If (Length:C16(String:C10($1.bundleId))>0)
+				
+				This:C1470.auth.bundleId:=$1.bundleId
+				
+			Else 
+				
+				ASSERT:C1129(False:C215;"No bundle id provided")
+				
+			End if 
+			
+			If (Length:C16(String:C10($1.teamId))>0)
+				
+				This:C1470.auth.teamId:=$1.teamId
+				
+			Else 
+				
+				ASSERT:C1129(False:C215;"No team id provided")
+				
+			End if 
+			
+			C_BOOLEAN:C305($authKeySuccess)
+			
+			$authKeySuccess:=False:C215
+			
+			If ($1.authKey#Null:C1517)
+				
+				$Obj_authKey:=getAuthenticationKey ($1.authKey)
+				
+				If ($Obj_authKey.success)
+					
+					$authKeySuccess:=True:C214
+					
+					This:C1470.auth.authKey:=$Obj_authKey.authKey
+					This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+					
+				End if 
+				
+			End if 
+			
+			If (Not:C34($authKeySuccess))
+				
+				$session:=MobileAppServer .Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+				
+				If ($session.sessionDir#Null:C1517)
+					
+					$Obj_authKey:=getAuthenticationKey ($session.sessionDir)
+					
+					If ($Obj_authKey.success)
+						
+						This:C1470.auth.authKey:=$Obj_authKey.authKey
+						This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+						
+					Else 
+						
+						ASSERT:C1129(False:C215;"Could not find authentication key")
+						
+					End if 
+					
+					ASSERT:C1129(False:C215;"Session folder could not be found")
+					
+				End if 
+				
+				  // Else : $1.authKey was valid
+				
+			End if 
+			
+			
+			If (Bool:C1537($1.isDevelopment))
+				
+				This:C1470.auth.isDevelopment:=True:C214
+				
+			End if 
+			
+		Else 
+			
+			ASSERT:C1129(False:C215;"Incompatible entry parameter type")
+			
+		End if 
+		
+	End if 
+	
+	
+	
+	
+	  // Generate JWT
+	
+	If ((Length:C16(String:C10(This:C1470.auth.bundleId))>0)\
+		 & (Length:C16(String:C10(This:C1470.auth.authKeyId))>0)\
+		 & (Length:C16(String:C10(This:C1470.auth.teamId))>0))
 		
 		C_OBJECT:C1216($Obj_auth_result)
 		
 		  // Get JSON Web Token
-		$Obj_auth_result:=authJWT ($1)
+		$Obj_auth_result:=authJWT (This:C1470.auth)
 		
-		If (Not:C34($Obj_auth_result.success)\
-			 | Not:C34(Length:C16(String:C10($Obj_auth_result.jwt))>0))
+		If (($Obj_auth_result.success)\
+			 & (Length:C16(String:C10($Obj_auth_result.jwt))>0))
 			
-			ASSERT:C1129(False:C215;"Failed to generate JSON Web Token")
-			
-		Else 
-			
-			This:C1470.auth:=$1
 			This:C1470.auth.jwt:=$Obj_auth_result.jwt
 			This:C1470.lastResult:=New object:C1471
 			
-			If ($1.isDevelopment#Null:C1517)
-				
-				This:C1470.auth.isDevelopment:=$1.isDevelopment
-				
-			Else 
-				
-				This:C1470.auth.isDevelopment:=False:C215
-				
-			End if 
+		Else 
+			
+			ASSERT:C1129(False:C215;"Failed to generate JSON Web Token")
+			
 		End if 
+		
 	End if 
+	
+	If (This:C1470.auth.jwt=Null:C1517)
+		
+		ASSERT:C1129(False:C215;"Class initialization failed")
+		
+	End if 
+	
+	
 	
 	  //-------------------------------------------------------------------------
 Function send
@@ -78,7 +174,7 @@ Function send
 	C_OBJECT:C1216($1)  // Notification content
 	C_VARIANT:C1683($2)  // Recipient(s)
 	
-	If (This:C1470.auth=Null:C1517)
+	If (This:C1470.auth.jwt=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Class initialization failed")
 		ABORT:C156
@@ -118,7 +214,7 @@ Function sendAll
 	C_OBJECT:C1216($0)
 	C_OBJECT:C1216($1)  // Notification content
 	
-	If (This:C1470.auth=Null:C1517)
+	If (This:C1470.auth.jwt=Null:C1517)
 		
 		ASSERT:C1129(False:C215;"Class initialization failed")
 		ABORT:C156
@@ -132,19 +228,25 @@ Function sendAll
 	
 	C_OBJECT:C1216($Obj_session;$Obj_deviceTokens)
 	
-	$Obj_session:=MobileAppServer .Session.new(This:C1470.auth.teamId;This:C1470.auth.bundleId)
+	$Obj_session:=MobileAppServer .Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
 	
-	$Obj_deviceTokens:=$Obj_session.getAllDeviceTokens()
-	
-	  //$Obj_deviceTokens:=MOBILE APP Get all deviceTokens (This.auth.teamId;This.auth.bundleId)
-	
-	If ($Obj_deviceTokens.success)
+	If ($Obj_session.sessionDir=Null:C1517)
 		
-		This:C1470.lastResult:=This:C1470.send($1;$Obj_deviceTokens.deviceTokens)
+		This:C1470.lastResult.errors.push("Could not find application info in Session")
 		
 	Else 
 		
-		This:C1470.lastResult.errors.push("No recipient found")
+		$Obj_deviceTokens:=$Obj_session.getAllDeviceTokens()
+		
+		If ($Obj_deviceTokens.success)
+			
+			This:C1470.lastResult:=This:C1470.send($1;$Obj_deviceTokens.deviceTokens)
+			
+		Else 
+			
+			This:C1470.lastResult.errors.push("No recipient found")
+			
+		End if 
 		
 	End if 
 	
