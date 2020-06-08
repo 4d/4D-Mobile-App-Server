@@ -70,7 +70,7 @@ Class constructor
 				
 			Else 
 				
-				ASSERT:C1129(False:C215;"No bundle id provided")
+				ASSERT:C1129(False:C215;"No bundle ID provided")
 				
 			End if 
 			
@@ -80,7 +80,7 @@ Class constructor
 				
 			Else 
 				
-				ASSERT:C1129(False:C215;"No team id provided")
+				ASSERT:C1129(False:C215;"No team ID provided")
 				
 			End if 
 			

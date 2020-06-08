@@ -96,8 +96,7 @@
 			"MA Get all mailAddresses",
 			"MOBILE APP Get all bundleIds",
 			"MOBILE APP Get all deviceTokens",
-			"MOBILE APP Get session info",
-			"MOBILE APP Get sessions info"
+			"MOBILE APP Get session info"
 		],
 		"classes": [
 			"Session"
@@ -113,7 +112,9 @@
 			"test_authentication",
 			"test_dev",
 			"test_isEmail",
-			"test_manageEntryRecipient"
+			"test_manageEntryRecipient",
+			"test_pushnotification",
+			"test_session"
 		]
 	},
 	"trash": {}

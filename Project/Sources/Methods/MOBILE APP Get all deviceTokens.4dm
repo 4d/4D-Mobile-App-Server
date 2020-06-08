@@ -33,11 +33,17 @@ If (Bool:C1537($1.isFolder) & Bool:C1537($1.exists))
 		
 		$sessionFile:=$sessionFolder.file($sessionFilesList{$session_indx})
 		
-		$session:=JSON Parse:C1218($sessionFile.getText())
-		
-		If (Length:C16(String:C10($session.device.token))>0)
+		If ($sessionFile.extension="")
 			
-			$Obj_result.deviceTokens.push($session.device.token)
+			$session:=JSON Parse:C1218($sessionFile.getText())
+			
+			If (Length:C16(String:C10($session.device.token))>0)
+				
+				$Obj_result.deviceTokens.push($session.device.token)
+				
+			End if 
+			
+			  // Else : not a session file
 			
 		End if 
 		

@@ -36,11 +36,17 @@ If (Bool:C1537($1.isFolder) & Bool:C1537($1.exists))
 		
 		$sessionFile:=$sessionFolder.file($sessionFilesList{$session_indx})
 		
-		$session:=JSON Parse:C1218($sessionFile.getText())
-		
-		If ($mail=String:C10($session.email))
+		If ($sessionFile.extension="")
 			
-			$Obj_result.sessions.push($session)
+			$session:=JSON Parse:C1218($sessionFile.getText())
+			
+			If ($mail=String:C10($session.email))
+				
+				$Obj_result.sessions.push($session)
+				
+			End if 
+			
+			  // Else : not a session file
 			
 		End if 
 		

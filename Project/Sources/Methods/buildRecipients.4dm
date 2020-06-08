@@ -1,15 +1,15 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
 C_OBJECT:C1216($0)  // output recipients collection and warnings for failures
 C_OBJECT:C1216($1)  // input object containing recipients collections
-C_TEXT:C284($2)  // teamId
-C_TEXT:C284($3)  // bundleId
+C_TEXT:C284($2)  // team ID
+C_TEXT:C284($3)  // bundle ID
 C_COLLECTION:C1488($mails;$deviceTokens;$mailAndDeviceTokenCollection)
 C_OBJECT:C1216($Obj_result;$session)
 
 If (Asserted:C1132(Count parameters:C259>=3;"Missing parameter"))
 	
-	ASSERT:C1129(Value type:C1509($2)=Is text:K8:3;"Second parameter is TeamId, a text is expected")
-	ASSERT:C1129(Value type:C1509($3)=Is text:K8:3;"Third parameter is BundleId, a text is expected")
+	ASSERT:C1129(Value type:C1509($2)=Is text:K8:3;"Second parameter is team ID, a text is expected")
+	ASSERT:C1129(Value type:C1509($3)=Is text:K8:3;"Third parameter is bundle ID, a text is expected")
 	
 Else 
 	ABORT:C156

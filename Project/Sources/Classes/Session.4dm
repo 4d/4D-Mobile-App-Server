@@ -12,7 +12,7 @@ MobileAppServer .Session.new( "com.sample.myappname" ) -> session
 MobileAppServer .Session.new( "myappname" ) -> session
 */
 Class constructor
-	C_TEXT:C284($1)  // TeamId.BundleId or BundleId or AppName or empty entry
+	C_TEXT:C284($1)  // Application ID (teamID.bundleID) or Bundle ID or Application name or empty entry
 	
 	C_OBJECT:C1216($Dir_mobileApps;$appFolder)
 	C_LONGINT:C283($folder_indx)
@@ -47,7 +47,7 @@ Class constructor
 					
 			End case 
 			
-		Else   // TeamId.BundleId or BundleId or AppName entry
+		Else   // Application ID (teamID.bundleID) or Bundle ID or Application name
 			
 			$folder_indx:=Find in array:C230($appFoldersList;$1)
 			
@@ -57,7 +57,7 @@ Class constructor
 			C_LONGINT:C283($pos;$app_indx)
 			
 			
-			  // TeamId.BundleId
+			  // Application ID (teamID.bundleID)
 			
 			If ($folder_indx>0)
 				
@@ -71,12 +71,12 @@ Class constructor
 					
 				End if 
 				
-				  // Else : TeamId.BundleId not found
+				  // Else : Application ID (teamID.bundleID) not found
 				
 			End if 
 			
 			
-			  // AppName
+			  // Application name
 			
 			If (This:C1470.sessionDir=Null:C1517)
 				
@@ -98,7 +98,7 @@ Class constructor
 							
 						End if 
 						
-						  // Else : AppName not found
+						  // Else : Application name not found
 						
 					End if 
 					
@@ -109,7 +109,7 @@ Class constructor
 			End if 
 			
 			
-			  // BundleId
+			  // Bundle ID
 			
 			If (This:C1470.sessionDir=Null:C1517)
 				
