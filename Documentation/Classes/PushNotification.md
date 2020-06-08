@@ -6,7 +6,7 @@ Utility class to send a push notification to one or multiple recipients.
 
 In order to use the component to send push notification, it is required to have an authentication key file `AuthKey_XXXX.p8` from Apple.
 
-<a href="../Generate_p8.md">Check how to generate your authentication key .p8 file</a>
+[Check how to generate your authentication key .p8 file](../Generate_p8.md)
 
 To experiment the default behaviour, this file should be placed in your application sessions folder (`MobileApps/TEAM123456.com.sample.myappname`).
 
@@ -25,7 +25,7 @@ $response:=$pushNotification.send($notification;"abc@4dmail.com")
 
 First of all, you will need to instanciate the `PushNotification` class.
 
-As it uses the <a href="./Session.md">`Session`</a> class, you can provide the same parameters :
+As it uses the [Session](./Session.md) class, you can provide the same parameters :
 
 - none (only if you have exactly one application folder in `MobileApps` folder)
 ```4d
@@ -157,7 +157,7 @@ $response:=$pushNotification.send($notification;$recipients)
 
 - ##### Extra
 
-You can use the <a href="./Session.md">`Session`</a> class to retrieve information in session files, such as deviceTokens, mail addresses or more session information.
+You can use the [Session](./Session.md) class to retrieve information in session files, such as deviceTokens, mail addresses or more session information.
 
 ### Exploring results
 
