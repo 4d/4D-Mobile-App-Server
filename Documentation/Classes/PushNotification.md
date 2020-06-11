@@ -67,6 +67,16 @@ $auth.isDevelopment:=False  // Optional value, defines whether you are in produc
 $pushNotification:=MobileAppServer .PushNotification.new($auth)
 ```
 
+## Development or Production mode
+
+You need to specify whether the target application is in `development` or `production` mode. 
+
+If your application is in `development` mode and you try to send push notification in `production` mode, the target won't receive the push notifications. By default, the `PushNotification` class is in `production` mode, but you can change it as follows :
+
+```4d
+$pushNotification.auth.isDevelopment:=True
+```
+
 ## Use PushNotification class to send push notifications
 
 To use the `send()`  and `sendAll()` functions from `PushNotification` class, you need a notification object that defines the content to send, and recipients.
