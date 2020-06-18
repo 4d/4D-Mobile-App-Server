@@ -12,22 +12,37 @@ MobileAppServer .Session.new( "com.sample.myappname" ) -> session
 MobileAppServer .Session.new( "myappname" ) -> session
 */
 Class constructor
-	C_TEXT:C284($1)  // Application ID (teamID.bundleID) or Bundle ID or Application name or empty entry
+	C_TEXT:C284($1)// Application ID (teamID.bundleID) or Bundle ID or Application name or empty entry
 	
 	C_OBJECT:C1216($Dir_mobileApps;$appFolder)
 	C_LONGINT:C283($folder_indx)
+	C_BOOLEAN:C305($emptyParameter)
 	ARRAY TEXT:C222($appFoldersList;0)
 	
 	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18;*)
 	
 	If ($Dir_mobileApps.exists)
 		
-		  // Each folder corresponds to an application
+		// Each folder corresponds to an application
 		FOLDER LIST:C473($Dir_mobileApps.platformPath;$appFoldersList)
 		
+		Case of 
+				
+			: (Count parameters:C259=0)
+				
+				$emptyParameter:=True:C214
+				
+			: (Length:C16(String:C10($1))=0)
+				
+				$emptyParameter:=True:C214
+				
+			Else 
+				
+				$emptyParameter:=False:C215
+				
+		End case 
 		
-		
-		If (Length:C16(String:C10($1))=0)  // Empty entry
+		If (Bool:C1537($emptyParameter))// Empty entry
 			
 			Case of 
 					
@@ -47,7 +62,7 @@ Class constructor
 					
 			End case 
 			
-		Else   // Application ID (teamID.bundleID) or Bundle ID or Application name
+		Else // Application ID (teamID.bundleID) or Bundle ID or Application name
 			
 			$folder_indx:=Find in array:C230($appFoldersList;$1)
 			
@@ -57,7 +72,7 @@ Class constructor
 			C_LONGINT:C283($pos;$app_indx)
 			
 			
-			  // Application ID (teamID.bundleID)
+			// Application ID (teamID.bundleID)
 			
 			If ($folder_indx>0)
 				
@@ -67,16 +82,16 @@ Class constructor
 					
 					This:C1470.sessionDir:=$appFolder
 					
-					  // Else : application directory doesn't exist
+					// Else : application directory doesn't exist
 					
 				End if 
 				
-				  // Else : Application ID (teamID.bundleID) not found
+				// Else : Application ID (teamID.bundleID) not found
 				
 			End if 
 			
 			
-			  // Application name
+			// Application name
 			
 			If (This:C1470.sessionDir=Null:C1517)
 				
@@ -94,22 +109,22 @@ Class constructor
 							
 							This:C1470.sessionDir:=$appFolder
 							
-							  // Else : application directory doesn't exist
+							// Else : application directory doesn't exist
 							
 						End if 
 						
-						  // Else : Application name not found
+						// Else : Application name not found
 						
 					End if 
 					
 				End for 
 				
-				  // Else : sessionDir already found
+				// Else : sessionDir already found
 				
 			End if 
 			
 			
-			  // Bundle ID
+			// Bundle ID
 			
 			If (This:C1470.sessionDir=Null:C1517)
 				
@@ -127,24 +142,24 @@ Class constructor
 							
 							This:C1470.sessionDir:=$appFolder
 							
-							  // Else : application directory doesn't exist
+							// Else : application directory doesn't exist
 							
 						End if 
 						
-						  // Else : BundleId found
+						// Else : BundleId found
 						
 					End if 
 					
 				End for 
 				
-				  // Else : sessionDir already found
+				// Else : sessionDir already found
 				
 			End if 
 			
 			
 		End if 
 		
-		  // Else : couldn't find MobileApps folder in host database
+		// Else : couldn't find MobileApps folder in host database
 		
 	End if 
 	
@@ -157,7 +172,7 @@ Class constructor
 	
 	
 	
-	  //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 Function getAllDeviceTokens
 	
 	C_OBJECT:C1216($0)
@@ -168,9 +183,9 @@ Function getAllDeviceTokens
 		
 	End if 
 	
-	$0:=MOBILE APP Get all deviceTokens (This:C1470.sessionDir)
+	$0:=MOBILE APP Get all deviceTokens(This:C1470.sessionDir)
 	
-	  //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 Function getAllMailAddresses
 	
 	C_OBJECT:C1216($0)
@@ -181,14 +196,14 @@ Function getAllMailAddresses
 		
 	End if 
 	
-	$0:=MA Get all mailAddresses (This:C1470.sessionDir)
+	$0:=MA Get all mailAddresses(This:C1470.sessionDir)
 	
-	  //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 Function getSessionInfoFromMail
 	
 	C_OBJECT:C1216($0)
 	
-	C_TEXT:C284($1)  // mail address
+	C_TEXT:C284($1)// mail address
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
@@ -202,4 +217,4 @@ Function getSessionInfoFromMail
 		
 	End if 
 	
-	$0:=MOBILE APP Get session info (This:C1470.sessionDir;$1)
+	$0:=MOBILE APP Get session info(This:C1470.sessionDir;$1)
