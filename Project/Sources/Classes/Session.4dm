@@ -12,19 +12,19 @@ MobileAppServer .Session.new( "com.sample.myappname" ) -> session
 MobileAppServer .Session.new( "myappname" ) -> session
 */
 Class constructor
-	C_TEXT:C284($1)// Application ID (teamID.bundleID) or Bundle ID or Application name or empty entry
+	C_TEXT:C284($1)  // Application ID (teamID.bundleID) or Bundle ID or Application name or empty entry
 	
-	C_OBJECT:C1216($Dir_mobileApps;$appFolder)
+	C_OBJECT:C1216($Dir_mobileApps; $appFolder)
 	C_LONGINT:C283($folder_indx)
 	C_BOOLEAN:C305($emptyParameter)
-	ARRAY TEXT:C222($appFoldersList;0)
+	ARRAY TEXT:C222($appFoldersList; 0)
 	
-	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18;*)
+	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18; *)
 	
 	If ($Dir_mobileApps.exists)
 		
 		// Each folder corresponds to an application
-		FOLDER LIST:C473($Dir_mobileApps.platformPath;$appFoldersList)
+		FOLDER LIST:C473($Dir_mobileApps.platformPath; $appFoldersList)
 		
 		Case of 
 				
@@ -42,13 +42,13 @@ Class constructor
 				
 		End case 
 		
-		If (Bool:C1537($emptyParameter))// Empty entry
+		If (Bool:C1537($emptyParameter))  // Empty entry
 			
 			Case of 
 					
 				: (Size of array:C274($appFoldersList)=0)
 					
-					ASSERT:C1129(False:C215;"There is no application folder found")
+					ASSERT:C1129(False:C215; "There is no application folder found")
 					
 				: (Size of array:C274($appFoldersList)=1)
 					
@@ -58,18 +58,18 @@ Class constructor
 					
 				Else 
 					
-					ASSERT:C1129(False:C215;"There are several application folders, can't select appropriate application")
+					ASSERT:C1129(False:C215; "There are several application folders, can't select appropriate application")
 					
 			End case 
 			
-		Else // Application ID (teamID.bundleID) or Bundle ID or Application name
+		Else   // Application ID (teamID.bundleID) or Bundle ID or Application name
 			
-			$folder_indx:=Find in array:C230($appFoldersList;$1)
+			$folder_indx:=Find in array:C230($appFoldersList; $1)
 			
 			
 			C_TEXT:C284($folder_name)
 			C_COLLECTION:C1488($Col_app)
-			C_LONGINT:C283($pos;$app_indx)
+			C_LONGINT:C283($pos; $app_indx)
 			
 			
 			// Application ID (teamID.bundleID)
@@ -95,11 +95,11 @@ Class constructor
 			
 			If (This:C1470.sessionDir=Null:C1517)
 				
-				For ($app_indx;1;Size of array:C274($appFoldersList);1)
+				For ($app_indx; 1; Size of array:C274($appFoldersList); 1)
 					
 					$folder_name:=$appFoldersList{$app_indx}
 					
-					$Col_app:=Split string:C1554($folder_name;".")
+					$Col_app:=Split string:C1554($folder_name; ".")
 					
 					If ($Col_app[$Col_app.length-1]=$1)
 						
@@ -128,11 +128,11 @@ Class constructor
 			
 			If (This:C1470.sessionDir=Null:C1517)
 				
-				For ($app_indx;1;Size of array:C274($appFoldersList);1)
+				For ($app_indx; 1; Size of array:C274($appFoldersList); 1)
 					
 					$folder_name:=$appFoldersList{$app_indx}
 					
-					$pos:=Position:C15($1;$folder_name)
+					$pos:=Position:C15($1; $folder_name)
 					
 					If ($pos>0)
 						
@@ -165,7 +165,7 @@ Class constructor
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Session folder could not be found")
+		ASSERT:C1129(False:C215; "Session folder could not be found")
 		
 	End if 
 	
@@ -179,7 +179,7 @@ Function getAllDeviceTokens
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Session folder could not be found")
+		ASSERT:C1129(False:C215; "Session folder could not be found")
 		
 	End if 
 	
@@ -192,7 +192,7 @@ Function getAllMailAddresses
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Session folder could not be found")
+		ASSERT:C1129(False:C215; "Session folder could not be found")
 		
 	End if 
 	
@@ -203,18 +203,40 @@ Function getSessionInfoFromMail
 	
 	C_OBJECT:C1216($0)
 	
-	C_TEXT:C284($1)// mail address
+	C_TEXT:C284($1)  // mail address
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Session folder could not be found")
+		ASSERT:C1129(False:C215; "Session folder could not be found")
 		
 	End if 
 	
-	If (Asserted:C1132(Count parameters:C259>=1;"Missing mail address parameter"))
+	If (Asserted:C1132(Count parameters:C259>=1; "Missing mail address parameter"))
 		
-		ASSERT:C1129(Value type:C1509($1)=Is text:K8:3;"The function requires a mail address, a text is expected")
+		ASSERT:C1129(Value type:C1509($1)=Is text:K8:3; "The function requires a mail address, a text is expected")
 		
 	End if 
 	
-	$0:=MOBILE APP Get session info(This:C1470.sessionDir;$1)
+	$0:=MOBILE APP Get session info(This:C1470.sessionDir; $1)
+	
+	//-------------------------------------------------------------------------
+Function getSessionObjects
+	C_COLLECTION:C1488($0; $sessionObjects)
+	$sessionObjects:=New collection:C1472()
+	If (This:C1470.sessionDir=Null:C1517)
+		
+		ASSERT:C1129(False:C215; "Session folder could not be found")
+		
+	End if 
+	C_OBJECT:C1216($sessionFile)
+	For each ($sessionFile; This:C1470.sessionDir.files())
+		
+		If ($sessionFile.extension="")
+			
+			$sessionObjects.push(cs:C1710.SessionObject.new($sessionFile))
+			
+		End if 
+		
+	End for each 
+	
+	$0:=$sessionObjects

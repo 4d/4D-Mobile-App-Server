@@ -21,6 +21,11 @@
 			"Action"
 		]
 	},
+	"app": {
+		"classes": [
+			"App"
+		]
+	},
 	"auth": {
 		"methods": [
 			"Compiler_auth",
@@ -99,7 +104,8 @@
 			"MOBILE APP Get session info"
 		],
 		"classes": [
-			"Session"
+			"Session",
+			"SessionObject"
 		]
 	},
 	"test": {
@@ -109,6 +115,8 @@
 		],
 		"methods": [
 			"test_action",
+			"test_actionParsing",
+			"test_app",
 			"test_authentication",
 			"test_dev",
 			"test_isEmail",

@@ -1,8 +1,8 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
-C_OBJECT:C1216($1;$file)
-C_OBJECT:C1216($0;$object)
+C_OBJECT:C1216($1; $file)
+C_OBJECT:C1216($0; $object)
 
-C_TEXT:C284($text;$errorMethod)
+C_TEXT:C284($text; $errorMethod)
 
 $file:=$1
 
@@ -11,7 +11,7 @@ If (Bool:C1537($file.exists))
 	
 	$errorMethod:=Method called on error:C704
 	ON ERR CALL:C155("noError")
-	If (Position:C15("{";$text)=1)
+	If (Position:C15("{"; $text)=1)
 		
 		$object:=JSON Parse:C1218($text)
 		$object.file:=$file
@@ -23,5 +23,8 @@ If (Bool:C1537($file.exists))
 	
 End if 
 
-
-$0:=$object
+If ($object#Null:C1517)
+	$0:=cs:C1710.SessionObject.new($object)
+Else 
+	$0:=Null:C1517
+End if 
