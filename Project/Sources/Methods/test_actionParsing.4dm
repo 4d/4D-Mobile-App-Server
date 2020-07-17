@@ -7,4 +7,3 @@ $action:=JSON Parse:C1218($text)
 
 
 $action:=cs:C1710.Action.new($action)
-

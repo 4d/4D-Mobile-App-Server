@@ -114,6 +114,8 @@
 			"Table_2"
 		],
 		"methods": [
+			"Compiler_test",
+			"onMobileAppActionTest",
 			"test_action",
 			"test_actionParsing",
 			"test_app",
