@@ -111,9 +111,11 @@ Function universalLink
 	C_TEXT:C284($0; $url)
 	
 	$url:=String:C10(This:C1470.associatedDomain)
-	If (This:C1470.associatedDomain[Length:C16(associatedDomain)]#"/")
+	//If (This.associatedDomain[Length(associatedDomain)]#"/")
+	If ($url[[Length:C16($url)]]#"/")
 		$url:=$url+"/"
 	End if 
+	var $context : Object
 	$url:=$url+"mobilelink/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)
 	
 	$0:=$url
