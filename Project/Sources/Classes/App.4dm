@@ -102,3 +102,54 @@ Function _checkId
 	If (This:C1470.id=Null:C1517)
 		This:C1470.id:=String:C10(This:C1470.team.id)+"."+String:C10(This:C1470.application.id)  // could also check that but...
 	End if 
+	
+Function hasAssociatedDomains
+	C_BOOLEAN:C305($0)
+	$0:=Length:C16(String:C10(This:C1470.associatedDomains))>0
+	
+Function universalLink
+	C_TEXT:C284($0; $url)
+	
+	$url:=String:C10(This:C1470.associatedDomain)
+	If (This:C1470.associatedDomain[Length:C16(associatedDomain)]#"/")
+		$url:=$url+"/"
+	End if 
+	$url:=$url+"mobilelink/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)
+	
+	$0:=$url
+	
+Function hasURLScheme
+	C_BOOLEAN:C305($0)
+	$0:=Length:C16(String:C10(This:C1470.urlScheme))>0
+	
+Function urlSchemeURL
+	C_TEXT:C284($0; $url)
+	C_OBJECT:C1216($1; $context)
+	$context:=$1
+	
+	$url:=String:C10(This:C1470.urlScheme)+"://mobileapp/"+This:C1470.contextPathAndQuery($context)
+	
+	$0:=$url
+	
+Function contextPathAndQuery
+	C_TEXT:C284($0; $query)
+	C_OBJECT:C1216($1; $context)
+	$context:=$1
+	
+	$query:=""
+	If (Length:C16(String:C10($context.dataClass))>0)  // & $1.context.dataClass#Null (String(Null) is "null")
+		
+		$query:="dataClass="+String:C10($context.dataClass)  // TODO query url encode
+		
+		If (Value type:C1509($context.entity)=Is object:K8:27)  // n.b. $Obj_request.context object already checked by previous method
+			
+			If (Length:C16(String:C10($context.entity.primaryKey))>0)
+				
+				$query:=$query+"&entity.primaryKey="+String:C10($context.entity.primaryKey)  // TODO query url encode
+				
+			End if 
+		End if 
+	End if 
+	
+	$0:="show?"+$query
+	
