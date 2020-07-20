@@ -127,5 +127,10 @@
 			"test_session"
 		]
 	},
+	"web": {
+		"classes": [
+			"WebHandler"
+		]
+	},
 	"trash": {}
 }

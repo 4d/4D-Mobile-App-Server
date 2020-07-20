@@ -49,8 +49,7 @@ Function shareContext
 	If (Value type:C1509(This:C1470.request.context)=Is object:K8:27)
 		
 		C_TEXT:C284($url)
-		$url:=This:C1470.getApp().urlScheme
-		$url:="test"  //!!!! TODO remove
+		$url:=String:C10(This:C1470.getApp().urlScheme)
 		If (Length:C16($url)>0)  // & $1.context.dataClass#Null (String(Null) is "null")
 			
 			$url:=$url+"://mobileapp/"
