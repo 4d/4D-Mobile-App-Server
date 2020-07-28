@@ -117,7 +117,7 @@ Function universalLink
 		$url:=$url+"/"
 	End if 
 	
-	If (cs:C1710.App.new().all().length==1)  // short url if one app
+	If (cs:C1710.App.new().all().length=1)  // short url if one app
 		$url:=$url+"mobileapp/$/"+This:C1470.contextPathAndQuery($context)
 	Else 
 		$url:=$url+"mobileapp/$/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)
@@ -131,9 +131,9 @@ Function universalPath
 	$short:=$1
 	
 	If ($short)
-		"/mobileapp/$/*"
+		$path:="/mobileapp/$/*"
 	Else 
-		"/mobileapp/$/"+$app.id+"/*"
+		$path:="/mobileapp/$/"+This:C1470.id+"/*"
 	End if 
 	$0:=$path
 	
