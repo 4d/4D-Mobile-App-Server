@@ -117,9 +117,25 @@ Function universalLink
 		$url:=$url+"/"
 	End if 
 	
-	$url:=$url+"mobilelink/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)
+	If (cs:C1710.App.new().all().length==1)  // short url if one app
+		$url:=$url+"mobileapp/$/"+This:C1470.contextPathAndQuery($context)
+	Else 
+		$url:=$url+"mobileapp/$/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)
+	End if 
 	
 	$0:=$url
+	
+Function universalPath
+	C_TEXT:C284($path; $0)
+	C_BOOLEAN:C305($short; $1)
+	$short:=$1
+	
+	If ($short)
+		"/mobileapp/$/*"
+	Else 
+		"/mobileapp/$/"+$app.id+"/*"
+	End if 
+	$0:=$path
 	
 Function hasURLScheme
 	C_BOOLEAN:C305($0)

@@ -47,15 +47,11 @@ Function appleAppSiteAssociation
 		$details:=New collection:C1472()
 		If ($apps.length=1)
 			$app:=$apps[0]
-			$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472("/mobilelink/*")))
+			$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($apps.universalPath(True:C214))))
 		Else 
-			
 			For each ($app; $apps)
-				
-				$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472("/mobilelink/"+$app.id+"/*")))
-				
+				$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($apps.universalPath(False:C215))))
 			End for each 
-			
 		End if 
 		
 		$info:=New object:C1471("applinks"; New object:C1471(\
