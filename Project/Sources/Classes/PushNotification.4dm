@@ -15,10 +15,10 @@ MobileAppServer .PushNotification.new( New object("bundleId";"com.sample.myappna
 Class constructor
 	C_VARIANT:C1683($1)
 	
-	C_OBJECT:C1216($session;$Obj_manifest;$Obj_authKey)
-	C_BOOLEAN:C305($isObject;$isText)
+	C_OBJECT:C1216($session; $Obj_manifest; $Obj_authKey)
+	C_BOOLEAN:C305($isObject; $isText)
 	
-	This:C1470.auth:=New object:C1471("isDevelopment";False:C215)
+	This:C1470.auth:=New object:C1471("isDevelopment"; False:C215)
 	
 	$isObject:=False:C215
 	$isText:=False:C215
@@ -29,13 +29,13 @@ Class constructor
 			
 			$isText:=True:C214
 			
-			$session:=MobileAppServer .Session.new()
+			$session:=MobileAppServer.Session.new()
 			
 		: (Value type:C1509($1)=Is text:K8:3)
 			
 			$isText:=True:C214
 			
-			$session:=MobileAppServer .Session.new($1)
+			$session:=MobileAppServer.Session.new($1)
 			
 		: (Value type:C1509($1)=Is object:K8:27)
 			
@@ -43,7 +43,7 @@ Class constructor
 			
 		Else 
 			
-			  // Incompatible entry parameter type
+			// Incompatible entry parameter type
 			
 	End case 
 	
@@ -53,7 +53,7 @@ Class constructor
 			
 			If ($session.sessionDir#Null:C1517)
 				
-				$Obj_manifest:=getManifest ($session.sessionDir)
+				$Obj_manifest:=getManifest($session.sessionDir)
 				
 				If ($Obj_manifest.success)
 					
@@ -62,12 +62,12 @@ Class constructor
 					
 				Else 
 					
-					ASSERT:C1129(False:C215;"Could not get manifest info")
+					ASSERT:C1129(False:C215; "Could not get manifest info")
 					
 				End if 
 				
 				
-				$Obj_authKey:=getAuthenticationKey ($session.sessionDir)
+				$Obj_authKey:=getAuthenticationKey($session.sessionDir)
 				
 				If ($Obj_authKey.success)
 					
@@ -76,13 +76,13 @@ Class constructor
 					
 				Else 
 					
-					ASSERT:C1129(False:C215;"Could not find authentication key")
+					ASSERT:C1129(False:C215; "Could not find authentication key")
 					
 				End if 
 				
 			Else 
 				
-				ASSERT:C1129(False:C215;"Could not find application info in Session")
+				ASSERT:C1129(False:C215; "Could not find application info in Session")
 				
 			End if 
 			
@@ -94,7 +94,7 @@ Class constructor
 				
 			Else 
 				
-				ASSERT:C1129(False:C215;"No bundle ID provided")
+				ASSERT:C1129(False:C215; "No bundle ID provided")
 				
 			End if 
 			
@@ -104,7 +104,7 @@ Class constructor
 				
 			Else 
 				
-				ASSERT:C1129(False:C215;"No team ID provided")
+				ASSERT:C1129(False:C215; "No team ID provided")
 				
 			End if 
 			
@@ -112,11 +112,11 @@ Class constructor
 			
 			$authKeySuccess:=False:C215
 			
-			  // Try to get the authentication key from the entry object
+			// Try to get the authentication key from the entry object
 			
 			If ($1.authKey#Null:C1517)
 				
-				$Obj_authKey:=getAuthenticationKey ($1.authKey)
+				$Obj_authKey:=getAuthenticationKey($1.authKey)
 				
 				If ($Obj_authKey.success)
 					
@@ -129,15 +129,15 @@ Class constructor
 				
 			End if 
 			
-			  // If it failed, try to find the authentication key file in the appropriate session folder
+			// If it failed, try to find the authentication key file in the appropriate session folder
 			
 			If (Not:C34($authKeySuccess))
 				
-				$session:=MobileAppServer .Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+				$session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
 				
 				If ($session.sessionDir#Null:C1517)
 					
-					$Obj_authKey:=getAuthenticationKey ($session.sessionDir)
+					$Obj_authKey:=getAuthenticationKey($session.sessionDir)
 					
 					If ($Obj_authKey.success)
 						
@@ -146,15 +146,15 @@ Class constructor
 						
 					Else 
 						
-						ASSERT:C1129(False:C215;"Could not find authentication key")
+						ASSERT:C1129(False:C215; "Could not find authentication key")
 						
 					End if 
 					
-					ASSERT:C1129(False:C215;"Session folder could not be found")
+					ASSERT:C1129(False:C215; "Session folder could not be found")
 					
 				End if 
 				
-				  // Else : $1.authKey was valid
+				// Else : $1.authKey was valid
 				
 			End if 
 			
@@ -167,13 +167,13 @@ Class constructor
 			
 		Else 
 			
-			ASSERT:C1129(False:C215;"Incompatible entry parameter type")
+			ASSERT:C1129(False:C215; "Incompatible entry parameter type")
 			
 	End case 
 	
 	
 	
-	  // Generate JWT
+	// Generate JWT
 	
 	If ((Length:C16(String:C10(This:C1470.auth.bundleId))>0)\
 		 & (Length:C16(String:C10(This:C1470.auth.authKeyId))>0)\
@@ -181,8 +181,8 @@ Class constructor
 		
 		C_OBJECT:C1216($Obj_auth_result)
 		
-		  // Get JSON Web Token
-		$Obj_auth_result:=authJWT (This:C1470.auth)
+		// Get JSON Web Token
+		$Obj_auth_result:=authJWT(This:C1470.auth)
 		
 		If (($Obj_auth_result.success)\
 			 & (Length:C16(String:C10($Obj_auth_result.jwt))>0))
@@ -192,7 +192,7 @@ Class constructor
 			
 		Else 
 			
-			ASSERT:C1129(False:C215;"Failed to generate JSON Web Token")
+			ASSERT:C1129(False:C215; "Failed to generate JSON Web Token")
 			
 		End if 
 		
@@ -200,13 +200,13 @@ Class constructor
 	
 	If (This:C1470.auth.jwt=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Class initialization failed")
+		ASSERT:C1129(False:C215; "Class initialization failed")
 		
 	End if 
 	
 	
 	
-	  //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 Function send
 	
 	C_OBJECT:C1216($0)
@@ -215,38 +215,38 @@ Function send
 	
 	If (This:C1470.auth.jwt=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Class initialization failed")
+		ASSERT:C1129(False:C215; "Class initialization failed")
 		
 	End if 
 	
-	  // Reinitializing lastResult
+	// Reinitializing lastResult
 	This:C1470.lastResult.success:=False:C215
 	This:C1470.lastResult.warnings:=New collection:C1472
 	This:C1470.lastResult.errors:=New collection:C1472
 	
 	Case of 
 			
-			  //________________________________________
+			//________________________________________
 		: (Count parameters:C259>1)
 			
-			This:C1470.lastResult:=Mobile App Push Notification ($1;manageEntryRecipient ($2);This:C1470.auth)
+			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient($2); This:C1470.auth)
 			
-			  //________________________________________
+			//________________________________________
 		: (This:C1470.recipients#Null:C1517)  // Recipients were set, but not given in send() function parameters
 			
-			This:C1470.lastResult:=Mobile App Push Notification ($1;manageEntryRecipient (This:C1470.recipients);This:C1470.auth)
+			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient(This:C1470.recipients); This:C1470.auth)
 			
-			  //________________________________________
+			//________________________________________
 		Else 
 			
 			This:C1470.lastResult.errors.push("No recipient given")
 			
-			  //________________________________________
+			//________________________________________
 	End case 
 	
 	$0:=This:C1470.lastResult
 	
-	  //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 Function sendAll
 	
 	C_OBJECT:C1216($0)
@@ -254,18 +254,18 @@ Function sendAll
 	
 	If (This:C1470.auth.jwt=Null:C1517)
 		
-		ASSERT:C1129(False:C215;"Class initialization failed")
+		ASSERT:C1129(False:C215; "Class initialization failed")
 		
 	End if 
 	
-	  // Reinitializing lastResult
+	// Reinitializing lastResult
 	This:C1470.lastResult.success:=False:C215
 	This:C1470.lastResult.warnings:=New collection:C1472
 	This:C1470.lastResult.errors:=New collection:C1472
 	
-	C_OBJECT:C1216($Obj_session;$Obj_deviceTokens)
+	C_OBJECT:C1216($Obj_session; $Obj_deviceTokens)
 	
-	$Obj_session:=MobileAppServer .Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+	$Obj_session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
 	
 	If ($Obj_session.sessionDir=Null:C1517)
 		
@@ -277,7 +277,7 @@ Function sendAll
 		
 		If ($Obj_deviceTokens.success)
 			
-			This:C1470.lastResult:=This:C1470.send($1;$Obj_deviceTokens.deviceTokens)
+			This:C1470.lastResult:=This:C1470.send($1; $Obj_deviceTokens.deviceTokens)
 			
 		Else 
 			
@@ -288,3 +288,104 @@ Function sendAll
 	End if 
 	
 	$0:=This:C1470.lastResult
+	
+	//-------------------------------------------------------------------------
+	
+/*
+Sends a push notification to open a DataClass List form or an Entity Detail form
+- context : Variant (Text or Object)
+- notification: Object
+- recipients: Variant (Text, Object, or Collection)
+	
+Context can be a DataClass name, a DataClass object, or an Entity object.
+*/
+Function open
+	
+	C_OBJECT:C1216($0)
+	C_VARIANT:C1683($1)
+	C_OBJECT:C1216($2)  // Notification content
+	C_VARIANT:C1683($3)  // Recipient(s)
+	
+	C_VARIANT:C1683($context)
+	C_OBJECT:C1216($userInfo; $result)
+	
+	$context:=$1
+	
+	$userInfo:=$2.userInfo
+	
+	$result:=New object:C1471("success"; True:C214)
+	
+	If ($userInfo=Null:C1517)
+		
+		$userInfo:=New object:C1471
+		$2.userInfo:=$userInfo
+		
+	End if 
+	
+	Case of 
+			
+		: (Value type:C1509($context)=Is object:K8:27)
+			
+			Case of 
+				: (OB Instance of:C1731($context; 4D:C1709.DataClass))
+					
+					$userInfo.dataClass:=$context.name
+					
+				: (OB Instance of:C1731($context; 4D:C1709.Entity))
+					
+					C_OBJECT:C1216($dataClass)
+					
+					$dataClass:=$context.getDataClass()
+					
+					$userInfo.dataClass:=$dataClass.name
+					$userInfo.entity:=New object:C1471("primaryKey"; $context[$dataClass.getInfo().primaryKey])
+					
+					
+				: (Value type:C1509($context.dataClass)=Is text:K8:3)
+					
+					$userInfo.dataClass:=$context.dataClass
+					
+					If (Value type:C1509($context.entity)=Is object:K8:27)
+						
+						$userInfo.entity:=$context.entity
+						
+					End if 
+					
+				Else 
+					
+					$result.success:=False:C215
+					$result.errors:=New collection:C1472("DataClass is not defined correctly")
+					
+			End case 
+			
+			
+		: (Value type:C1509($context)=Is text:K8:3)
+			
+			If (Length:C16($context)>0)
+				
+				$userInfo.dataClass:=$context
+				
+			Else 
+				
+				$result.success:=False:C215
+				$result.errors:=New collection:C1472("DataClass name cannot be empty")
+				
+			End if 
+			
+		Else 
+			
+			$result.success:=False:C215
+			$result.errors:=New collection:C1472("First parameter must be a DataClass, an Entity or a Text (dataClass name)")
+			
+	End case 
+	
+	If ($result.success)
+		
+		$0:=This:C1470.send($2; $3)
+		
+	Else 
+		
+		$0:=$result
+		
+	End if 
+	
