@@ -1,33 +1,33 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
 C_OBJECT:C1216($0)  // Returned notification object
 C_OBJECT:C1216($1)  // Input notification
-C_OBJECT:C1216($notification;$alert)
+C_OBJECT:C1216($notification; $alert)
 
 C_BOOLEAN:C305($isAPN)
 
 $isAPN:=True:C214
 
 
-  // BUILD NOTIFICATION
-  //________________________________________
+// BUILD NOTIFICATION
+//________________________________________
 
 $notification:=New object:C1471
 
 If ($isAPN)
 	
-	  // Fill title
+	// Fill title
 	
 	If (Length:C16(String:C10($1.title))>0)  // Mandatory notification title
 		
-		$alert:=New object:C1471("title";$1.title)
+		$alert:=New object:C1471("title"; $1.title)
 		
 	Else 
 		
-		$alert:=New object:C1471("title";"Empty title")
+		$alert:=New object:C1471("title"; "Empty title")
 		
 	End if 
 	
-	  // Fill subtitle
+	// Fill subtitle
 	
 	If (Length:C16(String:C10($1.subtitle))>0)
 		
@@ -35,7 +35,7 @@ If ($isAPN)
 		
 	End if 
 	
-	  // Fill body
+	// Fill body
 	
 	If (Length:C16(String:C10($1.body))>0)
 		
@@ -44,18 +44,18 @@ If ($isAPN)
 	End if 
 	
 	
-	$notification.aps:=New object:C1471("alert";$alert)
+	$notification.aps:=New object:C1471("alert"; $alert)
 	
 	
-	  // Fill badge
+	// Fill badge
 	
-	If (Length:C16(String:C10($1.badge))>0)
+	If (Value type:C1509($1.badge)=Is integer:K8:5)
 		
 		$notification.aps.badge:=$1.badge
 		
 	End if 
 	
-	  // Fill sound
+	// Fill sound
 	
 	If (Length:C16(String:C10($1.sound))>0)
 		
@@ -63,7 +63,7 @@ If ($isAPN)
 		
 	End if 
 	
-	  // Fill mutable-content
+	// Fill mutable-content
 	
 	If (Length:C16(String:C10($1["mutable-content"]))>0)
 		
@@ -71,7 +71,7 @@ If ($isAPN)
 		
 	End if 
 	
-	  // Fill category
+	// Fill category
 	
 	If (Length:C16(String:C10($1.category))>0)
 		
@@ -79,7 +79,7 @@ If ($isAPN)
 		
 	End if 
 	
-	  // Fill url
+	// Fill url
 	
 	If (Length:C16(String:C10($1.url))>0)
 		
@@ -87,22 +87,30 @@ If ($isAPN)
 		
 	End if 
 	
-	  // Fill data
+	// Fill data
 	
 	If (Length:C16(String:C10($1.imageUrl))>0)
 		
-		$notification.data:=New object:C1471("media-url";$1.imageUrl)
+		$notification.data:=New object:C1471("media-url"; $1.imageUrl)
 		$notification.aps["mutable-content"]:=1  // Allow rich notification display
 		
 	End if 
 	
+	If (Value type:C1509($1.userInfo)=Is object:K8:27)
+		
+		C_VARIANT:C1683($key)
+		
+		For each ($key; $1.userInfo)
+			
+			$notification[$key]:=$1.userInfo[$key]
+			
+		End for each 
+		
+	End if 
 	
-	  // Else : Android notification
+	// Else : Android notification
 	
 End if 
 
 
 $0:=$notification
-
-
-
