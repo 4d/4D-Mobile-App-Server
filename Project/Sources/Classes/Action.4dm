@@ -55,7 +55,7 @@ Function shareContext
 		C_TEXT:C284($url)
 		
 		Case of 
-			: (Bool:C1537($app.hasAssociatedDomains()))
+			: (Bool:C1537($app.hasAssociatedDomain()))
 				
 				$response.success:=True:C214
 				$url:=$app.universalLink($context)

@@ -103,9 +103,9 @@ Function _checkId
 		This:C1470.id:=String:C10(This:C1470.team.id)+"."+String:C10(This:C1470.application.id)  // could also check that but...
 	End if 
 	
-Function hasAssociatedDomains
+Function hasAssociatedDomain
 	C_BOOLEAN:C305($0)
-	$0:=Length:C16(String:C10(This:C1470.associatedDomains))>0
+	$0:=Length:C16(String:C10(This:C1470.associatedDomain))>0
 	
 Function universalLink
 	C_TEXT:C284($0; $url)
