@@ -54,7 +54,7 @@ Class constructor
 	
 	This:C1470._checkId()
 	
-	/// Return all App` instance.
+	/// Return all App instances.
 Function all  // TODO must be static if language allow it
 	C_COLLECTION:C1488($0; $apps)
 	C_OBJECT:C1216($Dir_mobileApps; $appFolder)
@@ -71,6 +71,28 @@ Function all  // TODO must be static if language allow it
 	End if 
 	
 	$0:=$apps
+	
+	/// Return App instances with an associated doain
+Function withAssociatedDomain  // TODO must be static if language allow it
+	C_COLLECTION:C1488($0; $apps)
+	C_OBJECT:C1216($Dir_mobileApps; $appFolder)
+	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18; *)
+	
+	$apps:=New collection:C1472()
+	If ($Dir_mobileApps.exists)
+		
+		For each ($appFolder; $Dir_mobileApps.folders())
+			
+			$app:=cs:C1710.App.new($appFolder)
+			If ($app.hasAssociatedDomain())
+				$apps.push($app)
+			End if 
+		End for each 
+		
+	End if 
+	
+	$0:=$apps
+	
 	
 Function getSessionManager
 	C_OBJECT:C1216($0)
@@ -117,7 +139,10 @@ Function universalLink
 		$url:=$url+"/"
 	End if 
 	
-	If (cs:C1710.App.new().all().length=1)  // short url if one app
+	
+	C_COLLECTION:C1488($apps)
+	$apps:=cs:C1710.App.new().withAssociatedDomain()
+	If ($apps.length=1)  // short url if one app
 		$url:=$url+"mobileapp/$/"+This:C1470.contextPathAndQuery($context)
 	Else 
 		$url:=$url+"mobileapp/$/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)

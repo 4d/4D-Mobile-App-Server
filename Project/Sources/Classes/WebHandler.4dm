@@ -42,15 +42,15 @@ Function appleAppSiteAssociation
 	C_COLLECTION:C1488($apps; $details)
 	C_OBJECT:C1216($info; $app)
 	
-	$apps:=cs:C1710.App.new().all()
+	$apps:=cs:C1710.App.new().withAssociatedDomain()
 	If ($apps.length>0)
 		$details:=New collection:C1472()
 		If ($apps.length=1)
 			$app:=$apps[0]
-			$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($apps.universalPath(True:C214))))
+			$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($app.universalPath(True:C214))))
 		Else 
 			For each ($app; $apps)
-				$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($apps.universalPath(False:C215))))
+				$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($app.universalPath(False:C215))))
 			End for each 
 		End if 
 		
