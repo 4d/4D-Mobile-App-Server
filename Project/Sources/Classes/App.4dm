@@ -82,7 +82,7 @@ Function withAssociatedDomain  // TODO must be static if language allow it
 	If ($Dir_mobileApps.exists)
 		
 		For each ($appFolder; $Dir_mobileApps.folders())
-			
+			C_OBJECT:C1216($app)
 			$app:=cs:C1710.App.new($appFolder)
 			If ($app.hasAssociatedDomain())
 				$apps.push($app)
