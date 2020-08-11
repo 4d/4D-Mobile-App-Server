@@ -184,3 +184,36 @@ $response.success  // True or False
 $response.warnings  // Contains a collection of Text warnings
 $response.errors  // Contains a collection of Text errors (implies $response.success is False)
 ```
+
+## Custom actions
+
+#### `open()`
+
+Open the app to a specific dataclass list form or entity detail form.
+
+##### Open a dataclass list form
+
+This function will send `$notification` to all `$recipients` and open the target application on `$dataClass` list form.
+`$dataClass`can either be a text as a dataclass name, or a `4D DataClass` object.
+
+```4d
+$dataClass:="Employees"
+$response:=$pushNotification.open($dataClass;$notification;$recipients)
+```
+
+Or alternatively with a dataclass object :
+
+```4d
+$dataClass:=ds.Employees
+$response:=$pushNotification.open($dataClass;$notification;$recipients)
+```
+
+##### Open an entity detail form
+
+This function will send `$notification` to all `$recipients` and open the target application on a specific `$entity` detail form.
+You can retrieve the specific `4D Entity` object with the `4D DataClass` `get()` method.
+
+```4d
+$entity:=ds.Employees.get("456456")
+$response:=$pushNotification.open($entity;$notification;$recipients)
+```
