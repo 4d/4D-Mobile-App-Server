@@ -28,6 +28,7 @@ Without classes some functionnalities are still available.
 
 - [MobileAppServer.PushNotification](Documentation/Classes/PushNotification.md) provide utility methods to send push notifications to mobile devices.
 - [Authentication with email confirmation](Documentation/AuthenticationWithEmailConfirmation.md) describe the process to check user identity by sending emails.
+- [MobileAppServer.WebHandler](Documentation/Classes/WebHandler.md) provide utility methods for [`On Web Connection`](https://doc.4d.com/4Dv16/4D/16.6/On-Web-Connection-Database-Method.300-4445786.en.html) coding.
 
 ## License
 
