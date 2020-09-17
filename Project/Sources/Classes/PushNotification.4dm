@@ -329,7 +329,7 @@ Function open
 			Case of 
 				: (OB Instance of:C1731($context; 4D:C1709.DataClass))
 					
-					$userInfo.dataClass:=$context.name
+					$userInfo.dataClass:=$context.getInfo().name
 					
 				: (OB Instance of:C1731($context; 4D:C1709.Entity))
 					
@@ -337,7 +337,7 @@ Function open
 					
 					$dataClass:=$context.getDataClass()
 					
-					$userInfo.dataClass:=$dataClass.name
+					$userInfo.dataClass:=$dataClass.getInfo().name
 					$userInfo.entity:=New object:C1471("primaryKey"; $context[$dataClass.getInfo().primaryKey])
 					
 					
