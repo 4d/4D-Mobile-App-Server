@@ -4,6 +4,8 @@ Class constructor
 	C_TEXT:C284($key)
 	
 	Case of 
+		: (Count parameters:C259=0)
+			// just for static method, not a real app
 		: ($1=Null:C1517)
 			// just for static method, not a real app
 			
@@ -138,7 +140,6 @@ Function universalLink
 	If ($url[[Length:C16($url)]]#"/")
 		$url:=$url+"/"
 	End if 
-	
 	
 	C_COLLECTION:C1488($apps)
 	$apps:=cs:C1710.App.new().withAssociatedDomain()
