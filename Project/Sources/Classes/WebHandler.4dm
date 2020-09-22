@@ -66,7 +66,7 @@ Function appleAppSiteAssociation
 		$headerValues{1}:="application/json"
 		WEB SET HTTP HEADER:C660($headerFields; $headerValues)
 		
-		WEB SEND TEXT:C677(JSON Stringify:C1217($info))
+		WEB SEND TEXT:C677(JSON Stringify:C1217($info; *))
 		$handled:=True:C214
 	Else 
 		$handled:=False:C215
