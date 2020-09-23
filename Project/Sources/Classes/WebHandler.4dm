@@ -39,25 +39,27 @@ https://developer.apple.com/library/archive/documentation/General/Conceptual/App
 */
 Function appleAppSiteAssociation
 	C_BOOLEAN:C305($0; $handled)
-	C_COLLECTION:C1488($apps; $details)
+	C_COLLECTION:C1488($apps; $details; $appIDs)
 	C_OBJECT:C1216($info; $app)
 	
 	$apps:=cs:C1710.App.new().withAssociatedDomain()
+	$appIDs:=New collection:C1472()
+	$details:=New collection:C1472()
 	If ($apps.length>0)
-		$details:=New collection:C1472()
 		If ($apps.length=1)
 			$app:=$apps[0]
 			$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($app.universalPath(True:C214))))
+			$appIDs.push($app.id)
 		Else 
 			For each ($app; $apps)
 				$details.push(New object:C1471("appID"; $app.id; "paths"; New collection:C1472($app.universalPath(False:C215))))
+				$appIDs.push($app.id)
 			End for each 
 		End if 
 		
 		$info:=New object:C1471("applinks"; New object:C1471(\
 			"apps"; New collection:C1472(); \
-			"details"; $details))
-		
+			"details"; $details); "activitycontinuation"; New object:C1471("apps"; $appIDs))
 		
 		// send as json string
 		ARRAY TEXT:C222($headerFields; 1)
