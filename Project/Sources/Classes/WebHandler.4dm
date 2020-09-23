@@ -24,12 +24,19 @@ Function handle
 			
 		: ($1=String:C10(This:C1470.activationPath))
 			
-			$0:=Activate Sessions($1).success
+			$handled:=Activate Sessions($1).success
+			
+		: (Position:C15("/mobileapp/$/"; $1)=1)
+			
+			If (This:C1470.handleUniversalLinks#Null:C1517)
+				
+				$handled:=This:C1470.handleUniversalLinks.call(This:C1470; cs:C1710.UniversalLink.new($1))
+				
+			End if 
 			
 		Else 
 			
 	End case 
-	
 	
 	$0:=$handled
 	

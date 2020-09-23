@@ -23,7 +23,7 @@ End case
 
 ### Apple UniversalLinks
 
-To support Universal Links you could create a `apple-app-site-association` file inside the database folder `WebFolder/.well-known/` 
+To support Universal Links you could create a `apple-app-site-association` file inside the database folder `WebFolder/.well-known/`
 but to be compliant with iOS SDK for the moment you must let the web handler do the job by browsing the app inside `/MobileApps` and produce a default response.
 
 #### Example
@@ -75,3 +75,44 @@ If only one app
 `manifest.json` of each apps are read to find any `associatedDomain` key (the url of server).
 
 And for each app with this key, we add an entry in the response.
+
+
+#### Manage link on desktop or phone without the app
+
+When the client use a browser on a device without the app you must provide some web page instead or it will receive a 404 error with a url of type `/mobileapp/*`
+
+You could register method using formula do so.
+
+```4d
+$handler:=cs.WebHandler.new()
+$handler.handleUniversalLinks:=Formula(MyHandleUniversalLinks($1))
+```
+
+You could produce a page in `MyHandleUniversalLinks` or use `WEB SEND HTTP REDIRECT` to redirect to an existing one.
+
+According to the link, environnement and your need you could provide a link to download the mobile app or show an existing web page about your dataclass and/or entity.
+
+##### MyHandleUniversalLinks
+
+Example of code to redirect
+
+- If there is an entity redirect to a web page that display the entity (ie. the customer, the bug, etc...)
+- Else if there is a dataclass only we redirect to a page that display all the entities of this dataclass
+
+```4d
+$universalLinks:=$1 // of type MobileAppServer.UniversalLink
+
+$dataClass:=$universalLinks.getDataClass()
+$entity:=$universalLinks.getEntity()
+
+Case of
+  : ($entity#Null)
+		WEB SEND HTTP REDIRECT("https://mywebsite/"+Lowercase($dataClass.getInfo().name)+"/"+Lowercase($dataClass.getInfo().name))
+	  $0:=True // Managed by this code, return false if you do not want
+	: ($dataClass#Null)
+		WEB SEND HTTP REDIRECT("https://mywebsite/"+Lowercase($dataClass.getInfo().name)+"-"+String($entity.ID)+".html")
+		$0:=True // Managed by this code, return false if you do not want
+  Else
+    $0:=False // here redirect to download page
+End case
+```
