@@ -10,6 +10,31 @@ Class constructor
 		
 	End if 
 	
+	/// Handle with dataclass or entity class by calling action name function on target
+Function handleWithClasses
+	C_OBJECT:C1216($0)
+	
+	C_OBJECT:C1216($object)
+	$object:=This:C1470.getTarget()
+	
+	Case of 
+		: ($object=Null:C1517)
+			$0:=New object:C1471("success"; False:C215; "statusText"; "Cannot get action target")
+		: ($object[This:C1470.name]=Null:C1517)
+			$0:=New object:C1471("success"; False:C215; "statusText"; "Unknown action.")
+		Else 
+			$0:=$object[This:C1470.name].call($object; This:C1470.request)
+	End case 
+	
+	// Get target of the action ie. dataClass or entity
+Function getTarget
+	C_OBJECT:C1216($0)
+	If (Value type:C1509(This:C1470.request.context.entity)=Is object:K8:27)
+		$0:=This:C1470.getEntity()
+	Else 
+		$0:=This:C1470.getDataClass()
+	End if 
+	
 Function getDataClass
 	C_OBJECT:C1216($0)
 	$0:=Mobile App Action GetDataClass(This:C1470.request)

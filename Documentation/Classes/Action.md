@@ -35,6 +35,38 @@ Case of
 End case
 ```
 
+### Use dataClass and entity classes function
+
+To call function with same name as action on associated dataClass or entity use `handleWithClasses`
+
+In `On Mobile App Action`
+
+```4d
+$0:=$action.handleWithClasses()
+```
+
+Then in your dataClass class
+
+```4d
+Class extends DataClass
+
+Function purgeAll($request: Object) -> $response: Object
+  // Insert here the code to purge all entities of this dataClass.
+  $response:=New object("success"; True; "statusText"; "All purged")
+
+```
+
+or in your entity class if action on entity
+
+```4d
+Class extends Entity
+
+Function rate($request: Object) -> $response: Object
+  // Insert here the code for the action "Rate and Review" the book
+  $response:=New object("success"; True; "statusText;"Your rating is registered")
+
+````
+
 ### all scope
 
 #### getDataClass()
