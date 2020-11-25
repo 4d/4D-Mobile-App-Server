@@ -42,5 +42,5 @@
 			<table_ref uuid="72BEDA7276C54502B3A05CEBFD2D1E32" name="Table_2"/>
 		</field_ref>
 	</index>
-	<base_extra __stringCompHash="icu:63.1.0" __keywordBuildingHash="icu:63.1.0"/>
+	<base_extra __stringCompHash="icu:68.1.0" __keywordBuildingHash="icu:68.1.0"/>
 </base>
