@@ -340,12 +340,6 @@ Function open
 					$userInfo.dataClass:=$dataClass.getInfo().name
 					$userInfo.entity:=New object:C1471("primaryKey"; $context[$dataClass.getInfo().primaryKey])
 					
-					If ($userInfo.dataSynchro=Null:C1517)
-						$userInfo.dataSynchro:=True:C214
-					Else 
-						// $userInfo.dataSynchro already defined
-					End if 
-					
 				: (Value type:C1509($context.dataClass)=Is text:K8:3)
 					
 					$userInfo.dataClass:=$context.dataClass
@@ -353,12 +347,6 @@ Function open
 					If (Value type:C1509($context.entity)=Is object:K8:27)
 						
 						$userInfo.entity:=$context.entity
-						
-						If ($userInfo.dataSynchro=Null:C1517)
-							$userInfo.dataSynchro:=True:C214
-						Else 
-							// $userInfo.dataSynchro already defined
-						End if 
 						
 					End if 
 					

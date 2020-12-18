@@ -217,15 +217,3 @@ You can retrieve the specific `4D Entity` object with the `4D DataClass` `get()`
 $entity:=ds.Employees.get("456456")
 $response:=$pushNotification.open($entity;$notification;$recipients)
 ```
-
-In order to force a data synchronization, you can specify it with the `dataSynchro` boolean entry as follows.
-
-```4d
-$notification:=New object
-$notification.title:="This is title"
-$notification.body:="Here is the content of this notification"
-$notification.userInfo:=New object("dataSynchro"; True)
-
-$entity:=ds.Employees.get("456456")
-$response:=$pushNotification.open($entity; $notification; $recipients)
-```
