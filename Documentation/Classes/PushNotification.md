@@ -20,6 +20,12 @@ $notification.body:="Here is the content of this notification"
 
 $response:=$pushNotification.send($notification;"abc@4dmail.com")
 ```
+---
+**NOTE**
+
+If you only use simulators (no real device), you can bypass the process of .p8 key file verification by pressing **Shift down** on PushNotification class instantiation.
+
+---
 
 ## Instanciate the PushNotification class
 

@@ -11,6 +11,13 @@ MobileAppServer .PushNotification.new( "TEAM123456.com.sample.myappname" ) -> pu
 MobileAppServer .PushNotification.new( "com.sample.myappname" ) -> pushNotification
 MobileAppServer .PushNotification.new( "myappname" ) -> pushNotification
 MobileAppServer .PushNotification.new( New object("bundleId";"com.sample.myappname";"teamId";"TEAM123456") ) -> pushNotification
+
+/!\ FOR TESTING ON SIMULATOR ONLY : Press Shift down
+
+Use (MobileAppServer.PushNotification)
+   MobileAppServer.PushNotification.allowSimulatorOnly:=Shift down
+End use 
+
 */
 Class constructor
 	C_VARIANT:C1683($1)
@@ -19,6 +26,9 @@ Class constructor
 	C_BOOLEAN:C305($isObject; $isText)
 	
 	This:C1470.auth:=New object:C1471("isDevelopment"; False:C215)
+	This:C1470.lastResult:=New object:C1471
+	
+	This:C1470.onlySimulator:=(Bool:C1537(MobileAppServer.PushNotification.allowSimulatorOnly) | Shift down:C543)
 	
 	$isObject:=False:C215
 	$isText:=False:C215
@@ -66,18 +76,23 @@ Class constructor
 					
 				End if 
 				
-				
-				$Obj_authKey:=getAuthenticationKey($session.sessionDir)
-				
-				If ($Obj_authKey.success)
+				If (Not:C34(This:C1470.onlySimulator))
 					
-					This:C1470.auth.authKey:=$Obj_authKey.authKey
-					This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+					$Obj_authKey:=getAuthenticationKey($session.sessionDir)
+					
+					If ($Obj_authKey.success)
+						
+						This:C1470.auth.authKey:=$Obj_authKey.authKey
+						This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+						
+					Else 
+						
+						ASSERT:C1129(False:C215; "Could not find authentication key")
+						
+					End if 
 					
 				Else 
-					
-					ASSERT:C1129(False:C215; "Could not find authentication key")
-					
+					// Only on simulator, no need to generate jwt with .p8 key
 				End if 
 				
 			Else 
@@ -108,54 +123,61 @@ Class constructor
 				
 			End if 
 			
-			C_BOOLEAN:C305($authKeySuccess)
 			
-			$authKeySuccess:=False:C215
-			
-			// Try to get the authentication key from the entry object
-			
-			If ($1.authKey#Null:C1517)
+			If (Not:C34(This:C1470.onlySimulator))
 				
-				$Obj_authKey:=getAuthenticationKey($1.authKey)
+				C_BOOLEAN:C305($authKeySuccess)
 				
-				If ($Obj_authKey.success)
+				$authKeySuccess:=False:C215
+				
+				// Try to get the authentication key from the entry object
+				
+				If ($1.authKey#Null:C1517)
 					
-					$authKeySuccess:=True:C214
-					
-					This:C1470.auth.authKey:=$Obj_authKey.authKey
-					This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
-					
-				End if 
-				
-			End if 
-			
-			// If it failed, try to find the authentication key file in the appropriate session folder
-			
-			If (Not:C34($authKeySuccess))
-				
-				$session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
-				
-				If ($session.sessionDir#Null:C1517)
-					
-					$Obj_authKey:=getAuthenticationKey($session.sessionDir)
+					$Obj_authKey:=getAuthenticationKey($1.authKey)
 					
 					If ($Obj_authKey.success)
+						
+						$authKeySuccess:=True:C214
 						
 						This:C1470.auth.authKey:=$Obj_authKey.authKey
 						This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
 						
-					Else 
-						
-						ASSERT:C1129(False:C215; "Could not find authentication key")
-						
 					End if 
-					
-					ASSERT:C1129(False:C215; "Session folder could not be found")
 					
 				End if 
 				
-				// Else : $1.authKey was valid
+				// If it failed, try to find the authentication key file in the appropriate session folder
 				
+				If (Not:C34($authKeySuccess))
+					
+					$session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+					
+					If ($session.sessionDir#Null:C1517)
+						
+						$Obj_authKey:=getAuthenticationKey($session.sessionDir)
+						
+						If ($Obj_authKey.success)
+							
+							This:C1470.auth.authKey:=$Obj_authKey.authKey
+							This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+							
+						Else 
+							
+							ASSERT:C1129(False:C215; "Could not find authentication key")
+							
+						End if 
+						
+						ASSERT:C1129(False:C215; "Session folder could not be found")
+						
+					End if 
+					
+					// Else : $1.authKey was valid
+					
+				End if 
+				
+			Else 
+				// Only on simulator, no need to generate jwt with .p8 key
 			End if 
 			
 			
@@ -172,36 +194,40 @@ Class constructor
 	End case 
 	
 	
-	
-	// Generate JWT
-	
-	If ((Length:C16(String:C10(This:C1470.auth.bundleId))>0)\
-		 & (Length:C16(String:C10(This:C1470.auth.authKeyId))>0)\
-		 & (Length:C16(String:C10(This:C1470.auth.teamId))>0))
+	If (Not:C34(This:C1470.onlySimulator))
 		
-		C_OBJECT:C1216($Obj_auth_result)
+		// Generate JWT
 		
-		// Get JSON Web Token
-		$Obj_auth_result:=authJWT(This:C1470.auth)
-		
-		If (($Obj_auth_result.success)\
-			 & (Length:C16(String:C10($Obj_auth_result.jwt))>0))
+		If ((Length:C16(String:C10(This:C1470.auth.bundleId))>0)\
+			 & (Length:C16(String:C10(This:C1470.auth.authKeyId))>0)\
+			 & (Length:C16(String:C10(This:C1470.auth.teamId))>0))
 			
-			This:C1470.auth.jwt:=$Obj_auth_result.jwt
-			This:C1470.lastResult:=New object:C1471
+			C_OBJECT:C1216($Obj_auth_result)
 			
-		Else 
+			// Get JSON Web Token
+			$Obj_auth_result:=authJWT(This:C1470.auth)
 			
-			ASSERT:C1129(False:C215; "Failed to generate JSON Web Token")
+			If (($Obj_auth_result.success)\
+				 & (Length:C16(String:C10($Obj_auth_result.jwt))>0))
+				
+				This:C1470.auth.jwt:=$Obj_auth_result.jwt
+				
+			Else 
+				
+				ASSERT:C1129(False:C215; "Failed to generate JSON Web Token")
+				
+			End if 
 			
 		End if 
 		
-	End if 
-	
-	If (This:C1470.auth.jwt=Null:C1517)
+		If (This:C1470.auth.jwt=Null:C1517)
+			
+			ASSERT:C1129(False:C215; "Class initialization failed")
+			
+		End if 
 		
-		ASSERT:C1129(False:C215; "Class initialization failed")
-		
+	Else 
+		// Only on simulator, no need to generate jwt with .p8 key
 	End if 
 	
 	
@@ -213,7 +239,7 @@ Function send
 	C_OBJECT:C1216($1)  // Notification content
 	C_VARIANT:C1683($2)  // Recipient(s)
 	
-	If (This:C1470.auth.jwt=Null:C1517)
+	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)))
 		
 		ASSERT:C1129(False:C215; "Class initialization failed")
 		
@@ -252,7 +278,7 @@ Function sendAll
 	C_OBJECT:C1216($0)
 	C_OBJECT:C1216($1)  // Notification content
 	
-	If (This:C1470.auth.jwt=Null:C1517)
+	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)))
 		
 		ASSERT:C1129(False:C215; "Class initialization failed")
 		
@@ -308,6 +334,14 @@ Function open
 	
 	C_VARIANT:C1683($context)
 	C_OBJECT:C1216($userInfo; $result)
+	
+	If (Count parameters:C259<3)
+		
+		ASSERT:C1129(False:C215; "Missing parameters")
+		
+	Else 
+		// All ok
+	End if 
 	
 	$context:=$1
 	
@@ -399,4 +433,3 @@ Function open
 		$0:=$result
 		
 	End if 
-	
