@@ -91,8 +91,7 @@ Class constructor
 						
 					End if 
 					
-				Else 
-					// Only on simulator, no need to generate jwt with .p8 key
+					// Else : only on simulator, no need to generate jwt with .p8 key
 				End if 
 				
 			Else 
@@ -176,8 +175,7 @@ Class constructor
 					
 				End if 
 				
-			Else 
-				// Only on simulator, no need to generate jwt with .p8 key
+				// Else : only on simulator, no need to generate jwt with .p8 key
 			End if 
 			
 			
@@ -226,8 +224,7 @@ Class constructor
 			
 		End if 
 		
-	Else 
-		// Only on simulator, no need to generate jwt with .p8 key
+		// Else : only on simulator, no need to generate jwt with .p8 key
 	End if 
 	
 	
@@ -339,8 +336,7 @@ Function open
 		
 		ASSERT:C1129(False:C215; "Missing parameters")
 		
-	Else 
-		// All ok
+		// Else : all ok
 	End if 
 	
 	$context:=$1
@@ -376,8 +372,7 @@ Function open
 					
 					If ($userInfo.dataSynchro=Null:C1517)
 						$userInfo.dataSynchro:=True:C214
-					Else 
-						// $userInfo.dataSynchro already defined
+						// Else : $userInfo.dataSynchro already defined
 					End if 
 					
 				: (Value type:C1509($context.dataClass)=Is text:K8:3)
@@ -390,8 +385,7 @@ Function open
 						
 						If ($userInfo.dataSynchro=Null:C1517)
 							$userInfo.dataSynchro:=True:C214
-						Else 
-							// $userInfo.dataSynchro already defined
+							// Else : $userInfo.dataSynchro already defined
 						End if 
 						
 					End if 
