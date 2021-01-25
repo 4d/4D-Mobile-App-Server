@@ -1,6 +1,5 @@
 {
 	"postBuild": {
-		"InfoPlist": true,
 		"remove": [
 			"LICENSE.md",
 			"README.md",
