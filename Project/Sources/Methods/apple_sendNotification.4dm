@@ -31,7 +31,8 @@ If ((Length:C16(String:C10($1.jwt))>0)\
 	$cmdPush:="curl"
 	
 	If (Is Windows:C1573)
-		$cmdPush:=$cmdPush+".exe"
+		checkCurlWindow
+		$cmdPush:=curlWinPath
 	End if 
 	
 	$cmdPush:=$cmdPush+" --http2 --verbose --insecure "+\
