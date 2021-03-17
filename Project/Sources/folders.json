@@ -1,4 +1,4 @@
-﻿{
+{
 	"_API": {
 		"methods": [
 			"Compiler_Methods",
@@ -78,6 +78,7 @@
 			"authJWT",
 			"buildNotification",
 			"buildRecipients",
+			"checkCurlWindow",
 			"checkXCodeVersionForPushNotif",
 			"Compiler_push",
 			"getAuthenticationKey",
