@@ -31,14 +31,15 @@ If ((Length:C16(String:C10($1.jwt))>0)\
 	$cmdPush:="curl"
 	
 	If (Is Windows:C1573)
-		$cmdPush:=$cmdPush+".exe"
+		checkCurlWindow
+		$cmdPush:=curlWinPath
 	End if 
 	
-	$cmdPush:=$cmdPush+" --verbose "+\
+	$cmdPush:=$cmdPush+" --http2 --verbose --insecure "+\
 		"--header \"content-type: application/json\" "+\
 		"--header \"authorization: bearer "+$1.jwt+"\" "+\
 		"--header \"apns-topic: "+$1.bundleId+"\" "+\
-		"--data '"+$1.payload+"' "+\
+		"--data \""+Replace string:C233($1.payload; "\""; "\\\"")+"\" "+\
 		""+$endpoint+"/3/device/"+$1.deviceToken
 	
 	LAUNCH EXTERNAL PROCESS:C811($cmdPush;$cmdPush_in;$cmdPush_out;$cmdPush_err)
