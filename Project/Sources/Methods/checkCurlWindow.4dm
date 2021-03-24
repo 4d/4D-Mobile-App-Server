@@ -5,7 +5,7 @@ If (curlWinPath=Null:C1517)
 	If (Folder:C1567(fk resources folder:K87:11).file("curl.exe").exists)
 		
 		// use embedded curl
-		curlWinPath:="\""+Folder:C1567(Folder:C1567(fk resources folder:K87:11).file("curl.exe").platformPath; fk platform path:K87:2).platformPath+"\""  // escaped one
+		curlWinPath:="\""+File:C1566("/RESOURCES/curl.exe").platformPath+"\""  // escaped one
 		
 	Else 
 		
