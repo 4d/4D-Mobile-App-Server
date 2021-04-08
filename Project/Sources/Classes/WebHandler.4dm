@@ -80,3 +80,4 @@ Function appleAppSiteAssociation
 	Else 
 		$handled:=False:C215
 	End if 
+	$0:=$handled
