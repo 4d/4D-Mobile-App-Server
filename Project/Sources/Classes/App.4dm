@@ -184,16 +184,35 @@ Function contextPathAndQuery
 	$query:=""
 	If (Length:C16(String:C10($context.dataClass))>0)  // & $1.context.dataClass#Null (String(Null) is "null")
 		
-		$query:="dataClass="+String:C10($context.dataClass)  // TODO query url encode
+		Case of 
+			: (Value type:C1509($context.entity)=Is object:K8:27)  // n.b. $Obj_request.context object already checked by previous method
+				// Record/Entity
+				$query:="dataClass="+String:C10($context.dataClass)  // TODO query url encode
+				
+				If (Length:C16(String:C10($context.entity.primaryKey))>0)
+					
+					$query:=$query+"&entity.primaryKey="+String:C10($context.entity.primaryKey)  // TODO query url encode
+					
+				End if 
+				
+			: (Value type:C1509($context.parent)=Is object:K8:27)
+				// Table/DataClass, filtered by a parent record/entity relation
+				If ((Length:C16(String:C10($context.parent.primaryKey))>0) & (Length:C16(String:C10($context.parent.dataClass))>0))
+					
+					$query:="dataClass="+String:C10($context.parent.dataClass)  // TODO query url encode
+					
+					$query:=$query+"&entity.primaryKey="+String:C10($context.parent.primaryKey)  // TODO query url encode
+					
+					$query:=$query+"&relationName="+String:C10($context.parent.relationName)  // TODO query url encode
+					
+				End if 
+				
+			Else 
+				// Table/DataClass
+				$query:="dataClass="+String:C10($context.dataClass)  // TODO query url encode
+				
+		End case 
 		
-		If (Value type:C1509($context.entity)=Is object:K8:27)  // n.b. $Obj_request.context object already checked by previous method
-			
-			If (Length:C16(String:C10($context.entity.primaryKey))>0)
-				
-				$query:=$query+"&entity.primaryKey="+String:C10($context.entity.primaryKey)  // TODO query url encode
-				
-			End if 
-		End if 
 	End if 
 	
 	$0:="show?"+$query
