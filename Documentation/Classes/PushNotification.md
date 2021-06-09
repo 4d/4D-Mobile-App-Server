@@ -4,7 +4,6 @@ Utility class to send a push notification to one or multiple recipients.
 
 ## Usage
 
-
 In order to use the component to send push notification, it is required to have an authentication key file `AuthKey_XXXYYY.p8` from Apple.
 
 [Check how to generate your authentication key .p8 file](../Generate_p8.md)
@@ -20,6 +19,7 @@ $notification.body:="Here is the content of this notification"
 
 $response:=$pushNotification.send($notification;"abc@4dmail.com")
 ```
+
 ---
 **NOTE**
 
@@ -33,30 +33,34 @@ If you have **only one application** in your Session files (`MobileApps/`), you 
 
 ---
 
-
 As it uses the [Session](./Session.md) class in its constructor, you can provide the same parameters :
 
 ##### none (if you have only one application folder in `MobileApps/` folder)
+
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new()
 ```
 
 ##### Application ID (teamId.bundleId)
+
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new("TEAM123456.com.sample.myappname")
 ```
 
 ##### Bundle ID
+
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new("com.sample.myappname")
 ```
 
 ##### Application name
+
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new("myappname")
 ```
 
 ##### An object
+
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new(New object("bundleId";"com.sample.myappname";"teamId";"TEAM123456"))
 ```
@@ -112,12 +116,22 @@ $response:=$pushNotification.sendAll($notification)
 
 ## Build notification object
 
-
 ```4d
 $notification:=New object
 $notification.title:="This is title"
 $notification.body:="Here is the content of this notification"
 ```
+
+### Additional properties
+
+On iOS some others properties are available for your notification:
+
+- [subtitle](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649873-subtitle) containing a secondary description of the reason for the alert.
+- [badge](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649875-badge) the number to apply to the app’s icon.
+- [sound](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649868-sound) the sound to play when the system delivers the notification. If custom one, must be embedded manually in the app.
+- `category`: A category information for your notification
+- `url`: Open an url when clicking the notification, could help for custom deep linking etc...
+- `imageUrl`: Add an image using an url for rich notification display
 
 ## Recipients
 
@@ -163,7 +177,7 @@ $deviceTokens:=New collection("xxxxxxxxxxxx";"yyyyyyyyyyyy";"zzzzzzzzzzzz")
 $response:=$pushNotification.send($notification;$deviceTokens)
 ```
 
-##### An object
+##### An object with all together: mails, devices and/or simulators
 
 This object can contain up to 3 collections : a mail address collection, a device token collection, and a simulator collection.
 
