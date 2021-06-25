@@ -1,0 +1,1 @@
+﻿<!----------------------------------------------------MAKE_SRUCTURE_ADJUSTMENTS ( Param_1 ) -> Param_1 (Collection)-->oOUT := MAKE _SRUCTURE_ADJUSTMENTS ( Param_1 )
