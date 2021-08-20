@@ -53,6 +53,8 @@ Case of
 			
 		End for each 
 		
+		$0.mails:=$0.mails.distinct()
+		
 	: (Value type:C1509($1)=Is text:K8:3)
 		
 		$0:=New object:C1471
