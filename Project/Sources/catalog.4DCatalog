@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE base SYSTEM "http://www.4d.com/dtd/2007/base.dtd" >
+<base name="4D Mobile App Server" uuid="29669DCFA92F40B283D2D399BB7480BB" collation_locale="en">
+	<schema name="DEFAULT_SCHEMA"/>
+	<table name="Table_1" uuid="2BD96A93FEB742C29E56C369D8820A5D" id="1">
+		<field name="ID" uuid="E40A8622034E48F1BF2AC89DF888115D" type="4" unique="true" autosequence="true" not_null="true" id="1">
+			<field_extra position="1"/>
+		</field>
+		<field name="Field_2" uuid="FDB7A071245D40E49D05ECBBE71E6513" type="10" limiting_length="255" never_null="true" id="2">
+			<field_extra position="3"/>
+		</field>
+		<primary_key field_name="ID" field_uuid="E40A8622034E48F1BF2AC89DF888115D"/>
+		<table_extra>
+			<editor_table_info displayable_fields_count="6">
+				<color red="255" green="255" blue="255" alpha="0"/>
+				<coordinates left="40" top="40" width="120" height="167.33203125"/>
+			</editor_table_info>
+		</table_extra>
+	</table>
+	<table name="Table_2" uuid="72BEDA7276C54502B3A05CEBFD2D1E32" id="2">
+		<field name="ID" uuid="D5B1C1E7E26044F0873A0B788F44E03F" type="4" unique="true" autosequence="true" not_null="true" id="1">
+			<field_extra position="2"/>
+		</field>
+		<field name="table_1" uuid="7809A89DF1CA4009AD903C090B2CF334" type="4" never_null="true" id="2">
+			<field_extra position="3"/>
+		</field>
+		<primary_key field_name="ID" field_uuid="D5B1C1E7E26044F0873A0B788F44E03F"/>
+		<table_extra>
+			<editor_table_info displayable_fields_count="6">
+				<color red="255" green="255" blue="255" alpha="0"/>
+				<coordinates left="240.609375" top="41.015625" width="120" height="167.33203125"/>
+			</editor_table_info>
+		</table_extra>
+	</table>
+	<index kind="regular" unique_keys="true" uuid="78D5945966B847D2AA22FD8CB7D4C81D" type="7">
+		<field_ref uuid="E40A8622034E48F1BF2AC89DF888115D" name="ID">
+			<table_ref uuid="2BD96A93FEB742C29E56C369D8820A5D" name="Table_1"/>
+		</field_ref>
+	</index>
+	<index kind="regular" unique_keys="true" uuid="F8D6E04E6FBE4549B022D6D5C0360CBD" type="7">
+		<field_ref uuid="D5B1C1E7E26044F0873A0B788F44E03F" name="ID">
+			<table_ref uuid="72BEDA7276C54502B3A05CEBFD2D1E32" name="Table_2"/>
+		</field_ref>
+	</index>
+	<base_extra __stringCompHash="icu:68.1.0" __keywordBuildingHash="icu:68.1.0"/>
+</base>

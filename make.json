@@ -1,0 +1,10 @@
+{
+	"postBuild": {
+		"remove": [
+			"LICENSE.md",
+			"README.md",
+            "CONTRIBUTING.md",
+			"make.json"
+		]
+  }
+}
