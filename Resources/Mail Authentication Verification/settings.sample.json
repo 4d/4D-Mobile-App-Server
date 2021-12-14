@@ -1,0 +1,9 @@
+{
+    "smtp" : {
+        "user":"mail@example.com",
+        "password":"******",
+        "from":"mail@example.com",
+        "host":"smtp.example.com",
+        "port":465
+    }
+}
