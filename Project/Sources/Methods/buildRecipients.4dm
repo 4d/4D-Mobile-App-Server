@@ -1,25 +1,25 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
-C_OBJECT:C1216($0)// output recipients collection and warnings for failures
-C_OBJECT:C1216($1)// input object containing recipients collections
-C_TEXT:C284($2)// team ID
-C_TEXT:C284($3)// bundle ID
-C_COLLECTION:C1488($mails;$deviceTokens;$mailAndDeviceTokenCollection)
-C_OBJECT:C1216($Obj_result;$session)
+C_OBJECT:C1216($0)  // output recipients collection and warnings for failures
+C_OBJECT:C1216($1)  // input object containing recipients collections
+C_TEXT:C284($2)  // team ID
+C_TEXT:C284($3)  // bundle ID
+C_COLLECTION:C1488($mails; $deviceTokens; $mailAndDeviceTokenCollection)
+C_OBJECT:C1216($Obj_result; $session)
 
-If (Asserted:C1132(Count parameters:C259>=3;"Missing parameter"))
+If (Asserted:C1132(Count parameters:C259>=3; "Missing parameter"))
 	
-	ASSERT:C1129(Value type:C1509($2)=Is text:K8:3;"Second parameter is team ID, a text is expected")
-	ASSERT:C1129(Value type:C1509($3)=Is text:K8:3;"Third parameter is bundle ID, a text is expected")
+	ASSERT:C1129(Value type:C1509($2)=Is text:K8:3; "Second parameter is team ID, a text is expected")
+	ASSERT:C1129(Value type:C1509($3)=Is text:K8:3; "Third parameter is bundle ID, a text is expected")
 	
 End if 
 
-$Obj_result:=New object:C1471("success";False:C215)
+$Obj_result:=New object:C1471("success"; False:C215)
 
 
 // Build (mails + deviceTokens) collection
 //________________________________________
 
-$deviceTokens:=$1.deviceTokens
+$deviceTokens:=$1.deviceTokens.distinct()
 $mails:=$1.mails
 
 
@@ -30,13 +30,13 @@ If ($deviceTokens.length>0)
 	
 	C_TEXT:C284($dt)
 	
-	For each ($dt;$deviceTokens)
+	For each ($dt; $deviceTokens)
 		
 		// For each deviceToken we build an object with mail address information to match session result collection
 		
 		$Obj_result.recipients.push(New object:C1471(\
-			"email";"No mail address specified, raw deviceToken was given";\
-			"deviceToken";$dt))
+			"email"; "No mail address specified, raw deviceToken was given"; \
+			"deviceToken"; $dt))
 		
 	End for each 
 	
@@ -53,7 +53,7 @@ If ($mails.length>0)
 	C_TEXT:C284($mail)
 	C_OBJECT:C1216($Obj_session)
 	
-	For each ($mail;$mails)
+	For each ($mail; $mails)
 		
 		$Obj_session:=MobileAppServer.Session.new($2+"."+$3)
 		
@@ -64,15 +64,21 @@ If ($mails.length>0)
 			C_BOOLEAN:C305($atLeastOneFound)
 			$atLeastOneFound:=False:C215
 			
-			For each ($session;$Obj_session.sessions)
+			For each ($session; $Obj_session.sessions)
 				
 				If (Length:C16(String:C10($session.device.token))>0)
 					
-					$Obj_result.recipients.push(New object:C1471(\
-						"email";$mail;\
-						"deviceToken";$session.device.token))
-					
-					$atLeastOneFound:=True:C214
+					If ($deviceTokens.indexOf(($session.device.token)<0))
+						
+						$deviceTokens.push($session.device.token)
+						
+						$Obj_result.recipients.push(New object:C1471(\
+							"email"; $mail; \
+							"deviceToken"; $session.device.token))
+						
+						$atLeastOneFound:=True:C214
+						
+					End if 
 					
 				End if 
 				
@@ -84,7 +90,7 @@ If ($mails.length>0)
 				
 			End if 
 			
-		Else // No session found for current mail address 
+		Else   // No session found for current mail address 
 			
 			$Obj_result.warnings.push("No session file was found for the following mail address : "+$mail)
 			
