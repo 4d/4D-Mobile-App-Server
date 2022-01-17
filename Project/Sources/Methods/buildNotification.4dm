@@ -49,9 +49,9 @@ If ($isAPN)
 	
 	// Fill badge
 	
-	If (Value type:C1509($1.badge)=Is integer:K8:5)
+	If ((Value type:C1509($1.badge)=Is integer:K8:5) | (Value type:C1509($1.badge)=Is real:K8:4))
 		
-		$notification.aps.badge:=$1.badge
+		$notification.aps.badge:=Int:C8($1.badge)
 		
 	End if 
 	
