@@ -68,7 +68,7 @@ If ($mails.length>0)
 				
 				If (Length:C16(String:C10($session.device.token))>0)
 					
-					If ($deviceTokens.indexOf(($session.device.token)<0))
+					If ($deviceTokens.indexOf($session.device.token)<0)
 						
 						$deviceTokens.push($session.device.token)
 						
