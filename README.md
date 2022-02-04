@@ -4,7 +4,6 @@
 [![language-top][code-top]][code-url]
 ![code-size][code-size]
 [![release][release-shield]][release-url]
-[![license][license-shield]][license-url]
 
 Utility methods to speed up the 4D Mobile App backend coding.
 
@@ -46,6 +45,4 @@ See [CONTRIBUTING][contributing-url] guide.
 [code-url]: https://developer.4d.com/
 [release-shield]: https://img.shields.io/github/v/release/4d-for-ios/4D-Mobile-App-Server
 [release-url]: https://github.com/4d-for-ios/4D-Mobile-App-Server/releases/latest
-[license-shield]: https://img.shields.io/github/license/4d-for-ios/4D-Mobile-App-Server
-[license-url]: LICENSE.md
 [contributing-url]: CONTRIBUTING.md
