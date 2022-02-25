@@ -1,38 +1,22 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
-C_OBJECT:C1216($0)  // Returned object
-C_OBJECT:C1216($1)  // Session folder
-C_TEXT:C284($2)  // input mail address
+#DECLARE($sessionFolder : Object; $mail : Text)->$result : Object
 
-C_LONGINT:C283($session_indx)
-C_OBJECT:C1216($Obj_result;$sessionFolder;$sessionFile;$session)
-C_TEXT:C284($mail;$sessionFilePath)
+var $sessionFile : 4D:C1709.File
+var $session : Object
 
-ARRAY TEXT:C222($sessionFilesList;0)
+// PARAMETERS
+//________________________________________
 
+ASSERT:C1129(Count parameters:C259>=2; "Missing parameter")
 
-  // PARAMETERS
-  //________________________________________
+$result:=New object:C1471(\
+"success"; False:C215; \
+"sessions"; New collection:C1472)
 
-If (Asserted:C1132(Count parameters:C259>=1;"Missing parameter"))
+If (Bool:C1537($sessionFolder.isFolder) & Bool:C1537($sessionFolder.exists))
 	
-	$mail:=$2
-	
-	$Obj_result:=New object:C1471(\
-		"success";False:C215;\
-		"sessions";New collection:C1472)
-	
-End if 
-
-If (Bool:C1537($1.isFolder) & Bool:C1537($1.exists))
-	
-	$sessionFolder:=$1
-	
-	  // Each file corresponds to a session
-	DOCUMENT LIST:C474($sessionFolder.platformPath;$sessionFilesList)
-	
-	For ($session_indx;1;Size of array:C274($sessionFilesList);1)
-		
-		$sessionFile:=$sessionFolder.file($sessionFilesList{$session_indx})
+	// Each file corresponds to a session
+	For each ($sessionFile; $sessionFolder.files())
 		
 		If ($sessionFile.extension="")
 			
@@ -40,24 +24,18 @@ If (Bool:C1537($1.isFolder) & Bool:C1537($1.exists))
 			
 			If ($mail=String:C10($session.email))
 				
-				$Obj_result.sessions.push($session)
+				$result.sessions.push($session)
 				
 			End if 
 			
-			  // Else : not a session file
+			// Else : not a session file
 			
 		End if 
 		
-	End for 
+	End for each 
 	
-	  // Else : parameter is not a folder or does not exist
-	
-End if 
-
-If ($Obj_result.sessions.count()>0)
-	
-	$Obj_result.success:=True:C214
+	// Else : parameter is not a folder or does not exist
 	
 End if 
 
-$0:=$Obj_result
+$result.success:=$result.sessions.length>0
