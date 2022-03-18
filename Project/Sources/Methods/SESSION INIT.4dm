@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true}
+//%attributes = {"invisible":true,"preemptive":"capable"}
   //create a share collection accessible from several processes
 If (Storage:C1525.pendingSessions=Null:C1517)
 	Use (Storage:C1525)

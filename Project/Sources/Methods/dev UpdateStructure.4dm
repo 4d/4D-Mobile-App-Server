@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true,"shared":true,"executedOnServer":true}
+//%attributes = {"invisible":true,"shared":true,"executedOnServer":true,"preemptive":"capable"}
 C_OBJECT:C1216($0)
 C_OBJECT:C1216($1)
 C_VARIANT:C1683($2)
