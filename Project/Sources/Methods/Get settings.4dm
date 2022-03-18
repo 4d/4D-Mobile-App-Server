@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true}
+//%attributes = {"invisible":true,"preemptive":"capable"}
 C_OBJECT:C1216($0)
 C_OBJECT:C1216($template;$info;$file;$settingFolder)
 C_TEXT:C284($Txt_methodOnErrorCall)

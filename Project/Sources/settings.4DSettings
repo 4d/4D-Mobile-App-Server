@@ -1,10 +1,24 @@
-﻿<?xml version="1.0" encoding="UTF-8"?><preferences stamp="4">
+<?xml version="1.0" encoding="UTF-8"?><preferences stamp="5">
 	<com.4d>
 		<compiler>
-			<options compilation_path="3"/>
+			<options compilation_path="3" target="all"/>
 			<typage default_for_button="2"/>
 			<method_suffix arrays="" interprocess_arrays="" interprocess_variables="" methods="" variables=""/>
 		</compiler>
-		<general execute_host_database_event="true"/>
+		<general component_classStore_name="" execute_host_database_event="true"/>
+		<server>
+			<network>
+				<options publication_name="4D Mobile App Server"/>
+			</network>
+		</server>
+		<web>
+			<standalone_server>
+				<configuration port_number="80"/>
+			</standalone_server>
+		</web>
+		<sql>
+			<publication port_number="19812"/>
+		</sql>
+		<php ip_address="127.0.0.1"/>
 	</com.4d>
 </preferences>

@@ -10,3 +10,7 @@ Settings/4DPop
 AuthKey_*.p8
 .DS_Store
 Resources/php.ini
+Libraries/lib4d-arm64.dylib
+Project/Sources/DatabaseMethods/onStartup.4dm
+Project/Trash
+Settings/buildApp.4DSettings

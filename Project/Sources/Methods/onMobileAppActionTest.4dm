@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true}
+//%attributes = {"invisible":true,"preemptive":"capable"}
 
 C_OBJECT:C1216($0; $response)
 C_OBJECT:C1216($1; $action)
