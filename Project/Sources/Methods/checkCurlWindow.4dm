@@ -1,4 +1,4 @@
-//%attributes = {}
+//%attributes = {"preemptive":"capable"}
 
 If (Length:C16(String:C10(curlWinPath))=0)
 	

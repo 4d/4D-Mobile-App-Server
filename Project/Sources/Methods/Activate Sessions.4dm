@@ -1,4 +1,4 @@
-//%attributes = {"invisible":true}
+//%attributes = {"invisible":true,"preemptive":"capable"}
 C_OBJECT:C1216($Json_File;$Path_File_Session;$template;$session)
 C_TEXT:C284($1;$bodyMessage;$htmlContent;$token)
 C_BOOLEAN:C305($active)
