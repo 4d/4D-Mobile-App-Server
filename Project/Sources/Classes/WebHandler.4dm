@@ -81,3 +81,8 @@ Function appleAppSiteAssociation
 		$handled:=False:C215
 	End if 
 	$0:=$handled
+	
+/* Provide some information if web page opening by mobile app, like dataclass or entity */
+Function getContext()->$context : cs:C1710.WebContext
+	$context:=cs:C1710.WebContext.new()
+	

@@ -21,6 +21,22 @@ Case of
 End case
 ```
 
+### Page opening in mobile app
+
+If the page is displayed from mobile app we want to know some context information about it
+
+```4d
+$context:=$handler.getContext()
+```
+
+On this context we could get for instance the entity that open the page
+
+```4d
+$entity:=context.getEntity()
+```
+
+More in [WebContext](WebContext.md)
+
 ### Apple UniversalLinks
 
 To support Universal Links you could create a `apple-app-site-association` file inside the database folder `WebFolder/.well-known/`

@@ -131,6 +131,7 @@
 	"web": {
 		"classes": [
 			"UniversalLink",
+			"WebContext",
 			"WebHandler"
 		]
 	},
