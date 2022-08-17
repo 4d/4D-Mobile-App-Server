@@ -125,7 +125,9 @@
 			"test_isEmail",
 			"test_manageEntryRecipient",
 			"test_pushnotification",
-			"test_session"
+			"test_session",
+			"test_web",
+			"web_test_action"
 		]
 	},
 	"web": {

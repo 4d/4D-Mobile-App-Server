@@ -10,11 +10,11 @@ $context:=$handler.getContext()
 and then get the dataClass
 
 ```4d
-$dataClass:=context.getDataClass()
+$dataClass:=$context.getDataClass()
 ```
 
 or the entity if any
 
 ```4d
-$entity:=context.getEntity()
+$entity:=$context.getEntity()
 ```

@@ -32,7 +32,7 @@ $context:=$handler.getContext()
 On this context we could get for instance the entity that open the page
 
 ```4d
-$entity:=context.getEntity()
+$entity:=$context.getEntity()
 ```
 
 More in [WebContext](WebContext.md)
