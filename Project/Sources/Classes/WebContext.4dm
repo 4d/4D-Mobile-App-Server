@@ -34,7 +34,7 @@ Function getDataClass()->$dataClass : 4D:C1709.DataClass
 Function getEntity()->$entity : 4D:C1709.Entity
 	If ((This:C1470.entity#Null:C1517) && (This:C1470.entity.primaryKey#Null:C1517))
 		var $dataClass : Object
-		$dataClass:=This:C1470.dataClass
+		$dataClass:=This:C1470.getDataClass()
 		If ($dataClass#Null:C1517)
 			$entity:=$dataClass.get(This:C1470.entity.primaryKey)
 		End if 
