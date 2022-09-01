@@ -1,16 +1,53 @@
-Data
-Preferences
-Logs
-userPreferences.*
-Mobile Projects
-data.*
-MobileApps
-Project/DerivedData
-Settings/4DPop
-AuthKey_*.p8
-.DS_Store
-Resources/php.ini
-Libraries/lib4d-arm64.dylib
-Project/Sources/DatabaseMethods/onStartup.4dm
+#--------------------------------
+# Ignore invisible files/folders
+#--------------------------------
+.*
+!.git*
+
+.git/
+
+#--------------------------------
+# Ignore data file
+#--------------------------------
+[dD][aA][tT][aA]/
+*.4DD
+*.4DIndx
+*.4DIndy
+*.Match
+*.journal
+
+#--------------------------------
+# Ignore derived data
+#--------------------------------
+Project/DerivedData/
+
+#--------------------------------
+# Ignore logs
+#--------------------------------
+Logs/
+
+#--------------------------------
+# Ignore settings & preferences
+#--------------------------------
+Preferences/
+!4DPop AppMaker.*
+
+Settings/
+#!buildApp.4DSettings
+
+userPreferences.*/
+
+#--------------------------------
+# Miscellaneous
+#--------------------------------
+*__Orphan__*
+*symbols.txt
+ehthumbs.db
+Thumbs.db
+
+#--------------------------------
+# Added by user
+#--------------------------------
 Project/Trash
-Settings/buildApp.4DSettings
+Resources/php.ini
+Libraries
