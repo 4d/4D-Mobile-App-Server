@@ -22,9 +22,12 @@ Class constructor
 		End if 
 	End use 
 	
-Function getAppID
-	C_TEXT:C284($0)
-	$0:=This:C1470.request.team.id+"."+This:C1470.request.application.id
+Function getAppID()->$id : Text
+	If (This:C1470.request.team=Null:C1517)  // || (Length(This.request.team.id)=0)) // if activate this code an iOS app without id will share folder with android app
+		$id:=This:C1470.request.application.id
+	Else 
+		$id:=This:C1470.request.team.id+"."+This:C1470.request.application.id
+	End if 
 	
 Function getApp
 	C_OBJECT:C1216($0)

@@ -33,6 +33,16 @@ Class constructor
 				
 			End for each 
 			
+		: (Value type:C1509($1.application)=Is object:K8:27)
+			
+			This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(String:C10($1.application.id))
+			
+			For each ($key; $1)
+				
+				This:C1470[$key]:=$1[$key]
+				
+			End for each 
+			
 		Else 
 			// 
 			
@@ -124,7 +134,11 @@ Function _checkFolder
 	
 Function _checkId
 	If (This:C1470.id=Null:C1517)
-		This:C1470.id:=String:C10(This:C1470.team.id)+"."+String:C10(This:C1470.application.id)  // could also check that but...
+		If (This:C1470.team=Null:C1517)
+			This:C1470.id:=String:C10(This:C1470.application.id)
+		Else 
+			This:C1470.id:=String:C10(This:C1470.team.id)+"."+String:C10(This:C1470.application.id)
+		End if 
 	End if 
 	
 Function hasAssociatedDomain
