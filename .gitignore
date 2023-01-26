@@ -1,9 +1,6 @@
 # Ignore invisible files/folders except .gitignore
 .*
 !.gitignore
-!.github/
-!.github/**/.*
-.github/.DS_Store
 
 #--------------------------------
 # Ignore data file
@@ -68,6 +65,14 @@ Project/Sources/Methods/00_*.4dm
 Libraries/lib4d-arm64.dylib
 
 DEV/
+
+#--------------------------------
+# Don't ignore .github workflow
+#--------------------------------
+
+!.github/
+!.github/**/.*
+.github/.DS_Store
 
 #--------------------------------
 # Added by user
