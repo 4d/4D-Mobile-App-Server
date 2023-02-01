@@ -1,27 +1,20 @@
-**In order to use the component to send push notification, it is required to have an authentication file AuthKey_XXXX.p8 from Apple.**
+**You need to have an authentication file AuthKey_XXXX.p8 from Apple.**
 
-# Generating .p8 key file 🔑
+# Generate .p8 key file 🔑
 
 - First go to [Apple developer account page](https://developer.apple.com/account/), sign in, then select **Certificates, IDs & Profiles**.
 
-
 ![alt text][step_1]
-
 
 - Then, select **Keys**, and add a new key by clicking the **+** button.
 
-
 ![alt text][step_2]   ![alt text][step_3]
-
 
 - Give your key a name, and check Apple Push Notification service (APNs). Click **Continue** and then **Register**.
 
-
 ![alt text][step_4]
 
-
 - **Download** the file.
-
 
 ![alt text][step_5]
 

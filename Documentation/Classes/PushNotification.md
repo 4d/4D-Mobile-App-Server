@@ -2,13 +2,30 @@
 
 Utility class to send a push notification to one or multiple recipients.
 
-## Usage
+## Configuration
 
-In order to use the component to send push notification, it is required to have an authentication key file `AuthKey_XXXYYY.p8` from Apple.
+### iOS
+
+You need to have an authentication key file `AuthKey_XXXYYY.p8` from Apple.
 
 [Check how to generate your authentication key .p8 file](../Generate_p8.md)
 
-To experiment the default behaviour, this file should be placed in your application sessions folder (`MobileApps/TEAM123456.com.sample.myappname`).
+This file should be placed in your application sessions folder (`MobileApps/TEAM123456.com.sample.myappname`).
+
+### Android
+
+You need to configure a Firebase project in order to use push notifications.
+
+[Check how to configure Firebase in few quick steps](../Conf_firebase.md)
+
+You need to :
+- create a project if it doesn't exist yet.
+- get **google-services.json** file.
+- enable **Cloud Message API (Legacy)** to retrieve your server key.
+
+The **google-services.json** file should be placed in your application sessions folder (`MobileApps/com.sample.myappname`).
+
+## Usage
 
 ```4d
 $pushNotification:=MobileAppServer .PushNotification.new()
@@ -23,9 +40,27 @@ $response:=$pushNotification.send($notification;"abc@4dmail.com")
 ---
 **NOTE**
 
-If you only use simulators (no real device), you can bypass the process of .p8 key file verification by pressing **Shift down** on PushNotification class instantiation.
+For **iOS**, if you only use simulators (no real device), you can bypass the process of .p8 key file verification by pressing **Shift down** on PushNotification class instantiation.
 
 ---
+
+## Development or Production mode (**iOS only**)
+
+You need to specify whether the target application is in `development` or `production` mode. 
+
+If your application is in `development` mode and you try to send push notification in `production` mode, the target won't receive the push notifications. By default, the `PushNotification` class is in `production` mode, but you can change it as follows :
+
+```4d
+$pushNotification.auth.isDevelopment:=True
+```
+
+## Server key (**Android only**)
+
+You need to provide your server key in order to send push notifications.
+
+```4d
+$pushNotification.auth.serverKey:="your_server_key"
+```
 
 ## Instanciate the PushNotification class
 
@@ -35,33 +70,20 @@ If you have **only one application** in your Session files (`MobileApps/`), you 
 
 As it uses the [Session](./Session.md) class in its constructor, you can provide the same parameters :
 
-##### none (if you have only one application folder in `MobileApps/` folder)
-
 ```4d
+// none (if you have only one application folder in `MobileApps/` folder)
 $pushNotification:=MobileAppServer .PushNotification.new()
-```
 
-##### Application ID (teamId.bundleId)
-
-```4d
+// Application ID (teamId.bundleId)
 $pushNotification:=MobileAppServer .PushNotification.new("TEAM123456.com.sample.myappname")
-```
 
-##### Bundle ID
-
-```4d
+// Bundle ID
 $pushNotification:=MobileAppServer .PushNotification.new("com.sample.myappname")
-```
 
-##### Application name
-
-```4d
+// Application name
 $pushNotification:=MobileAppServer .PushNotification.new("myappname")
-```
 
-##### An object
-
-```4d
+// An object
 $pushNotification:=MobileAppServer .PushNotification.new(New object("bundleId";"com.sample.myappname";"teamId";"TEAM123456"))
 ```
 
@@ -77,14 +99,17 @@ $auth.isDevelopment:=False  // Optional value, defines whether you are in produc
 $pushNotification:=MobileAppServer .PushNotification.new($auth)
 ```
 
-## Development or Production mode
+### Define OS targets
 
-You need to specify whether the target application is in `development` or `production` mode. 
-
-If your application is in `development` mode and you try to send push notification in `production` mode, the target won't receive the push notifications. By default, the `PushNotification` class is in `production` mode, but you can change it as follows :
+Additionally, you can specify OS targets for your push notifications. Targets will be provided as an additional parameter to the PushNotification constructor. It can be a collection as follows, or a simple text.
 
 ```4d
-$pushNotification.auth.isDevelopment:=True
+// first example
+$targets:=New Collection("android"; "ios")
+$pushNotification:=MobileAppServer .PushNotification.new($targets)
+
+// another example
+$pushNotification:=MobileAppServer .PushNotification.new("com.sample.myappname"; "android")
 ```
 
 ## Use PushNotification class to send push notifications
@@ -120,17 +145,26 @@ $response:=$pushNotification.sendAll($notification)
 $notification:=New object
 $notification.title:="This is title"
 $notification.body:="Here is the content of this notification"
+
+// Additional properties
+
 ```
 
 ### Additional properties
 
-On iOS some others properties are available for your notification:
+#### iOS
 
 - [subtitle](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649873-subtitle) containing a secondary description of the reason for the alert.
 - [badge](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649875-badge) the number to apply to the app’s icon.
 - [sound](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649868-sound) the sound to play when the system delivers the notification. If custom one, must be embedded manually in the app.
 - `category`: A category information for your notification
 - `url`: Open an url when clicking the notification, could help for custom deep linking etc...
+- `imageUrl`: Add an image using an url for rich notification display
+
+#### Android
+
+- `sound`: The filename of a sound resource bundled in the app. Sound files must reside in /res/raw/
+- `color`: The notification's icon color, expressed in #rrggbb format.
 - `imageUrl`: Add an image using an url for rich notification display
 
 ## Recipients
@@ -153,7 +187,7 @@ $deviceToken:="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 $response:=$pushNotification.send($notification;$deviceToken)
 ```
 
-##### A single simulator UDID
+##### A single simulator UDID (**iOS only**)
 
 Testing your push notifications on a simulator can be very helpful. **However, in order to use this feature, you will need to have a XCode version of 11.4 or newer.**
 You can simply give the value `booted` to target the launched simulator, or you can run the follow command to list booted devices and get their UDID : `xcrun simctl list devices | grep Booted`
@@ -185,7 +219,7 @@ This object can contain up to 3 collections : a mail address collection, a devic
 $recipients:=New object
 $recipients.mails:=New collection("abc@4dmail.com";"def@4dmail.com";"ghi@4dmail.com")
 $recipients.deviceTokens:=New collection("xxxxxxxxxxxx";"yyyyyyyyyyyy";"zzzzzzzzzzzz")
-$recipients.simulators:=New collection("ABCDEFGHI";"9GER74FS8S";"PY1J4IT984")
+$recipients.simulators:=New collection("ABCDEFGHI";"9GER74FS8S";"PY1J4IT984") // iOS only
 $response:=$pushNotification.send($notification;$recipients)
 ```
 

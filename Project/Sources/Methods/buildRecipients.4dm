@@ -48,6 +48,10 @@ If ($deviceTokens.length>0)
 			
 			$target:=Lowercase:C14(String:C10($Obj_session.session.device.os))
 			
+			If (Lowercase:C14($target)="ipados")
+				$target:="ios"
+			End if 
+			
 			Case of 
 					
 				: ((($target="ios") & ($isIos)) | (($target="android") & ($isAndroid)))
@@ -105,6 +109,10 @@ If ($mails.length>0)
 					If ($deviceTokens.indexOf($session.device.token)<0)  // avoiding doubles
 						
 						$target:=Lowercase:C14(String:C10($session.device.os))
+						
+						If (Lowercase:C14($target)="ipados")
+							$target:="ios"
+						End if 
 						
 						Case of 
 								

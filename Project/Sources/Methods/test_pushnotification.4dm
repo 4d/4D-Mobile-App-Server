@@ -15,9 +15,14 @@ ASSERT:C1129($Dir_mobileApps.folders().length=1; "Can't have more than one appli
 
 // Test
 
-$pushNotification:=MobileAppServer.PushNotification.new()
+//var $target : Collection
+//$target:=New collection("android"; "ios")
 
+var $target : Text
+$target:="android"
+$pushNotification:=MobileAppServer.PushNotification.new($target)
 
+$pushNotification.auth.serverKey:="test"
 
 $response:=$pushNotification.sendAll($notification)
 
