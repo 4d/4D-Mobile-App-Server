@@ -3,15 +3,19 @@ C_OBJECT:C1216($0)  // Returned recipient collections object
 C_VARIANT:C1683($1)  // Input recipient(s)
 
 
-  // BUILD RECIPIENTS COLLECTIONS
-  //________________________________________
+// BUILD RECIPIENTS COLLECTIONS
+//________________________________________
+
+$0:=New object:C1471(\
+"mails"; New collection:C1472; \
+"deviceTokens"; New collection:C1472)
 
 Case of 
 	: (Value type:C1509($1)=Is object:K8:27)
 		
 		If (Value type:C1509($1.simulators)=Is collection:K8:32)
 			
-			  // If user has provided a simulators collection, we put it in deviceTokens collection
+			// If user has provided a simulators collection, we put it in deviceTokens collection
 			
 			If (Not:C34(Value type:C1509($1.deviceTokens)=Is collection:K8:32))
 				
@@ -27,17 +31,13 @@ Case of
 		
 	: (Value type:C1509($1)=Is collection:K8:32)
 		
-		$0:=New object:C1471(\
-			"mails";New collection:C1472;\
-			"deviceTokens";New collection:C1472)
-		
 		C_VARIANT:C1683($item)
 		
-		For each ($item;$1)
+		For each ($item; $1)
 			
 			If (Value type:C1509($item)=Is text:K8:3)
 				
-				If (isEmail ($item))
+				If (isEmail($item))
 					
 					$0.mails.push($item)
 					
@@ -47,7 +47,7 @@ Case of
 					
 				End if 
 				
-				  // Else : $1 is not a collection of mails, nor a collection of deviceTokens, nor a collection of simulators UDID
+				// Else : $1 is not a collection of mails, nor a collection of deviceTokens, nor a collection of simulators UDID
 				
 			End if 
 			
@@ -57,20 +57,14 @@ Case of
 		
 	: (Value type:C1509($1)=Is text:K8:3)
 		
-		$0:=New object:C1471
-		
-		If (isEmail ($1))
+		If (isEmail($1))
 			
-			$0.mails:=New collection:C1472($1)
+			$0.mails.push($1)
 			
 		Else 
 			
-			$0.deviceTokens:=New collection:C1472($1)
+			$0.deviceTokens.push($1)
 			
 		End if 
-		
-	Else   // Error case
-		
-		$0:=New object:C1471
 		
 End case 
