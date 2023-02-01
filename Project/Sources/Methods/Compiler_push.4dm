@@ -5,20 +5,28 @@ C_OBJECT:C1216(Mobile App Push Notification; $0)
 C_OBJECT:C1216(Mobile App Push Notification; $1)
 C_OBJECT:C1216(Mobile App Push Notification; $2)
 C_OBJECT:C1216(Mobile App Push Notification; $3)
+C_COLLECTION:C1488(Mobile App Push Notification; $4)
 
 C_OBJECT:C1216(apple_sendNotification; $0)
 C_OBJECT:C1216(apple_sendNotification; $1)
 
+C_OBJECT:C1216(android_sendNotification; $0)
+C_OBJECT:C1216(android_sendNotification; $1)
+
 C_OBJECT:C1216(authJWT; $0)
 C_OBJECT:C1216(authJWT; $1)
 
-C_OBJECT:C1216(buildNotification; $0)
-C_OBJECT:C1216(buildNotification; $1)
+C_OBJECT:C1216(buildAppleNotification; $0)
+C_OBJECT:C1216(buildAppleNotification; $1)
+
+C_OBJECT:C1216(buildAndroidNotification; $0)
+C_OBJECT:C1216(buildAndroidNotification; $1)
 
 C_OBJECT:C1216(buildRecipients; $0)
 C_OBJECT:C1216(buildRecipients; $1)
 C_TEXT:C284(buildRecipients; $2)
 C_TEXT:C284(buildRecipients; $3)
+C_COLLECTION:C1488(buildRecipients; $4)
 
 C_BOOLEAN:C305(isEmail; $0)
 C_TEXT:C284(isEmail; $1)
