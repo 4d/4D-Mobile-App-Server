@@ -197,6 +197,23 @@ Function getSessionInfoFromMail($mail : Text)->$sessionInfo : Object
 	
 	$sessionInfo:=MOBILE APP Get session info(This:C1470.sessionDir; $mail)
 	
+	
+	//-------------------------------------------------------------------------
+Function getSessionInfoFromDeviceToken($deviceToken : Text)->$sessionInfo : Object
+	If (This:C1470.sessionDir=Null:C1517)
+		
+		ASSERT:C1129(False:C215; "Session folder could not be found")
+		
+	End if 
+	
+	If (Asserted:C1132(Count parameters:C259>=1; "Missing device token parameter"))
+		
+		ASSERT:C1129(Value type:C1509($deviceToken)=Is text:K8:3; "The function requires a device token, a text is expected")
+		
+	End if 
+	
+	$sessionInfo:=MA Get session info deviceToken(This:C1470.sessionDir; $deviceToken)
+	
 	//-------------------------------------------------------------------------
 Function getSessionObjects()->$sessionObjects : Collection
 	$sessionObjects:=New collection:C1472()

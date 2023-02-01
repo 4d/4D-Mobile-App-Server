@@ -20,15 +20,26 @@ End use
 
 */
 Class constructor
-	C_VARIANT:C1683($1)
+	C_VARIANT:C1683($1)  // identifying target project
+	C_VARIANT:C1683($2)  // ios, android, or collection
 	
 	C_OBJECT:C1216($session; $Obj_manifest; $Obj_authKey)
 	C_BOOLEAN:C305($isObject; $isText)
 	
-	This:C1470.auth:=New object:C1471("isDevelopment"; False:C215)
+	This:C1470.auth:=New object:C1471()
 	This:C1470.lastResult:=New object:C1471
 	
+	This:C1470.isIos:=True:C214
+	This:C1470.isAndroid:=True:C214
+	
+	
+	// iOS
 	This:C1470.onlySimulator:=(Bool:C1537(MobileAppServer.PushNotification.allowSimulatorOnly) | Shift down:C543)
+	This:C1470.auth.isDevelopment:=False:C215
+	
+	// Android
+	This:C1470.auth.serverKey:=""
+	
 	
 	$isObject:=False:C215
 	$isText:=False:C215
@@ -41,19 +52,80 @@ Class constructor
 			
 			$session:=MobileAppServer.Session.new()
 			
-		: (Value type:C1509($1)=Is text:K8:3)
+		: (Count parameters:C259=1)
 			
-			$isText:=True:C214
+			Case of 
+					
+				: (Value type:C1509($1)=Is text:K8:3)
+					
+					$isText:=True:C214
+					
+					Case of 
+							
+						: (Lowercase:C14($1)="ios")
+							
+							This:C1470.isAndroid:=False:C215
+							
+							$session:=MobileAppServer.Session.new()
+							
+						: (Lowercase:C14($1)="android")
+							
+							This:C1470.isIos:=False:C215
+							
+							$session:=MobileAppServer.Session.new()
+							
+						Else 
+							
+							$session:=MobileAppServer.Session.new($1)
+							
+					End case 
+					
+				: (Value type:C1509($1)=Is collection:K8:32)
+					
+					$isText:=True:C214
+					
+					
+					
+					This:C1470.isAndroid:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
+					This:C1470.isIos:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
+					
+					$session:=MobileAppServer.Session.new()
+					
+				: (Value type:C1509($1)=Is object:K8:27)
+					
+					$isObject:=True:C214
+					
+			End case 
 			
-			$session:=MobileAppServer.Session.new($1)
+		: (Count parameters:C259=2)
 			
-		: (Value type:C1509($1)=Is object:K8:27)
+			Case of 
+					
+				: (Value type:C1509($1)=Is text:K8:3)
+					
+					$isText:=True:C214
+					
+					$session:=MobileAppServer.Session.new($1)
+					
+				: (Value type:C1509($1)=Is object:K8:27)
+					
+					$isObject:=True:C214
+					
+			End case 
 			
-			$isObject:=True:C214
-			
-		Else 
-			
-			// Incompatible entry parameter type
+			Case of 
+					
+				: (Value type:C1509($2)=Is text:K8:3)
+					
+					This:C1470.isAndroid:=Not:C34(Bool:C1537(Lowercase:C14($2)="ios"))
+					This:C1470.isIos:=Not:C34(Bool:C1537(Lowercase:C14($2)="android"))
+					
+				: (Value type:C1509($2)=Is collection:K8:32)
+					
+					This:C1470.isAndroid:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
+					This:C1470.isIos:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
+					
+			End case 
 			
 	End case 
 	
@@ -76,7 +148,7 @@ Class constructor
 					
 				End if 
 				
-				If (Not:C34(This:C1470.onlySimulator))
+				If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 					
 					$Obj_authKey:=getAuthenticationKey($session.sessionDir)
 					
@@ -87,11 +159,11 @@ Class constructor
 						
 					Else 
 						
-						ASSERT:C1129(False:C215; "Could not find authentication key")
+						ASSERT:C1129(False:C215; "Could not find authentication key for Apple push notification")
 						
 					End if 
 					
-					// Else : only on simulator, no need to generate jwt with .p8 key
+					// Else : no need to generate jwt with .p8 key
 				End if 
 				
 			Else 
@@ -112,18 +184,21 @@ Class constructor
 				
 			End if 
 			
-			If (Length:C16(String:C10($1.teamId))>0)
+			If (This:C1470.isIos)
 				
-				This:C1470.auth.teamId:=$1.teamId
-				
-			Else 
-				
-				ASSERT:C1129(False:C215; "No team ID provided")
+				If (Length:C16(String:C10($1.teamId))>0)
+					
+					This:C1470.auth.teamId:=$1.teamId
+					
+				Else 
+					
+					ASSERT:C1129(False:C215; "No team ID provided for Apple push notification")
+					
+				End if 
 				
 			End if 
 			
-			
-			If (Not:C34(This:C1470.onlySimulator))
+			If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 				
 				C_BOOLEAN:C305($authKeySuccess)
 				
@@ -163,7 +238,7 @@ Class constructor
 							
 						Else 
 							
-							ASSERT:C1129(False:C215; "Could not find authentication key")
+							ASSERT:C1129(False:C215; "Could not find authentication key for Apple push notification")
 							
 						End if 
 						
@@ -175,13 +250,19 @@ Class constructor
 					
 				End if 
 				
-				// Else : only on simulator, no need to generate jwt with .p8 key
+				// Else : no need to generate jwt with .p8 key
 			End if 
 			
 			
 			If (Bool:C1537($1.isDevelopment))
 				
 				This:C1470.auth.isDevelopment:=True:C214
+				
+			End if 
+			
+			If (Length:C16(String:C10($1.serverKey))>0)
+				
+				This:C1470.auth.serverKey:=$1.serverKey
 				
 			End if 
 			
@@ -192,7 +273,7 @@ Class constructor
 	End case 
 	
 	
-	If (Not:C34(This:C1470.onlySimulator))
+	If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 		
 		// Generate JWT
 		
@@ -224,9 +305,8 @@ Class constructor
 			
 		End if 
 		
-		// Else : only on simulator, no need to generate jwt with .p8 key
+		// Else : no need to generate jwt with .p8 key
 	End if 
-	
 	
 	
 	//-------------------------------------------------------------------------
@@ -236,9 +316,15 @@ Function send
 	C_OBJECT:C1216($1)  // Notification content
 	C_VARIANT:C1683($2)  // Recipient(s)
 	
-	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)))
+	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 		
 		ASSERT:C1129(False:C215; "Class initialization failed")
+		
+	End if 
+	
+	If ((String:C10(This:C1470.auth.serverKey)="") & (This:C1470.isAndroid))
+		
+		ASSERT:C1129(False:C215; "Class initialization failed : missing server key for Android push notifications")
 		
 	End if 
 	
@@ -247,17 +333,26 @@ Function send
 	This:C1470.lastResult.warnings:=New collection:C1472
 	This:C1470.lastResult.errors:=New collection:C1472
 	
+	This:C1470.targets:=New collection:C1472
+	If (This:C1470.isAndroid)
+		This:C1470.targets.push("android")
+	End if 
+	
+	If (This:C1470.isIos)
+		This:C1470.targets.push("ios")
+	End if 
+	
 	Case of 
 			
 			//________________________________________
 		: (Count parameters:C259>1)
 			
-			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient($2); This:C1470.auth)
+			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient($2); This:C1470.auth; This:C1470.targets)
 			
 			//________________________________________
 		: (This:C1470.recipients#Null:C1517)  // Recipients were set, but not given in send() function parameters
 			
-			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient(This:C1470.recipients); This:C1470.auth)
+			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient(This:C1470.recipients); This:C1470.auth; This:C1470.targets)
 			
 			//________________________________________
 		Else 
@@ -275,9 +370,15 @@ Function sendAll
 	C_OBJECT:C1216($0)
 	C_OBJECT:C1216($1)  // Notification content
 	
-	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)))
+	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 		
 		ASSERT:C1129(False:C215; "Class initialization failed")
+		
+	End if 
+	
+	If ((String:C10(This:C1470.auth.serverKey)="") & (This:C1470.isAndroid))
+		
+		ASSERT:C1129(False:C215; "Class initialization failed : missing server key for Android push notifications")
 		
 	End if 
 	
@@ -288,7 +389,8 @@ Function sendAll
 	
 	C_OBJECT:C1216($Obj_session; $Obj_deviceTokens)
 	
-	$Obj_session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+	//$Obj_session:=MobileAppServer.Session.new(This.auth.teamId+"."+This.auth.bundleId)
+	$Obj_session:=MobileAppServer.Session.new(This:C1470.auth.bundleId)
 	
 	If ($Obj_session.sessionDir=Null:C1517)
 		
@@ -296,7 +398,7 @@ Function sendAll
 		
 	Else 
 		
-		$Obj_deviceTokens:=$Obj_session.getAllDeviceTokens()
+		$Obj_deviceTokens:=$Obj_session.getAllDeviceTokens()  // TODO : pour chauqe devicetoken, noter si ios ou android
 		
 		If ($Obj_deviceTokens.success)
 			
