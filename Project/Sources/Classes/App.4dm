@@ -25,7 +25,7 @@ Class constructor
 			
 		: ((Value type:C1509($1.team)=Is object:K8:27) & (Value type:C1509($1.application)=Is object:K8:27))
 			
-			If ($1.team#Null:C1517)
+			If ($1.team.id#"")
 				This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(String:C10($1.team.id)+"."+String:C10($1.application.id))
 			Else 
 				This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(String:C10($1.application.id))
