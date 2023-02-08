@@ -23,23 +23,16 @@ Class constructor
 	End use 
 	
 Function getAppID()->$id : Text
-	If (This:C1470.request.team=Null:C1517)  // || (Length(This.request.team.id)=0)) // if activate this code an iOS app without id will share folder with android app
-		$id:=This:C1470.request.application.id
-	Else 
-		$id:=This:C1470.request.team.id+"."+This:C1470.request.application.id
-	End if 
+	$id:=appID(This:C1470.request)
 	
-Function getApp
-	C_OBJECT:C1216($0)
-	$0:=cs:C1710.App.new(New object:C1471("application"; This:C1470.request.application; "team"; This:C1470.request.team))
+Function getApp()->$app : Object
+	$app:=cs:C1710.App.new(New object:C1471("application"; This:C1470.request.application; "team"; This:C1470.request.team))
 	
-Function getSessionFile
-	C_OBJECT:C1216($0)
-	$0:=OB Class:C1730(This:C1470).folder.folder(This:C1470.getAppID()).file(This:C1470.request.session.id)
+Function getSessionFile->$file : 4D:C1709.File
+	$file:=OB Class:C1730(This:C1470).folder.folder(This:C1470.getAppID()).file(This:C1470.request.session.id)
 	
-Function getSessionObject
-	C_OBJECT:C1216($0)
-	$0:=Mobile App Session Object(This:C1470.getSessionFile())  // XXX maybe create a class also
+Function getSessionObject()->$session : cs:C1710.SessionObject
+	$session:=Mobile App Session Object(This:C1470.getSessionFile())  // XXX maybe create a class also
 	
 Function confirmEmail
 	C_OBJECT:C1216($0)

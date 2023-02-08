@@ -19,13 +19,13 @@ $app:=$apps[0]
 
 ASSERT:C1129($app.id#Null:C1517; "no app full id")
 ASSERT:C1129($app.application.id#Null:C1517; "no application id")
-ASSERT:C1129($app.team.id#Null:C1517; "no team id")
+//ASSERT($app.team.id#Null; "no team id") // iOS only
 
 $app:=cs:C1710.App.new($app)  // recreate app from app or json
 
 ASSERT:C1129($app.id#Null:C1517; "no app full id")
 ASSERT:C1129($app.application.id#Null:C1517; "no application id")
-ASSERT:C1129($app.team.id#Null:C1517; "no team id")
+ASSERT:C1129($app.team.id#Null:C1517; "no team id")  // iOS only
 
 C_COLLECTION:C1488($sessions)
 $sessions:=$app.getSessionManager().getSessionObjects()

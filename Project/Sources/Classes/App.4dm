@@ -23,23 +23,9 @@ Class constructor
 				
 			End for each 
 			
-		: ((Value type:C1509($1.team)=Is object:K8:27) & (Value type:C1509($1.application)=Is object:K8:27))
+		: ((Value type:C1509($1.application)=Is object:K8:27))
 			
-			If ($1.team.id#"")
-				This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(String:C10($1.team.id)+"."+String:C10($1.application.id))
-			Else 
-				This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(String:C10($1.application.id))
-			End if 
-			
-			For each ($key; $1)
-				
-				This:C1470[$key]:=$1[$key]
-				
-			End for each 
-			
-		: (Value type:C1509($1.application)=Is object:K8:27)
-			
-			This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(String:C10($1.application.id))
+			This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(appID($1))
 			
 			For each ($key; $1)
 				
@@ -71,9 +57,9 @@ Class constructor
 	This:C1470._checkId()
 	
 	/// Return all App instances.
-Function all  // TODO must be static if language allow it
-	C_COLLECTION:C1488($0; $apps)
-	C_OBJECT:C1216($Dir_mobileApps; $appFolder)
+Function all()->$apps : Collection  // TODO must be static if language allow it
+	
+	var $Dir_mobileApps; $appFolder : 4D:C1709.Folder
 	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18; *)
 	
 	$apps:=New collection:C1472()
@@ -83,22 +69,18 @@ Function all  // TODO must be static if language allow it
 			$apps.push(cs:C1710.App.new($appFolder))
 		End for each 
 		
-		
 	End if 
 	
-	$0:=$apps
-	
 	/// Return App instances with an associated doain
-Function withAssociatedDomain  // TODO must be static if language allow it
-	C_COLLECTION:C1488($0; $apps)
-	C_OBJECT:C1216($Dir_mobileApps; $appFolder)
+Function withAssociatedDomain()->$apps : Collection  // TODO must be static if language allow it
+	var $app : cs:C1710.App
+	var $Dir_mobileApps; $appFolder : 4D:C1709.Folder
 	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18; *)
 	
 	$apps:=New collection:C1472()
 	If ($Dir_mobileApps.exists)
 		
 		For each ($appFolder; $Dir_mobileApps.folders())
-			C_OBJECT:C1216($app)
 			$app:=cs:C1710.App.new($appFolder)
 			If ($app.hasAssociatedDomain())
 				$apps.push($app)
@@ -107,52 +89,35 @@ Function withAssociatedDomain  // TODO must be static if language allow it
 		
 	End if 
 	
-	$0:=$apps
-	
-	
-Function getSessionManager
-	C_OBJECT:C1216($0)
+Function getSessionManager()->$sessionManager : cs:C1710.Session
 	This:C1470._checkId()
-	$0:=cs:C1710.Session.new(This:C1470.id)
+	$sessionManager:=cs:C1710.Session.new(This:C1470.id)
 	
 	// recreate app manifest.json
 Function create
-	C_OBJECT:C1216($folder)
-	$folder:=This:C1470.folder
-	If ($folder=Null:C1517)
+	If (This:C1470.folder=Null:C1517)
 		This:C1470._checkFolder()
-	Else 
-		This:C1470.folder:=Null:C1517
 	End if 
+	
 	This:C1470.folder.file("manifest.json").setText(JSON Stringify:C1217(This:C1470))
 	
-	This:C1470.folder:=$folder
-	
 Function _checkFolder
-	C_OBJECT:C1216($folder)
 	This:C1470._checkId()
-	$folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(This:C1470.id)
-	If (Not:C34($folder.exists))
-		$folder.create()
+	
+	This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(This:C1470.id)
+	If (Not:C34(This:C1470.folder.exists))
+		This:C1470.folder.create()
 	End if 
 	
 Function _checkId
 	If (This:C1470.id=Null:C1517)
-		If (This:C1470.team=Null:C1517)
-			This:C1470.id:=String:C10(This:C1470.application.id)
-		Else 
-			This:C1470.id:=String:C10(This:C1470.team.id)+"."+String:C10(This:C1470.application.id)
-		End if 
+		This:C1470.id:=appID(This:C1470)
 	End if 
 	
-Function hasAssociatedDomain
-	C_BOOLEAN:C305($0)
-	$0:=Length:C16(String:C10(This:C1470.associatedDomain))>0
+Function hasAssociatedDomain()->$has : Boolean
+	$has:=Length:C16(String:C10(This:C1470.associatedDomain))>0
 	
-Function universalLink
-	C_TEXT:C284($0; $url)
-	C_OBJECT:C1216($1; $context)
-	$context:=$1
+Function universalLink($context : Object)->$url : Text
 	
 	$url:=String:C10(This:C1470.associatedDomain)
 	If ($url[[Length:C16($url)]]#"/")
@@ -167,38 +132,20 @@ Function universalLink
 		$url:=$url+"mobileapp/$/"+This:C1470.id+"/"+This:C1470.contextPathAndQuery($context)
 	End if 
 	
-	$0:=$url
-	
-Function universalPath
-	C_TEXT:C284($path; $0)
-	C_BOOLEAN:C305($short; $1)
-	$short:=$1
-	
+Function universalPath($short : Boolean)->$path : Text
 	If ($short)
 		$path:="/mobileapp/$/*"
 	Else 
 		$path:="/mobileapp/$/"+This:C1470.id+"/*"
 	End if 
-	$0:=$path
 	
-Function hasURLScheme
-	C_BOOLEAN:C305($0)
-	$0:=Length:C16(String:C10(This:C1470.urlScheme))>0
+Function hasURLScheme->$has : Boolean
+	$has:=Length:C16(String:C10(This:C1470.urlScheme))>0
 	
-Function urlSchemeURL
-	C_TEXT:C284($0; $url)
-	C_OBJECT:C1216($1; $context)
-	$context:=$1
-	
+Function urlSchemeURL($context : Object)->$url : Text
 	$url:=String:C10(This:C1470.urlScheme)+"://mobileapp/"+This:C1470.contextPathAndQuery($context)
 	
-	$0:=$url
-	
-Function contextPathAndQuery
-	C_TEXT:C284($0; $query)
-	C_OBJECT:C1216($1; $context)
-	$context:=$1
-	
+Function contextPathAndQuery($context : Object)->$query : Text
 	$query:=""
 	If (Length:C16(String:C10($context.dataClass))>0)  // & $1.context.dataClass#Null (String(Null) is "null")
 		
@@ -207,29 +154,29 @@ Function contextPathAndQuery
 			: ((Value type:C1509($context.parent)=Is object:K8:27) && ((Length:C16(String:C10($context.parent.primaryKey))>0) & (Length:C16(String:C10($context.parent.dataClass))>0)))
 				// Table/DataClass, filtered by a parent record/entity relation
 				
-				$query:="dataClass="+String:C10($context.parent.dataClass)  // TODO query url encode
+				$query:="dataClass="+queryURLEncode(String:C10($context.parent.dataClass))
 				
-				$query:=$query+"&entity.primaryKey="+String:C10($context.parent.primaryKey)  // TODO query url encode
+				$query:=$query+"&entity.primaryKey="+queryURLEncode(String:C10($context.parent.primaryKey))
 				
-				$query:=$query+"&relationName="+String:C10($context.parent.relationName)  // TODO query url encode
+				$query:=$query+"&relationName="+queryURLEncode(String:C10($context.parent.relationName))
 				
 			: (Value type:C1509($context.entity)=Is object:K8:27)  // n.b. $Obj_request.context object already checked by previous method
 				// Record/Entity
-				$query:="dataClass="+String:C10($context.dataClass)  // TODO query url encode
+				$query:="dataClass="+queryURLEncode(String:C10($context.dataClass))
 				
 				If (Length:C16(String:C10($context.entity.primaryKey))>0)
 					
-					$query:=$query+"&entity.primaryKey="+String:C10($context.entity.primaryKey)  // TODO query url encode
+					$query:=$query+"&entity.primaryKey="+queryURLEncode(String:C10($context.entity.primaryKey))
 					
 				End if 
 				
 			Else 
 				// Table/DataClass
-				$query:="dataClass="+String:C10($context.dataClass)  // TODO query url encode
+				$query:="dataClass="+queryURLEncode(String:C10($context.dataClass))
 				
 		End case 
 		
 	End if 
 	
-	$0:="show?"+$query
+	$query:="show?"+$query
 	

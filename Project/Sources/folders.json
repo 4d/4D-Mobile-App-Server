@@ -22,6 +22,11 @@
 		]
 	},
 	"app": {
+		"methods": [
+			"appID",
+			"Compiler_app",
+			"queryURLEncode"
+		],
 		"classes": [
 			"App"
 		]
