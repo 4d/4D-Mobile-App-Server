@@ -4,21 +4,22 @@ Utility class to send a push notification to one or multiple recipients.
 
 ## Configuration
 
-### iOS
+### iOS configuration
 
-You need to have an authentication key file `AuthKey_XXXYYY.p8` from Apple.
+⚠️ You need to have an authentication key file `AuthKey_XXXYYY.p8` from Apple.
 
 [Check how to generate your authentication key .p8 file](../Generate_p8.md)
 
 This file should be placed in your application sessions folder (`MobileApps/TEAM123456.com.sample.myappname`).
 
-### Android
+### Android configuration
 
-You need to configure a Firebase project in order to use push notifications.
+⚠️ You need to configure a Firebase project in order to use push notifications.
 
 [Check how to configure Firebase in few quick steps](../Conf_firebase.md)
 
 You need to :
+
 - create a project if it doesn't exist yet.
 - get **google-services.json** file.
 - enable **Cloud Message API (Legacy)** to retrieve your server key.
@@ -37,12 +38,9 @@ $notification.body:="Here is the content of this notification"
 $response:=$pushNotification.send($notification;"abc@4dmail.com")
 ```
 
----
-**NOTE**
+### NOTE
 
-For **iOS**, if you only use simulators (no real device), you can bypass the process of .p8 key file verification by pressing **Shift down** on PushNotification class instantiation.
-
----
+> For **iOS**, if you only use simulators (no real device), you can bypass the process of .p8 key file verification by pressing **Shift down** on PushNotification class instantiation.
 
 ## Development or Production mode (**iOS only**)
 
@@ -116,7 +114,7 @@ $pushNotification:=MobileAppServer .PushNotification.new("com.sample.myappname";
 
 To use the `send()`  and `sendAll()` functions from `PushNotification` class, you need a notification object that defines the content to send, and recipients.
 
-#### `send()`
+### `send()`
 
 This function will send `$notification` to all `$recipients`.
 
@@ -131,7 +129,7 @@ $pushNotification.recipients:=$recipients
 $response:=$pushNotification.send($notification)
 ```
 
-#### `sendAll()`
+### `sendAll()`
 
 This function will send `$notification` to any recipient that has a session file on the server for the app. **Be careful to who you send it, as it may be considered as spamming.**
 
@@ -152,33 +150,33 @@ $notification.body:="Here is the content of this notification"
 
 ### Additional properties
 
-#### iOS
+#### iOS properties
 
 - [subtitle](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649873-subtitle) containing a secondary description of the reason for the alert.
 - [badge](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649875-badge) the number to apply to the app’s icon.
 - [sound](https://developer.apple.com/documentation/usernotifications/unmutablenotificationcontent/1649868-sound) the sound to play when the system delivers the notification. If custom one, must be embedded manually in the app.
 - `category`: A category information for your notification
-- `url`: Open an url when clicking the notification, could help for custom deep linking etc...
-- `imageUrl`: Add an image using an url for rich notification display
+- `url`: Open a URL when clicking the notification, could help for custom deep linking etc...
+- `imageUrl`: Add an image using a URL for rich notification display
 
-#### Android
+#### Android properties
 
 - `sound`: The filename of a sound resource bundled in the app. Sound files must reside in /res/raw/
 - `color`: The notification's icon color, expressed in #rrggbb format.
-- `imageUrl`: Add an image using an url for rich notification display
+- `imageUrl`: Add an image using a URL for rich notification display
 
 ## Recipients
 
 Recipients can be of various types : email addresses, device tokens, simulator ids. It can be given as a single `String` parameter, but also as `Collection`, or as an `Object` containing 3 `Collection` of different types.
 
-##### A single mail address
+### A single mail address
 
 ```4d
 $mail:="abc@4dmail.com"
 $response:=$pushNotification.send($notification;$mail)
 ```
 
-##### A single device token
+### A single device token
 
 A device token can be found in a session file, it identifies a device for push notifications. Its length is 64 characters.
 
@@ -187,7 +185,7 @@ $deviceToken:="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 $response:=$pushNotification.send($notification;$deviceToken)
 ```
 
-##### A single simulator UDID (**iOS only**)
+### A single simulator UDID (**iOS only**)
 
 Testing your push notifications on a simulator can be very helpful. **However, in order to use this feature, you will need to have a XCode version of 11.4 or newer.**
 You can simply give the value `booted` to target the launched simulator, or you can run the follow command to list booted devices and get their UDID : `xcrun simctl list devices | grep Booted`
@@ -197,21 +195,21 @@ $simulator:="ABCD-DEFG-HIJK-LMNO"
 $response:=$pushNotification.send($notification;$simulator)
 ```
 
-##### A mail address collection
+### A mail address collection
 
 ```4d
 $mails:=New collection("abc@4dmail.com";"def@4dmail.com";"ghi@4dmail.com")
 $response:=$pushNotification.send($notification;$mails)
 ```
 
-##### A device token collection
+### A device token collection
 
 ```4d
 $deviceTokens:=New collection("xxxxxxxxxxxx";"yyyyyyyyyyyy";"zzzzzzzzzzzz")
 $response:=$pushNotification.send($notification;$deviceTokens)
 ```
 
-##### An object with all together: mails, devices and/or simulators
+### An object with all together: mails, devices and/or simulators
 
 This object can contain up to 3 collections : a mail address collection, a device token collection, and a simulator collection.
 
@@ -223,7 +221,7 @@ $recipients.simulators:=New collection("ABCDEFGHI";"9GER74FS8S";"PY1J4IT984") //
 $response:=$pushNotification.send($notification;$recipients)
 ```
 
-##### Extra
+### Extra
 
 You can use the [Session](./Session.md) class to retrieve information in session files, such as device tokens, mail addresses or more session information.
 
@@ -241,11 +239,11 @@ $response.errors  // Contains a collection of Text errors (implies $response.suc
 
 ## Custom actions
 
-#### `open()`
+### `open()`
 
 Open the app to a specific dataclass list form or entity detail form.
 
-##### Open a dataclass list form
+#### Open a dataclass list form
 
 This function will send `$notification` to all `$recipients` and open the target application on `$dataClass` list form.
 `$dataClass`can either be a text as a dataclass name, or a `4D DataClass` object.
