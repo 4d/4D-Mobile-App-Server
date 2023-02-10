@@ -44,7 +44,7 @@ $response:=$pushNotification.send($notification;"abc@4dmail.com")
 
 ## Development or Production mode (**iOS only**)
 
-You need to specify whether the target application is in `development` or `production` mode. 
+You need to specify whether the target application is in `development` or `production` mode.
 
 If your application is in `development` mode and you try to send push notification in `production` mode, the target won't receive the push notifications. By default, the `PushNotification` class is in `production` mode, but you can change it as follows :
 
@@ -167,7 +167,7 @@ $notification.body:="Here is the content of this notification"
 
 ## Recipients
 
-Recipients can be of various types : email addresses, device tokens, simulator ids. It can be given as a single `String` parameter, but also as `Collection`, or as an `Object` containing 3 `Collection` of different types.
+Recipients can be of various types : email addresses, device tokens, simulator IDs. It can be given as a single `String` parameter, but also as `Collection`, or as an `Object` containing 3 `Collection` of different types.
 
 ### A single mail address
 
