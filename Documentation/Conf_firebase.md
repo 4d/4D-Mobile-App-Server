@@ -1,6 +1,8 @@
-**You need to get the server key from your Firebase project and configure Cloud Message API.**
+# Firebase configuration
 
-# Create your project
+**⚠️ You need to get the server key from your Firebase project and configure Cloud Message API.**
+
+## Create your project
 
 - First go to [Firebase console](https://console.firebase.google.com/), sign in, then click on **Add project** if your project is not here yet.
 
@@ -15,7 +17,7 @@
 - You can download the **google-services.json** file here (you can get it later)
 - Click **Next** twice and then **Continue to the console**
 
-# Project settings
+## Project settings
 
 - On the left side, click the wheel and select **Project settings**.
 

@@ -1,6 +1,6 @@
-**You need to have an authentication file AuthKey_XXXX.p8 from Apple.**
-
 # Generate .p8 key file 🔑
+
+**⚠️ You need to have an authentication file AuthKey_XXXX.p8 from Apple.**
 
 - First go to [Apple developer account page](https://developer.apple.com/account/), sign in, then select **Certificates, IDs & Profiles**.
 
