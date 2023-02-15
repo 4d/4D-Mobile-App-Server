@@ -22,6 +22,10 @@ Function handle
 			
 			$handled:=This:C1470.appleAppSiteAssociation()
 			
+		: ($1="/.well-known/assetlinks.json")
+			
+			$handled:=This:C1470.assetlinks()
+			
 		: ($1=String:C10(This:C1470.activationPath))
 			
 			$handled:=Activate Sessions($1).success
@@ -39,6 +43,36 @@ Function handle
 	End case 
 	
 	$0:=$handled
+	
+Function assetlinks
+	var $apps : Collection
+	$apps:=cs:C1710.App.new().withAssociatedDomain()  // .all()
+	var $info : Collection
+	$info:=New collection:C1472
+	var $app; $object : Object
+	
+	For each ($app; $apps)
+		
+		If ($app["SIGN_SHA-256"]#Null:C1517)
+			$object:=New object:C1471
+			$object.relation:=New collection:C1472("delegate_permission/common.handle_all_urls")
+			$object.target:=New object:C1471("namespace"; "android_app"; "package_name"; $app.id)
+			$object.target.sha256_cert_fingerprints:=New collection:C1472($app["SIGN_SHA-256"])
+			
+			$info.push($object)
+		End if 
+		
+	End for each 
+	
+	
+	// send as json string
+	ARRAY TEXT:C222($headerFields; 1)
+	ARRAY TEXT:C222($headerValues; 1)
+	$headerFields{1}:="Content-Type"
+	$headerValues{1}:="application/json"
+	WEB SET HTTP HEADER:C660($headerFields; $headerValues)
+	
+	WEB SEND TEXT:C677(JSON Stringify:C1217($info; *))
 	
 /*
 Send app information to support UniversalLinks
