@@ -12,6 +12,11 @@ MobileAppServer .PushNotification.new( "com.sample.myappname" ) -> pushNotificat
 MobileAppServer .PushNotification.new( "myappname" ) -> pushNotification
 MobileAppServer .PushNotification.new( New object("bundleId";"com.sample.myappname";"teamId";"TEAM123456") ) -> pushNotification
 
+Specifying targets :
+MobileAppServer .PushNotification.new("android") -> pushNotification // only if one application
+MobileAppServer .PushNotification.new( "TEAM123456.com.sample.myappname"; "android" ) -> pushNotification
+MobileAppServer .PushNotification.new( "TEAM123456.com.sample.myappname"; New Collection("android"; "ios") ) -> pushNotification
+
 /!\ FOR TESTING ON SIMULATOR ONLY : Press Shift down
 
 Use (MobileAppServer.PushNotification)

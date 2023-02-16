@@ -1,5 +1,5 @@
 //%attributes = {}
-var $response; $notification; $Dir_mobileApps; $pushNotification : Object
+var $response; $notification; $pushNotification : Object
 
 // Define notification
 
@@ -7,20 +7,11 @@ $notification:=New object:C1471(\
 "title"; "Testing notification"; \
 "body"; "This is the content of a test notification")
 
-// Check there is only one application for this test
-
-$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18; *)
-
-ASSERT:C1129($Dir_mobileApps.folders().length=1; "Can't have more than one application in MobileApps for this test")
-
 // Test
-
-//var $target : Collection
-//$target:=New collection("android"; "ios")
-
 var $target : Text
 $target:="android"
-$pushNotification:=MobileAppServer.PushNotification.new($target)
+
+$pushNotification:=MobileAppServer.PushNotification.new("com.myCompany.My-App-10"; $target)
 
 $pushNotification.auth.serverKey:="test"
 
