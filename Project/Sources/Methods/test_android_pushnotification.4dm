@@ -7,11 +7,18 @@ $notification:=New object:C1471(\
 "title"; "Testing notification"; \
 "body"; "This is the content of a test notification")
 
+var $bundleId : Text
+
+$bundleId:="com.test.pntest"
+
+// Create test session
+createTestSession($bundleId)
+
 // Test
 var $target : Text
 $target:="android"
 
-$pushNotification:=MobileAppServer.PushNotification.new("com.myCompany.My-App-10"; $target)
+$pushNotification:=MobileAppServer.PushNotification.new($bundleId; $target)
 
 $pushNotification.auth.serverKey:="test"
 
@@ -42,3 +49,6 @@ $response:=$pushNotification.send($notification; "john@doe.com")
 ASSERT:C1129(Not:C34($response.success); "Function should fail")
 
 ASSERT:C1129($response.warnings.count()#0; "There should not be a warning on no matching session")
+
+
+deleteTestSession($bundleId)

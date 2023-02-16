@@ -61,31 +61,23 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 			
 		Else   // Application ID (teamID.bundleID) or Bundle ID or Application name
 			
-			$folder_indx:=$appFoldersList.indexOf($appID)
+			For each ($appFolder; $appFoldersList)
+				
+				If ($appFolder.fullName=$appID)
+					
+					If ($appFolder.exists)
+						
+						This:C1470.sessionDir:=$appFolder
+						
+					End if 
+					
+				End if 
+				
+			End for each 
 			
 			var $folder_name : Text
 			var $Col_app : Collection
 			var $pos : Integer
-			
-			
-			// Application ID (teamID.bundleID)
-			
-			If ($folder_indx>0)
-				
-				$appFolder:=$appFoldersList[$folder_indx]
-				
-				If ($appFolder.exists)
-					
-					This:C1470.sessionDir:=$appFolder
-					
-					// Else : application directory doesn't exist
-					
-				End if 
-				
-				// Else : Application ID (teamID.bundleID) not found
-				
-			End if 
-			
 			
 			// Application name
 			
@@ -97,7 +89,7 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 					
 					$Col_app:=Split string:C1554($folder_name; ".")
 					
-					If ($Col_app[$Col_app.length-1]=$appId)
+					If ($Col_app[$Col_app.length-1]=$appID)
 						
 						If ($appFolder.exists)
 							
@@ -126,7 +118,7 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 					
 					$folder_name:=$appFolder.fullName
 					
-					$pos:=Position:C15($appId; $folder_name)
+					$pos:=Position:C15($appID; $folder_name)
 					
 					If ($pos>0)
 						

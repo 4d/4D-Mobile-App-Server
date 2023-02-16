@@ -52,3 +52,9 @@ C_VARIANT:C1683(getAuthenticationKey; $1)
 
 C_OBJECT:C1216(getAuthKeyId; $0)
 C_TEXT:C284(getAuthKeyId; $1)
+
+C_OBJECT:C1216(createTestSession; $0)
+C_TEXT:C284(createTestSession; $1)
+
+C_OBJECT:C1216(deleteTestSession; $0)
+C_TEXT:C284(deleteTestSession; $1)

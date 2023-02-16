@@ -179,6 +179,11 @@ Class constructor
 			
 		: ($isObject)
 			
+			If (Bool:C1537($1.isTesting))
+				This:C1470.onlySimulator:=True:C214
+				This:C1470.auth.jwt:="testing"
+			End if 
+			
 			If (Length:C16(String:C10($1.bundleId))>0)
 				
 				This:C1470.auth.bundleId:=$1.bundleId
@@ -191,7 +196,7 @@ Class constructor
 			
 			If (This:C1470.isIos)
 				
-				If (Length:C16(String:C10($1.teamId))>0)
+				If ((Length:C16(String:C10($1.teamId))>0) | (Bool:C1537($1.isTesting)))
 					
 					This:C1470.auth.teamId:=$1.teamId
 					
@@ -230,7 +235,11 @@ Class constructor
 				
 				If (Not:C34($authKeySuccess))
 					
-					$session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+					If (String:C10(This:C1470.auth.teamId)#"")
+						$session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+					Else 
+						$session:=MobileAppServer.Session.new(This:C1470.auth.bundleId)
+					End if 
 					
 					If ($session.sessionDir#Null:C1517)
 						
@@ -246,6 +255,8 @@ Class constructor
 							ASSERT:C1129(False:C215; "Could not find authentication key for Apple push notification")
 							
 						End if 
+						
+					Else 
 						
 						ASSERT:C1129(False:C215; "Session folder could not be found")
 						
