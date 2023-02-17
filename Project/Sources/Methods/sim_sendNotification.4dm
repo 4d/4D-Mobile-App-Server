@@ -7,7 +7,7 @@ C_OBJECT:C1216($1)  // input object
 C_OBJECT:C1216($Obj_result; $payloadFile; $tmpFolder)
 C_TEXT:C284($cmdSimPush; $cmdSimPush_in; $cmdSimPush_out; $cmdSimPush_err)
 
-LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification]"+$cmdSimPush)
+LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification] "+$cmdSimPush)
 
 $Obj_result:=New object:C1471("success"; False:C215)
 
@@ -34,7 +34,7 @@ If ((Length:C16(String:C10($1.bundleId))>0)\
 		
 		If (Length:C16($cmdSimPush_err)>0)
 			
-			LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification]"+$cmdSimPush_err)
+			LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification] "+$cmdSimPush_err)
 			$Obj_result.error:=$cmdSimPush_err
 			
 		End if 

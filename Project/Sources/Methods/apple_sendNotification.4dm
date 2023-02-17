@@ -5,7 +5,7 @@ C_OBJECT:C1216($Obj_result)
 C_TEXT:C284($cmdPush; $cmdPush_in; $cmdPush_out; $cmdPush_err)
 C_TEXT:C284($endpoint)
 
-LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification]"+$cmdPush)
+LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification] "+$cmdPush)
 
 $Obj_result:=New object:C1471("success"; False:C215)
 
@@ -46,13 +46,13 @@ If ((Length:C16(String:C10($1.jwt))>0)\
 	
 	If (Length:C16($cmdPush_err)>0)
 		
-		LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification]"+$cmdPush_err)
+		LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification] "+$cmdPush_err)
 		
 	End if 
 	
 	If (Length:C16($cmdPush_out)>0)  // If notification sending failed, $cmdPush_out contains the error
 		
-		LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification]"+$cmdPush_out)
+		LOG EVENT:C667(Into 4D debug message:K38:5; "[iOS PushNotification] "+$cmdPush_out)
 		
 	Else   // Notification sent successfully
 		
