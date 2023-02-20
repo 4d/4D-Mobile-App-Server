@@ -5,7 +5,7 @@ C_TEXT:C284($2)  // team ID
 C_TEXT:C284($3)  // bundle ID
 C_COLLECTION:C1488($4)  // targets os
 C_COLLECTION:C1488($mails; $deviceTokens; $mailAndDeviceTokenCollection)
-C_OBJECT:C1216($Obj_result; $session; $Obj_session)
+C_OBJECT:C1216($Obj_result; $session; $Obj_session; $sessionClass)
 C_TEXT:C284($mail; $target)
 
 If (Asserted:C1132(Count parameters:C259>=3; "Missing parameter"))
@@ -34,7 +34,7 @@ $isAndroid:=Bool:C1537($4.lastIndexOf("android")#-1)
 $isIos:=Bool:C1537($4.lastIndexOf("ios")#-1)
 
 //$Obj_session:=MobileAppServer.Session.new($2+"."+$3)
-$Obj_session:=MobileAppServer.Session.new($3)
+$sessionClass:=MobileAppServer.Session.new($3)
 
 If ($deviceTokens.length>0)
 	
@@ -42,7 +42,7 @@ If ($deviceTokens.length>0)
 	
 	For each ($dt; $deviceTokens)
 		
-		$Obj_session:=$Obj_session.getSessionInfoFromDeviceToken($dt)
+		$Obj_session:=$sessionClass.getSessionInfoFromDeviceToken($dt)
 		
 		If ($Obj_session.success)
 			
@@ -95,7 +95,7 @@ If ($mails.length>0)
 	
 	For each ($mail; $mails)
 		
-		$Obj_session:=$Obj_session.getSessionInfoFromMail($mail)
+		$Obj_session:=$sessionClass.getSessionInfoFromMail($mail)
 		
 		If ($Obj_session.success)
 			
