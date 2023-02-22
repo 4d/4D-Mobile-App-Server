@@ -61,85 +61,107 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 			
 		Else   // Application ID (teamID.bundleID) or Bundle ID or Application name
 			
-			For each ($appFolder; $appFoldersList)
-				
-				If ($appFolder.fullName=$appID)
-					
-					If ($appFolder.exists)
-						
-						This:C1470.sessionDir:=$appFolder
-						
-					End if 
-					
-				End if 
-				
-			End for each 
 			
-			var $folder_name : Text
 			var $Col_app : Collection
-			var $pos : Integer
+			$Col_app:=Split string:C1554($appID; ".")
 			
-			// Application name
-			
-			If (This:C1470.sessionDir=Null:C1517)
-				
-				For each ($appFolder; $appFoldersList)
+			Case of 
 					
-					$folder_name:=$appFolder.fullName
+				: ($Col_app.count()=1)  // app name
 					
-					$Col_app:=Split string:C1554($folder_name; ".")
-					
-					If ($Col_app[$Col_app.length-1]=$appID)
+					For each ($appFolder; $appFoldersList) Until (This:C1470.sessionDir#Null:C1517)
 						
-						If ($appFolder.exists)
-							
-							This:C1470.sessionDir:=$appFolder
-							
-							// Else : application directory doesn't exist (not possible or just deleted)
-							
-						End if 
+						$Col_app:=Split string:C1554($appFolder.fullName; ".")
 						
-						// Else : Application name not found
-						
-					End if 
-					
-				End for each 
-				
-				// Else : sessionDir already found
-				
-			End if 
-			
-			
-			// Bundle ID
-			
-			If (This:C1470.sessionDir=Null:C1517)
-				
-				For each ($appFolder; $appFoldersList)
-					
-					$folder_name:=$appFolder.fullName
-					
-					$pos:=Position:C15($appID; $folder_name)
-					
-					If ($pos>0)
-						
-						If ($appFolder.exists)
+						If ($Col_app[$Col_app.length-1]=$appID)
 							
-							This:C1470.sessionDir:=$appFolder
+							If ($appFolder.exists)
+								
+								This:C1470.sessionDir:=$appFolder
+								
+								// Else : application directory doesn't exist (not possible or just deleted)
+								
+							End if 
 							
-							// Else : application directory doesn't exist
+							// Else : Application name not found
 							
 						End if 
 						
-						// Else : BundleId found
+					End for each 
+					
+				: ($Col_app.count()=3)  // bundleId
+					
+					var $pos : Integer
+					
+					For each ($appFolder; $appFoldersList) Until (This:C1470.sessionDir#Null:C1517)
+						
+						$pos:=Position:C15($appID; $appFolder.fullName)
+						
+						If ($pos>0)
+							
+							If ($appFolder.exists)
+								
+								This:C1470.sessionDir:=$appFolder
+								
+								// Else : application directory doesn't exist
+								
+							End if 
+							
+							// Else : BundleId found
+							
+						End if 
+						
+					End for each 
+					
+				: ($Col_app.count()=4)  // teamId.bundleId
+					
+					For each ($appFolder; $appFoldersList) Until (This:C1470.sessionDir#Null:C1517)
+						
+						If ($appFolder.fullName=$appID)
+							
+							If ($appFolder.exists)
+								
+								This:C1470.sessionDir:=$appFolder
+								
+							End if 
+							
+						End if 
+						
+					End for each 
+					
+					If (This:C1470.sessionDir=Null:C1517)
+						
+						var $bundleId; $prefix : Text
+						
+						$prefix:=Substring:C12($appID; 1; 4)
+						$bundleId:=Substring:C12($appID; 5; Length:C16($appID)-1)
+						
+						If ($prefix="___.")
+							
+							For each ($appFolder; $appFoldersList) Until (This:C1470.sessionDir#Null:C1517)
+								
+								$pos:=Position:C15($bundleId; $appFolder.fullName)
+								
+								If ($pos>1)  // we don't want folder that starts with an unknown teamId so the condition is not '$pos>0'
+									
+									If ($appFolder.exists)
+										
+										This:C1470.sessionDir:=$appFolder
+										
+										// Else : application directory doesn't exist
+										
+									End if 
+									
+									// Else : BundleId found
+									
+								End if 
+								
+							End for each 
+						End if 
 						
 					End if 
 					
-				End for each 
-				
-				// Else : sessionDir already found
-				
-			End if 
-			
+			End case 
 			
 		End if 
 		
@@ -224,4 +246,3 @@ Function getSessionObjects()->$sessionObjects : Collection
 		End if 
 		
 	End for each 
-	

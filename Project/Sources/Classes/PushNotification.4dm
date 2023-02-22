@@ -30,6 +30,7 @@ Class constructor
 	
 	C_OBJECT:C1216($session; $Obj_manifest; $Obj_authKey)
 	C_BOOLEAN:C305($isObject; $isText)
+	C_COLLECTION:C1488($sessions)
 	
 	This:C1470.auth:=New object:C1471()
 	This:C1470.lastResult:=New object:C1471
@@ -48,6 +49,7 @@ Class constructor
 	
 	$isObject:=False:C215
 	$isText:=False:C215
+	$sessions:=New collection:C1472
 	
 	Case of 
 			
@@ -83,13 +85,18 @@ Class constructor
 							
 							$session:=MobileAppServer.Session.new($1)
 							
+							$sessions.push($session)
+							
+							// Adding sessions with teamId prefix
+							$session:=MobileAppServer.Session.new("___."+$1)
+							$sessions.push($session)
+							$sessions:=$sessions.distinct()
+							
 					End case 
 					
 				: (Value type:C1509($1)=Is collection:K8:32)
 					
 					$isText:=True:C214
-					
-					
 					
 					This:C1470.isAndroid:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
 					This:C1470.isIos:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
@@ -111,6 +118,13 @@ Class constructor
 					$isText:=True:C214
 					
 					$session:=MobileAppServer.Session.new($1)
+					
+					$sessions.push($session)
+					
+					// Adding sessions with teamId prefix
+					$session:=MobileAppServer.Session.new("___."+$1)
+					$sessions.push($session)
+					$sessions:=$sessions.distinct()
 					
 				: (Value type:C1509($1)=Is object:K8:27)
 					
@@ -155,7 +169,30 @@ Class constructor
 				
 				If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 					
-					$Obj_authKey:=getAuthenticationKey($session.sessionDir)
+					If ($sessions.count()>0)
+						
+						var $s : Object
+						
+						For each ($s; $sessions)
+							
+							// Choosing the session with teamId that will contain .p8 file
+							var $Col_app : Collection
+							$Col_app:=Split string:C1554($s.sessionDir.fullName; ".")
+							
+							If ($Col_app.count()=4)
+								
+								$Obj_authKey:=getAuthenticationKey($s.sessionDir)
+								
+							End if 
+							
+						End for each 
+						
+						
+					Else 
+						
+						$Obj_authKey:=getAuthenticationKey($session.sessionDir)
+						
+					End if 
 					
 					If ($Obj_authKey.success)
 						
