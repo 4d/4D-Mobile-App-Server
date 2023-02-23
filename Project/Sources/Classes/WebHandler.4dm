@@ -53,12 +53,13 @@ Function assetlinks
 	
 	For each ($app; $apps)
 		
-		If ($app["SIGN_SHA-256"]#Null:C1517)
+		If ($app["signingReport"]#Null:C1517)
 			$object:=New object:C1471
 			$object.relation:=New collection:C1472("delegate_permission/common.handle_all_urls")
 			$object.target:=New object:C1471("namespace"; "android_app"; "package_name"; $app.id)
-			$object.target.sha256_cert_fingerprints:=New collection:C1472($app["SIGN_SHA-256"])
 			
+			$signingReport:=$app["signingReport"]
+			$object.target.sha256_cert_fingerprints:=New collection:C1472($signingReport["SHA-256"])
 			$info.push($object)
 		End if 
 		
