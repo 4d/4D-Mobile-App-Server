@@ -49,7 +49,7 @@ Function assetlinks
 	$apps:=cs:C1710.App.new().withAssociatedDomain()  // .all()
 	var $info : Collection
 	$info:=New collection:C1472
-	var $app; $object : Object
+	var $app; $object; $signingReport : Object
 	
 	For each ($app; $apps)
 		
