@@ -42,9 +42,14 @@ $sessionClass:=MobileAppServer.Session.new($3)
 $sessions.push($sessionClass)
 
 // Adding sessions with teamId prefix
-$sessionClass:=MobileAppServer.Session.new($2+"."+$3)
-$sessions.push($sessionClass)
-$sessions:=$sessions.distinct()
+If (String:C10($2)#"")
+	
+	$sessionClass:=MobileAppServer.Session.new($2+"."+$3)
+	If ($sessionClass.sessionDir#Null:C1517)
+		$sessions.push($sessionClass)
+	End if 
+	
+End if 
 
 var $s : Object
 

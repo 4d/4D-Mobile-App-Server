@@ -89,8 +89,9 @@ Class constructor
 							
 							// Adding sessions with teamId prefix
 							$session:=MobileAppServer.Session.new("___."+$1)
-							$sessions.push($session)
-							$sessions:=$sessions.distinct()
+							If ($session.sessionDir#Null:C1517)
+								$sessions.push($session)
+							End if 
 							
 					End case 
 					
@@ -123,8 +124,9 @@ Class constructor
 					
 					// Adding sessions with teamId prefix
 					$session:=MobileAppServer.Session.new("___."+$1)
-					$sessions.push($session)
-					$sessions:=$sessions.distinct()
+					If ($session.sessionDir#Null:C1517)
+						$sessions.push($session)
+					End if 
 					
 				: (Value type:C1509($1)=Is object:K8:27)
 					
@@ -152,66 +154,63 @@ Class constructor
 			
 		: ($isText)
 			
-			If ($session.sessionDir#Null:C1517)
+			var $s : Object
+			var $found : Boolean
+			$found:=False:C215
+			
+			If ($sessions.count()>1)
 				
-				If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
+				For each ($s; $sessions) Until $found
 					
-					If ($sessions.count()>0)
+					// Choosing the session with teamId that will contain .p8 file
+					var $Col_app : Collection
+					$Col_app:=Split string:C1554($s.sessionDir.fullName; ".")
+					
+					If ($Col_app.count()=4)
 						
-						var $s : Object
-						
-						For each ($s; $sessions)
-							
-							// Choosing the session with teamId that will contain .p8 file
-							var $Col_app : Collection
-							$Col_app:=Split string:C1554($s.sessionDir.fullName; ".")
-							
-							If ($Col_app.count()=4)
-								
-								$Obj_manifest:=getManifest($session.sessionDir)
-								
-								If ($Obj_manifest.success)
-									
-									This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
-									This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
-									
-								Else 
-									
-									ASSERT:C1129(False:C215; "Could not get manifest info")
-									
-								End if 
-								
-								$Obj_authKey:=getAuthenticationKey($s.sessionDir)
-								
-							End if 
-							
-						End for each 
-						
-					Else 
-						
-						$Obj_authKey:=getAuthenticationKey($session.sessionDir)
+						$found:=True:C214
 						
 					End if 
 					
-					If ($Obj_authKey.success)
-						
-						This:C1470.auth.authKey:=$Obj_authKey.authKey
-						This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
-						
-					Else 
-						
-						ASSERT:C1129(False:C215; "Could not find authentication key for Apple push notification")
-						
-					End if 
-					
-					// Else : no need to generate jwt with .p8 key
-				End if 
+				End for each 
 				
 			Else 
 				
-				ASSERT:C1129(False:C215; "Could not find application info in Session")
+				$s:=$sessions[0]
 				
 			End if 
+			
+			$Obj_manifest:=getManifest($s.sessionDir)
+			
+			If ($Obj_manifest.success)
+				
+				This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
+				This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
+				
+			Else 
+				
+				ASSERT:C1129(False:C215; "Could not get manifest info")
+				
+			End if 
+			
+			If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
+				
+				$Obj_authKey:=getAuthenticationKey($s.sessionDir)
+				
+				If ($Obj_authKey.success)
+					
+					This:C1470.auth.authKey:=$Obj_authKey.authKey
+					This:C1470.auth.authKeyId:=$Obj_authKey.authKeyId
+					
+				Else 
+					
+					ASSERT:C1129(False:C215; "Could not find authentication key for Apple push notification")
+					
+				End if 
+				
+				// Else : no need to generate jwt with .p8 key
+			End if 
+			
 			
 		: ($isObject)
 			

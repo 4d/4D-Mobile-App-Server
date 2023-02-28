@@ -15,6 +15,9 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 	var $folder_indx : Integer
 	var $emptyParameter : Boolean
 	var $appFoldersList : Collection
+	var $skipAssert : Boolean
+	
+	$skipAssert:=False:C215
 	
 	var $Dir_mobileApps; $appFolder : 4D:C1709.Folder
 	$Dir_mobileApps:=Folder:C1567(fk mobileApps folder:K87:18; *)
@@ -138,6 +141,8 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 						
 						If ($prefix="___.")
 							
+							$skipAssert:=True:C214
+							
 							For each ($appFolder; $appFoldersList) Until (This:C1470.sessionDir#Null:C1517)
 								
 								$pos:=Position:C15($bundleId; $appFolder.fullName)
@@ -157,6 +162,7 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 								End if 
 								
 							End for each 
+							
 						End if 
 						
 					End if 
@@ -171,7 +177,11 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 	
 	If (This:C1470.sessionDir=Null:C1517)
 		
-		ASSERT:C1129(False:C215; "Session folder could not be found")
+		If (Not:C34($skipAssert))
+			
+			ASSERT:C1129(False:C215; "Session folder could not be found")
+			
+		End if 
 		
 	End if 
 	
