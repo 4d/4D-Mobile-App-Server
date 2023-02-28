@@ -141,8 +141,8 @@ Class constructor
 					
 				: (Value type:C1509($2)=Is collection:K8:32)
 					
-					This:C1470.isAndroid:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
-					This:C1470.isIos:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
+					This:C1470.isAndroid:=Bool:C1537($2.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
+					This:C1470.isIos:=Bool:C1537($2.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
 					
 			End case 
 			
@@ -153,19 +153,6 @@ Class constructor
 		: ($isText)
 			
 			If ($session.sessionDir#Null:C1517)
-				
-				$Obj_manifest:=getManifest($session.sessionDir)
-				
-				If ($Obj_manifest.success)
-					
-					This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
-					This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
-					
-				Else 
-					
-					ASSERT:C1129(False:C215; "Could not get manifest info")
-					
-				End if 
 				
 				If ((Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 					
@@ -181,12 +168,24 @@ Class constructor
 							
 							If ($Col_app.count()=4)
 								
+								$Obj_manifest:=getManifest($session.sessionDir)
+								
+								If ($Obj_manifest.success)
+									
+									This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
+									This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
+									
+								Else 
+									
+									ASSERT:C1129(False:C215; "Could not get manifest info")
+									
+								End if 
+								
 								$Obj_authKey:=getAuthenticationKey($s.sessionDir)
 								
 							End if 
 							
 						End for each 
-						
 						
 					Else 
 						

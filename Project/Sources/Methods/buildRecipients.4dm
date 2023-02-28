@@ -22,7 +22,7 @@ $Obj_result:=New object:C1471("success"; False:C215)
 //________________________________________
 
 $deviceTokens:=$1.deviceTokens.distinct()
-$mails:=$1.mails
+$mails:=$1.mails.distinct()
 
 
 $Obj_result.recipients:=New collection:C1472
@@ -33,55 +33,75 @@ C_BOOLEAN:C305($isAndroid; $isIos)
 $isAndroid:=Bool:C1537($4.lastIndexOf("android")#-1)
 $isIos:=Bool:C1537($4.lastIndexOf("ios")#-1)
 
-//$Obj_session:=MobileAppServer.Session.new($2+"."+$3)
+var $sessions : Collection
+
+$sessions:=New collection:C1472
+
 $sessionClass:=MobileAppServer.Session.new($3)
+
+$sessions.push($sessionClass)
+
+// Adding sessions with teamId prefix
+$sessionClass:=MobileAppServer.Session.new($2+"."+$3)
+$sessions.push($sessionClass)
+$sessions:=$sessions.distinct()
+
+var $s : Object
 
 If ($deviceTokens.length>0)
 	
-	C_TEXT:C284($dt)
-	
-	For each ($dt; $deviceTokens)
+	For each ($s; $sessions)
 		
-		$Obj_session:=$sessionClass.getSessionInfoFromDeviceToken($dt)
+		C_TEXT:C284($dt)
 		
-		If ($Obj_session.success)
+		For each ($dt; $deviceTokens)
 			
-			$target:=Lowercase:C14(String:C10($Obj_session.session.device.os))
+			$Obj_session:=$s.getSessionInfoFromDeviceToken($dt)
 			
-			If (Lowercase:C14($target)="ipados")
-				$target:="ios"
+			If ($Obj_session.success)
+				
+				$target:=Lowercase:C14(String:C10($Obj_session.session.device.os))
+				
+				If (Lowercase:C14($target)="ipados")
+					$target:="ios"
+				End if 
+				
+				Case of 
+						
+					: ((($target="ios") & ($isIos)) | (($target="android") & ($isAndroid)))
+						
+						$Obj_result.recipients.push(New object:C1471(\
+							"email"; String:C10($Obj_session.session.email); \
+							"deviceToken"; $dt; \
+							"target"; $target))
+						
+						$Obj_result.success:=True:C214
+						
+					: (($target="ios") & (Not:C34($isIos)))
+						// error
+						$Obj_result.warnings.push("Target iOS was not chosen, but the following device token belongs to an iOS device : "+$dt)
+						
+					: (($target="android") & (Not:C34($isAndroid)))
+						// error
+						$Obj_result.warnings.push("Target Android was not chosen, but the following device token belongs to an Android device : "+$dt)
+						
+					: ((Not:C34($target="ios")) & (Not:C34($target="android")))
+						// no target for session
+						$Obj_result.warnings.push("No os target found in session for the following device token: "+$dt)
+						
+				End case 
+				
+			Else   // No session found for current device token
+				
+				$Obj_result.warnings.push("No session file was found for the following device token: "+$dt)
+				
 			End if 
 			
-			Case of 
-					
-				: ((($target="ios") & ($isIos)) | (($target="android") & ($isAndroid)))
-					
-					$Obj_result.recipients.push(New object:C1471(\
-						"email"; String:C10($Obj_session.session.email); \
-						"deviceToken"; $dt; \
-						"target"; $target))
-					
-				: (($target="ios") & (Not:C34($isIos)))
-					// error
-					$Obj_result.warnings.push("Target iOS was not chosen, but the following device token belongs to an iOS device : "+$dt)
-					
-				: (($target="android") & (Not:C34($isAndroid)))
-					// error
-					$Obj_result.warnings.push("Target Android was not chosen, but the following device token belongs to an Android device : "+$dt)
-					
-				: ((Not:C34($target="ios")) & (Not:C34($target="android")))
-					// no target for session
-					$Obj_result.warnings.push("No os target found in session for the following device token: "+$dt)
-					
-			End case 
-			
-		Else   // No session found for current device token
-			
-			$Obj_result.warnings.push("No session file was found for the following device token: "+$dt)
-			
-		End if 
+		End for each 
 		
 	End for each 
+	
+	
 	
 	// Else : no deviceTokens given in entry
 	
@@ -93,71 +113,68 @@ End if
 
 If ($mails.length>0)
 	
-	For each ($mail; $mails)
+	For each ($s; $sessions)
 		
-		$Obj_session:=$sessionClass.getSessionInfoFromMail($mail)
-		
-		If ($Obj_session.success)
+		For each ($mail; $mails)
 			
-			C_BOOLEAN:C305($atLeastOneFound)
-			$atLeastOneFound:=False:C215
+			$Obj_session:=$s.getSessionInfoFromMail($mail)
 			
-			For each ($session; $Obj_session.sessions)
+			If ($Obj_session.success)
 				
-				If (Length:C16(String:C10($session.device.token))>0)
+				C_BOOLEAN:C305($atLeastOneFound)
+				$atLeastOneFound:=False:C215
+				
+				For each ($session; $Obj_session.sessions)
 					
-					If ($deviceTokens.indexOf($session.device.token)<0)  // avoiding doubles
+					If (Length:C16(String:C10($session.device.token))>0)
 						
-						$target:=Lowercase:C14(String:C10($session.device.os))
-						
-						If (Lowercase:C14($target)="ipados")
-							$target:="ios"
+						If ($deviceTokens.indexOf($session.device.token)<0)  // avoiding doubles
+							
+							$target:=Lowercase:C14(String:C10($session.device.os))
+							
+							If (Lowercase:C14($target)="ipados")
+								$target:="ios"
+							End if 
+							
+							Case of 
+									
+								: ((($target="ios") & ($isIos)) | (($target="android") & ($isAndroid)))
+									
+									$deviceTokens.push($session.device.token)  // avoiding doubles
+									
+									$Obj_result.recipients.push(New object:C1471(\
+										"email"; $mail; \
+										"deviceToken"; $session.device.token; \
+										"target"; $target))
+									
+									$atLeastOneFound:=True:C214
+									$Obj_result.success:=True:C214
+									
+								: ((Not:C34($target="ios")) & (Not:C34($target="android")))
+									// no target for session
+									$Obj_result.warnings.push("No os target found in session for the following device token: "+$session.device.token)
+									
+							End case 
+							
 						End if 
-						
-						Case of 
-								
-							: ((($target="ios") & ($isIos)) | (($target="android") & ($isAndroid)))
-								
-								$deviceTokens.push($session.device.token)  // avoiding doubles
-								
-								$Obj_result.recipients.push(New object:C1471(\
-									"email"; $mail; \
-									"deviceToken"; $session.device.token; \
-									"target"; $target))
-								
-								$atLeastOneFound:=True:C214
-								
-							: (($target="ios") & (Not:C34($isIos)))
-								// error
-								$Obj_result.warnings.push("Target iOS was not chosen, but the following device token belongs to an iOS device : "+$dt)
-								
-							: (($target="android") & (Not:C34($isAndroid)))
-								// error
-								$Obj_result.warnings.push("Target Android was not chosen, but the following device token belongs to an Android device : "+$dt)
-								
-							: ((Not:C34($target="ios")) & (Not:C34($target="android")))
-								// no target for session
-								$Obj_result.warnings.push("No os target found in session for the following device token: "+$dt)
-								
-						End case 
 						
 					End if 
 					
+				End for each 
+				
+				If (Not:C34($atLeastOneFound))
+					
+					$Obj_result.warnings.push("We couldn't find related deviceTokens to the following mail address : "+$mail+", that matches the given targets")
+					
 				End if 
 				
-			End for each 
-			
-			If (Not:C34($atLeastOneFound))
+			Else   // No session found for current mail address 
 				
-				$Obj_result.warnings.push("We couldn't find related deviceTokens to the following mail address : "+$mail)
+				$Obj_result.warnings.push("No session file was found for the following mail address : "+$mail)
 				
 			End if 
 			
-		Else   // No session found for current mail address 
-			
-			$Obj_result.warnings.push("No session file was found for the following mail address : "+$mail)
-			
-		End if 
+		End for each 
 		
 	End for each 
 	
