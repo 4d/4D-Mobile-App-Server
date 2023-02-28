@@ -185,7 +185,12 @@ Class constructor
 			If ($Obj_manifest.success)
 				
 				This:C1470.auth.bundleId:=$Obj_manifest.manifest.application.id
-				This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
+				
+				If (This:C1470.isIos)
+					
+					This:C1470.auth.teamId:=$Obj_manifest.manifest.team.id
+					
+				End if 
 				
 			Else 
 				
