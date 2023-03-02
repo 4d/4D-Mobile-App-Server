@@ -50,7 +50,6 @@ If (Value type:C1509($1.userInfo)=Is object:K8:27)
 	For each ($key; $1.userInfo)
 		
 		$notification[$key]:=$1.userInfo[$key]
-		
 	End for each 
 	
 End if 

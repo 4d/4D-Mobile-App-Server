@@ -75,11 +75,19 @@ Class constructor
 							
 							$session:=MobileAppServer.Session.new()
 							
+							If ($session.sessionDir#Null:C1517)
+								$sessions.push($session)
+							End if 
+							
 						: (Lowercase:C14($1)="android")
 							
 							This:C1470.isIos:=False:C215
 							
 							$session:=MobileAppServer.Session.new()
+							
+							If ($session.sessionDir#Null:C1517)
+								$sessions.push($session)
+							End if 
 							
 						Else 
 							
@@ -103,6 +111,10 @@ Class constructor
 					This:C1470.isIos:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
 					
 					$session:=MobileAppServer.Session.new()
+					
+					If ($session.sessionDir#Null:C1517)
+						$sessions.push($session)
+					End if 
 					
 				: (Value type:C1509($1)=Is object:K8:27)
 					
@@ -443,28 +455,53 @@ Function sendAll
 	This:C1470.lastResult.warnings:=New collection:C1472
 	This:C1470.lastResult.errors:=New collection:C1472
 	
-	C_OBJECT:C1216($Obj_session; $Obj_deviceTokens)
+	var $Obj_session; $Obj_deviceTokens : Object
 	
-	//$Obj_session:=MobileAppServer.Session.new(This.auth.teamId+"."+This.auth.bundleId)
+	var $sessions : Collection
+	
+	$sessions:=New collection:C1472
+	
 	$Obj_session:=MobileAppServer.Session.new(This:C1470.auth.bundleId)
 	
-	If ($Obj_session.sessionDir=Null:C1517)
+	$sessions.push($Obj_session)
+	
+	// Adding sessions with teamId prefix
+	If (String:C10(This:C1470.auth.teamId)#"")
 		
-		This:C1470.lastResult.errors.push("Could not find application info in Session")
+		$Obj_session:=MobileAppServer.Session.new(This:C1470.auth.teamId+"."+This:C1470.auth.bundleId)
+		If ($Obj_session.sessionDir#Null:C1517)
+			$sessions.push($Obj_session)
+		End if 
 		
-	Else 
+	End if 
+	
+	var $s : Object
+	var $col_deviceTokens : Collection
+	
+	$col_deviceTokens:=New collection:C1472
+	
+	For each ($s; $sessions)
 		
-		$Obj_deviceTokens:=$Obj_session.getAllDeviceTokens()  // TODO : pour chauqe devicetoken, noter si ios ou android
+		$Obj_deviceTokens:=$s.getAllDeviceTokens()
 		
 		If ($Obj_deviceTokens.success)
 			
-			This:C1470.lastResult:=This:C1470.send($1; $Obj_deviceTokens.deviceTokens)
-			
-		Else 
-			
-			This:C1470.lastResult.errors.push("No recipient found")
+			$col_deviceTokens.combine($Obj_deviceTokens.deviceTokens)
 			
 		End if 
+		
+	End for each 
+	
+	$col_deviceTokens:=$col_deviceTokens.distinct()
+	
+	
+	If ($col_deviceTokens.count()>0)
+		
+		This:C1470.lastResult:=This:C1470.send($1; $col_deviceTokens)
+		
+	Else 
+		
+		This:C1470.lastResult.errors.push("No recipient found")
 		
 	End if 
 	

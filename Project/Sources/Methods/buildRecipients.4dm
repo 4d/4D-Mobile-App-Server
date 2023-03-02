@@ -22,7 +22,7 @@ $Obj_result:=New object:C1471("success"; False:C215)
 //________________________________________
 
 $deviceTokens:=$1.deviceTokens.distinct()
-$mails:=$1.mails.distinct()
+$mails:=$1.mails
 
 
 $Obj_result.recipients:=New collection:C1472

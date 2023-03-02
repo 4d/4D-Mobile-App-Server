@@ -167,6 +167,10 @@ Class constructor($appID : Text)  // Application ID (teamID.bundleID) or Bundle 
 						
 					End if 
 					
+				: ($Col_app.count()=5)  // ___.teamId.bundleId
+					
+					$skipAssert:=True:C214
+					
 			End case 
 			
 		End if 
