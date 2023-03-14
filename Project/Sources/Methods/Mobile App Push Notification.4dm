@@ -117,6 +117,12 @@ If (Not:C34($isMissingRecipients))
 					
 				End if 
 				
+				If (Not:C34($status.success))
+					// Adding notfication sending failure message to the returned object for further treatment
+					$Obj_result.warnings.push("Failed to send iOS push notification to :\n ["+String:C10($mailAndDeviceToken.email)+" ; "+String:C10($mailAndDeviceToken.deviceToken)+"]")
+					
+				End if 
+				
 				
 			: ($mailAndDeviceToken.target="android")
 				
@@ -139,6 +145,12 @@ If (Not:C34($isMissingRecipients))
 				
 				$status:=android_sendNotification($notificationInput)
 				
+				If (Not:C34($status.success))
+					// Adding notfication sending failure message to the returned object for further treatment
+					$Obj_result.warnings.push("Failed to send Android push notification to :\n ["+String:C10($mailAndDeviceToken.email)+" ; "+String:C10($mailAndDeviceToken.deviceToken)+"]")
+					
+				End if 
+				
 			Else 
 				
 				$Obj_result.warnings.push("Missing target os for :\n ["+String:C10($mailAndDeviceToken.email)+" ; "+String:C10($mailAndDeviceToken.deviceToken)+"]")
@@ -149,10 +161,6 @@ If (Not:C34($isMissingRecipients))
 		If ($status.success)  // Notification sent successfully
 			
 			$Obj_result.success:=True:C214  // At least one notification was sent successfully, other potential failures are pushed in warnings collection
-			
-		Else 
-			// Adding notfication sending failure message to the returned object for further treatment
-			$Obj_result.warnings.push("Failed to send push notification to :\n ["+String:C10($mailAndDeviceToken.email)+" ; "+String:C10($mailAndDeviceToken.deviceToken)+"]")
 			
 		End if 
 		
