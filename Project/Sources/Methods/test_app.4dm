@@ -6,7 +6,7 @@ $apps:=cs:C1710.App.new().all()
 
 If ($apps.length=0)
 	
-	$app:=JSON Parse:C1218(Folder:C1567(fk resources folder:K87:11).folder("test").file("manifest.json"))
+	$app:=JSON Parse:C1218(Folder:C1567(fk resources folder:K87:11).folder("test").file("manifest.json").getText())
 	$app:=cs:C1710.App.new($app)
 	
 	$app.create()
