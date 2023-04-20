@@ -85,5 +85,5 @@ See [CONTRIBUTING][contributing-url] guide.
 [code-url]: https://developer.4d.com/
 [release-shield]: https://img.shields.io/github/v/release/4d-for-ios/4D-Mobile-App-Server
 [release-url]: https://github.com/4d-for-ios/4D-Mobile-App-Server/releases/latest
-[contributing-url]: CONTRIBUTING.md
+[contributing-url]: .github/CONTRIBUTING.md
 [license-url]: LICENSE.md
