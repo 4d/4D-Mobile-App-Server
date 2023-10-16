@@ -11,30 +11,28 @@ Handler on web connection
 - Manage /.well-known/apple-app-site-association with app from /MobileApps
 - Session activation if settings is done
 */
-Function handle
-	C_BOOLEAN:C305($0; $handled)
-	C_TEXT:C284($1; $2; $3; $4; $5; $6)
+Function handle($path : Text; $http : Text; $ipBrowser : Text; $ipServer : Text; $user : Text; $pass : Text)->$handled : Boolean
 	
 	$handled:=False:C215
 	
 	Case of 
-		: ($1="/.well-known/apple-app-site-association")
+		: ($path="/.well-known/apple-app-site-association")
 			
 			$handled:=This:C1470.appleAppSiteAssociation()
 			
-		: ($1="/.well-known/assetlinks.json")
+		: ($path="/.well-known/assetlinks.json")
 			
 			$handled:=This:C1470.assetlinks()
 			
-		: ($1=String:C10(This:C1470.activationPath))
+		: ($path=String:C10(This:C1470.activationPath))
 			
-			$handled:=Activate Sessions($1).success
+			$handled:=Activate Sessions($path).success
 			
-		: (Position:C15("/mobileapp/$/"; $1)=1)
+		: (Position:C15("/mobileapp/$/"; $path)=1)
 			
 			If (This:C1470.handleUniversalLinks#Null:C1517)
 				
-				$handled:=This:C1470.handleUniversalLinks.call(This:C1470; cs:C1710.UniversalLink.new($1))
+				$handled:=This:C1470.handleUniversalLinks.call(This:C1470; cs:C1710.UniversalLink.new($path))
 				
 			End if 
 			
@@ -42,7 +40,6 @@ Function handle
 			
 	End case 
 	
-	$0:=$handled
 	
 Function assetlinks
 	var $apps : Collection
@@ -79,8 +76,7 @@ Function assetlinks
 Send app information to support UniversalLinks
 https://developer.apple.com/library/archive/documentation/General/Conceptual/AppSearch/UniversalLinks.html
 */
-Function appleAppSiteAssociation
-	C_BOOLEAN:C305($0; $handled)
+Function appleAppSiteAssociation()->$handled : Boolean
 	C_COLLECTION:C1488($apps; $details; $appIDs)
 	C_OBJECT:C1216($info; $app)
 	
@@ -115,7 +111,6 @@ Function appleAppSiteAssociation
 	Else 
 		$handled:=False:C215
 	End if 
-	$0:=$handled
 	
 /* Provide some information if web page opening by mobile app, like dataclass or entity */
 Function getContext()->$context : cs:C1710.WebContext

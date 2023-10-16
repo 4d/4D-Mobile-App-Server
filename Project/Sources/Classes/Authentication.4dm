@@ -1,10 +1,9 @@
 // Wrapper `On Mobile App Authentication` input
-Class constructor
-	C_OBJECT:C1216($1)
-	This:C1470.request:=$1
+Class constructor($request : Object)
+	This:C1470.request:=$request
 	This:C1470.class:=OB Class:C1730(This:C1470)
 	
-	If ($1=Null:C1517)
+	If ($request=Null:C1517)
 		
 		ASSERT:C1129(False:C215; "Failed to "+Current method name:C684)
 		
@@ -34,6 +33,5 @@ Function getSessionFile->$file : 4D:C1709.File
 Function getSessionObject()->$session : cs:C1710.SessionObject
 	$session:=Mobile App Session Object(This:C1470.getSessionFile())  // XXX maybe create a class also
 	
-Function confirmEmail
-	C_OBJECT:C1216($0)
-	$0:=Mobile App Email Checker(This:C1470.request)
+Function confirmEmail() : Object
+	return Mobile App Email Checker(This:C1470.request)

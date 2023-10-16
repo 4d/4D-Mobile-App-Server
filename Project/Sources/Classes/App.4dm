@@ -1,35 +1,34 @@
-Class constructor
-	C_OBJECT:C1216($1)
+Class constructor($data : Object)
 	C_OBJECT:C1216($manifest)
 	C_TEXT:C284($key)
 	
 	Case of 
 		: (Count parameters:C259=0)
 			// just for static method, not a real app
-		: ($1=Null:C1517)
+		: ($data=Null:C1517)
 			// just for static method, not a real app
 			
-		: (OB Instance of:C1731($1; 4D:C1709.Folder))
+		: (OB Instance of:C1731($data; 4D:C1709.Folder))
 			
-			This:C1470.folder:=$1
+			This:C1470.folder:=$data
 			
-		: (Value type:C1509($1["id"])=Is text:K8:3)
+		: (Value type:C1509($data["id"])=Is text:K8:3)
 			
 			This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder($1.id)
 			
-			For each ($key; $1)
+			For each ($key; $data)
 				
-				This:C1470[$key]:=$1[$key]
+				This:C1470[$key]:=$data[$key]
 				
 			End for each 
 			
-		: ((Value type:C1509($1.application)=Is object:K8:27))
+		: ((Value type:C1509($data.application)=Is object:K8:27))
 			
 			This:C1470.folder:=Folder:C1567(fk mobileApps folder:K87:18; *).folder(appID($1))
 			
-			For each ($key; $1)
+			For each ($key; $data)
 				
-				This:C1470[$key]:=$1[$key]
+				This:C1470[$key]:=$data[$key]
 				
 			End for each 
 			

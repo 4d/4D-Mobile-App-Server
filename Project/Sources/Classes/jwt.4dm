@@ -9,13 +9,12 @@ settings.curve: curve of ECDSA to generate ("prime256v1" for ES256 (default), "s
 settings.pem: PEM definition of an encryption key to load
 settings.secret: default password to use for HS@ algorithm
 */
-Class constructor
-	C_OBJECT:C1216($1)
+Class constructor($settings : Object)
 	
 	If (Count parameters:C259()>0)
 		
-		This:C1470.secret:=String:C10($1.secret)  // for HMAC
-		This:C1470.key:=4D:C1709.CryptoKey.new($1)  // load a pem or generate a new ECDSA/RSA key
+		This:C1470.secret:=String:C10($settings.secret)  // for HMAC
+		This:C1470.key:=4D:C1709.CryptoKey.new($settings)  // load a pem or generate a new ECDSA/RSA key
 		
 	Else 
 		
@@ -32,55 +31,50 @@ jwt.sign( payloadObject ; options) -> tokenString
 options.algorithm: a JWT algorithm ES256, ES384, RS256, HS256, etc...
 options.secret : password for HS@ algorithms
 */
-Function sign
-	C_OBJECT:C1216($1)  // header
-	C_OBJECT:C1216($2)  // payload
-	C_OBJECT:C1216($3)  // options
-	C_TEXT:C284($0)  // token
+Function sign($headerObj : Object; $payloadObj : Object; $options : Object) : Text
 	
-	C_OBJECT:C1216($options;$signOptions)
-	$options:=$3
+	var $signOptions : Object
 	
-	C_TEXT:C284($header;$payload;$signature;$hash)
-	BASE64 ENCODE:C895(JSON Stringify:C1217($1);$header;*)
-	BASE64 ENCODE:C895(JSON Stringify:C1217($2);$payload;*)
+	var $header; $payload; $signature; $hash : Text
+	BASE64 ENCODE:C895(JSON Stringify:C1217($headerObj); $header; *)
+	BASE64 ENCODE:C895(JSON Stringify:C1217($payloadObj); $payload; *)
 	$signature:=""
 	$hash:=This:C1470._hashFromAlgorithm($options.algorithm)
 	
 	Case of 
 			
-			  //________________________________________
+			//________________________________________
 		: ($options.algorithm="ES@")\
 			 | ($options.algorithm="RS@")\
 			 | ($options.algorithm="PS@")
 			
-			  // need a private key
+			// need a private key
 			If (Asserted:C1132(This:C1470.key#Null:C1517))
 				
 				$signOptions:=New object:C1471(\
-					"hash";$hash;\
-					"pss";$options.algorithm="PS@";\
-					"encoding";"Base64URL")
-				$signature:=This:C1470.key.sign($header+"."+$payload;$signOptions)
+					"hash"; $hash; \
+					"pss"; $options.algorithm="PS@"; \
+					"encoding"; "Base64URL")
+				$signature:=This:C1470.key.sign($header+"."+$payload; $signOptions)
 				
 			End if 
 			
-			  //________________________________________
+			//________________________________________
 		: ($options.algorithm="HS@")
 			
 			C_TEXT:C284($secret)
-			$secret:=Choose:C955($options.secret=Null:C1517;String:C10(This:C1470.secret);String:C10($options.secret))
-			$signature:=This:C1470.HMAC($secret;$header+"."+$payload;$hash)
+			$secret:=Choose:C955($options.secret=Null:C1517; String:C10(This:C1470.secret); String:C10($options.secret))
+			$signature:=This:C1470.HMAC($secret; $header+"."+$payload; $hash)
 			
-			  //________________________________________
+			//________________________________________
 		Else 
 			
-			ASSERT:C1129(False:C215;"unknown algorithm")
+			ASSERT:C1129(False:C215; "unknown algorithm")
 			
-			  //________________________________________
+			//________________________________________
 	End case 
 	
-	$0:=$header+"."+$payload+"."+$signature
+	return $header+"."+$payload+"."+$signature
 	
 /*
 Verify and decode a JSON Web token.
@@ -93,35 +87,31 @@ status.success : true if token is valid
 status.header: token header object
 status.payload : token payload object
 */
-Function verify
-	C_TEXT:C284($1)  // token
-	C_OBJECT:C1216($2)  // options
-	C_OBJECT:C1216($0)
-	C_TEXT:C284($token;$header;$payload;$signature;$hash;$alg;$verifiedSignature)
-	C_TEXT:C284($headerDecoded;$payloadDecoded)
-	C_LONGINT:C283($pos1;$pos2)
-	C_OBJECT:C1216($headerObject;$payloadObject;$options;$signOptions)
+Function verify($token : Text; $options : Object) : Object
+	C_TEXT:C284($header; $payload; $signature; $hash; $alg; $verifiedSignature)
+	C_TEXT:C284($headerDecoded; $payloadDecoded)
+	C_LONGINT:C283($pos1; $pos2)
+	C_OBJECT:C1216($headerObject; $payloadObject; $signOptions)
 	C_BOOLEAN:C305($verified)
 	
-	$token:=$1
-	$options:=$2
-	$pos1:=Position:C15(".";$token;*)
+	
+	$pos1:=Position:C15("."; $token; *)
 	
 	If ($pos1>0)
 		
-		$header:=Substring:C12($token;1;$pos1-1)
-		$pos2:=Position:C15(".";$token;$pos1+1;*)
+		$header:=Substring:C12($token; 1; $pos1-1)
+		$pos2:=Position:C15("."; $token; $pos1+1; *)
 		
 		If ($pos2>0)
 			
-			$payload:=Substring:C12($token;$pos1+1;$pos2-$pos1-1)
-			$signature:=Substring:C12($token;$pos2+1;Length:C16($token))
+			$payload:=Substring:C12($token; $pos1+1; $pos2-$pos1-1)
+			$signature:=Substring:C12($token; $pos2+1; Length:C16($token))
 			
 		End if 
 	End if 
 	
-	BASE64 DECODE:C896($header;$headerDecoded;*)
-	BASE64 DECODE:C896($payload;$payloadDecoded;*)
+	BASE64 DECODE:C896($header; $headerDecoded; *)
+	BASE64 DECODE:C896($payload; $payloadDecoded; *)
 	
 	$headerObject:=JSON Parse:C1218($headerDecoded)
 	$payloadObject:=JSON Parse:C1218($payloadDecoded)
@@ -134,15 +124,15 @@ Function verify
 		
 		Case of 
 				
-				  //________________________________________
+				//________________________________________
 			: ($alg="HS@")  // HMAC
 				
 				C_TEXT:C284($secret)
-				$secret:=Choose:C955($options.secret=Null:C1517;String:C10(This:C1470.secret);String:C10($options.secret))
-				$verifiedSignature:=This:C1470.HMAC($secret;$header+"."+$payload;$hash)
-				$verified:=(Length:C16($signature)=Length:C16($verifiedSignature)) & (Position:C15($signature;$verifiedSignature;*)=1)
+				$secret:=Choose:C955($options.secret=Null:C1517; String:C10(This:C1470.secret); String:C10($options.secret))
+				$verifiedSignature:=This:C1470.HMAC($secret; $header+"."+$payload; $hash)
+				$verified:=(Length:C16($signature)=Length:C16($verifiedSignature)) & (Position:C15($signature; $verifiedSignature; *)=1)
 				
-				  //________________________________________
+				//________________________________________
 			: ($alg="ES@")\
 				 | ($alg="RS@")\
 				 | ($alg="PS@")
@@ -150,112 +140,108 @@ Function verify
 				If (Asserted:C1132(This:C1470.key#Null:C1517))
 					
 					$signOptions:=New object:C1471(\
-						"hash";$hash;\
-						"pss";$alg="PS@";\
-						"encoding";"Base64URL")
-					$verified:=This:C1470.key.verify($header+"."+$payload;$signature;$signOptions).success
+						"hash"; $hash; \
+						"pss"; $alg="PS@"; \
+						"encoding"; "Base64URL")
+					$verified:=This:C1470.key.verify($header+"."+$payload; $signature; $signOptions).success
 					
 				End if 
 				
-				  //________________________________________
+				//________________________________________
 		End case 
 	End if 
 	
-	$0:=New object:C1471(\
-		"success";$verified;\
-		"header";$headerObject;\
-		"payload";$payloadObject)
+	return New object:C1471(\
+		"success"; $verified; \
+		"header"; $headerObject; \
+		"payload"; $payloadObject)
 	
-Function HMAC
-	C_VARIANT:C1683($1;$2)  // key and message
-	C_TEXT:C284($3)  // 'SHA1' 'SHA256' or 'SHA512'
-	C_TEXT:C284($0)  // hexa result
+Function HMAC($keyData : Variant; $messageData : Variant; $algoName : Text)->$result : Text
 	
-	  // accept blob or text for key and message
-	C_BLOB:C604($key;$message)
+	
+	// accept blob or text for key and message
+	C_BLOB:C604($key; $message)
 	
 	Case of 
 			
-			  //________________________________________
-		: (Value type:C1509($1)=Is text:K8:3)
+			//________________________________________
+		: (Value type:C1509($keyData)=Is text:K8:3)
 			
-			TEXT TO BLOB:C554($1;$key;UTF8 text without length:K22:17)
+			TEXT TO BLOB:C554($keyData; $key; UTF8 text without length:K22:17)
 			
-			  //________________________________________
-		: (Value type:C1509($1)=Is BLOB:K8:12)
+			//________________________________________
+		: (Value type:C1509($keyData)=Is BLOB:K8:12)
 			
-			$key:=$1
+			$key:=$keyData
 			
-			  //________________________________________
+			//________________________________________
 	End case 
 	
 	Case of 
 			
-			  //________________________________________
-		: (Value type:C1509($2)=Is text:K8:3)
+			//________________________________________
+		: (Value type:C1509($messageData)=Is text:K8:3)
 			
-			TEXT TO BLOB:C554($2;$message;UTF8 text without length:K22:17)
+			TEXT TO BLOB:C554($messageData; $message; UTF8 text without length:K22:17)
 			
-			  //________________________________________
-		: (Value type:C1509($2)=Is BLOB:K8:12)
+			//________________________________________
+		: (Value type:C1509($messageData)=Is BLOB:K8:12)
 			
-			$message:=$2
+			$message:=$messageData
 			
-			  //________________________________________
+			//________________________________________
 	End case 
 	
-	C_BLOB:C604($outerKey;$innerKey;$b)
-	C_LONGINT:C283($blockSize;$i;$byte;$algo)
-	C_TEXT:C284($algoName)
-	$algoName:=$3
+	C_BLOB:C604($outerKey; $innerKey; $b)
+	C_LONGINT:C283($blockSize; $i; $byte; $algo)
 	
 	Case of 
 			
-			  //________________________________________
+			//________________________________________
 		: ($algoName="SHA1")
 			
 			$algo:=SHA1 digest:K66:2
 			$blockSize:=64
 			
-			  //________________________________________
+			//________________________________________
 		: ($algoName="SHA256")
 			
 			$algo:=SHA256 digest:K66:4
 			$blockSize:=64
 			
-			  //________________________________________
+			//________________________________________
 		: ($algoName="SHA512")
 			
 			$algo:=SHA512 digest:K66:5
 			$blockSize:=128
 			
-			  //________________________________________
+			//________________________________________
 		Else 
 			
-			ASSERT:C1129(False:C215;"bad hash algo")
+			ASSERT:C1129(False:C215; "bad hash algo")
 			
-			  //________________________________________
+			//________________________________________
 	End case 
 	
 	If (BLOB size:C605($key)>$blockSize)
 		
-		BASE64 DECODE:C896(Generate digest:C1147($key;$algo;*);$key;*)
+		BASE64 DECODE:C896(Generate digest:C1147($key; $algo; *); $key; *)
 		
 	End if 
 	
 	If (BLOB size:C605($key)<$blockSize)
 		
-		SET BLOB SIZE:C606($key;$blockSize;0)
+		SET BLOB SIZE:C606($key; $blockSize; 0)
 		
 	End if 
 	
 	ASSERT:C1129(BLOB size:C605($key)=$blockSize)
 	
-	SET BLOB SIZE:C606($outerKey;$blockSize)
-	SET BLOB SIZE:C606($innerKey;$blockSize)
+	SET BLOB SIZE:C606($outerKey; $blockSize)
+	SET BLOB SIZE:C606($innerKey; $blockSize)
 	
-	  //%r-
-	For ($i;0;$blockSize-1;1)
+	//%r-
+	For ($i; 0; $blockSize-1; 1)
 		
 		$byte:=$key{$i}
 		$outerKey{$i}:=$byte ^| 0x005C
@@ -263,35 +249,34 @@ Function HMAC
 		
 	End for 
 	
-	  //%r+
+	//%r+
 	
-	  // append $message to $innerKey
-	COPY BLOB:C558($message;$innerKey;0;$blockSize;BLOB size:C605($message))
-	BASE64 DECODE:C896(Generate digest:C1147($innerKey;$algo;*);$b;*)
+	// append $message to $innerKey
+	COPY BLOB:C558($message; $innerKey; 0; $blockSize; BLOB size:C605($message))
+	BASE64 DECODE:C896(Generate digest:C1147($innerKey; $algo; *); $b; *)
 	
-	  // append hash(innerKey + message) to outerKey
-	COPY BLOB:C558($b;$outerKey;0;$blockSize;BLOB size:C605($b))
-	$0:=Generate digest:C1147($outerKey;$algo;*)
+	// append hash(innerKey + message) to outerKey
+	COPY BLOB:C558($b; $outerKey; 0; $blockSize; BLOB size:C605($b))
+	$result:=Generate digest:C1147($outerKey; $algo; *)
 	
-Function _hashFromAlgorithm
-	C_TEXT:C284($0;$1)
+Function _hashFromAlgorithm($wanted : Text)->$algo : Text
 	
 	Case of 
 			
-			  //________________________________________
-		: ($1="@256")
+			//________________________________________
+		: ($wanted="@256")
 			
-			$0:="SHA256"
+			$algo:="SHA256"
 			
-			  //________________________________________
-		: ($1="@384")
+			//________________________________________
+		: ($wanted="@384")
 			
-			$0:="SHA384"
+			$algo:="SHA384"
 			
-			  //________________________________________
-		: ($1="@512")
+			//________________________________________
+		: ($wanted="@512")
 			
-			$0:="SHA512"
+			$algo:="SHA512"
 			
-			  //________________________________________
+			//________________________________________
 	End case 

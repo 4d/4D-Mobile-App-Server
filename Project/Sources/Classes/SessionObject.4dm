@@ -1,17 +1,16 @@
 
-Class constructor
-	C_OBJECT:C1216($1)
+Class constructor($data : Object)
 	
-	If (OB Instance of:C1731($1; 4D:C1709.File))
+	If (OB Instance of:C1731($data; 4D:C1709.File))
 		
-		This:C1470.file:=$1
+		This:C1470.file:=$data
 		This:C1470.refresh()
 		
 	Else 
 		C_TEXT:C284($key)
 		
-		For each ($key; $1)
-			This:C1470[$key]:=$1[$key]
+		For each ($key; $data)
+			This:C1470[$key]:=$data[$key]
 		End for each 
 	End if 
 	
@@ -56,7 +55,6 @@ Function save
 		
 	End if 
 	
-Function getApp
-	C_OBJECT:C1216($0)
-	$0:=cs:C1710.App.new(New object:C1471("application"; This:C1470.application; "team"; This:C1470.team))
+Function getApp() : Object
+	return cs:C1710.App.new(New object:C1471("application"; This:C1470.application; "team"; This:C1470.team))
 	

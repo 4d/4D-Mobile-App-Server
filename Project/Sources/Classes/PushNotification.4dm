@@ -24,9 +24,7 @@ Use (MobileAppServer.PushNotification)
 End use 
 
 */
-Class constructor
-	C_VARIANT:C1683($1)  // identifying target project
-	C_VARIANT:C1683($2)  // ios, android, or collection
+Class constructor($id : Variant; $target : Variant)
 	
 	C_OBJECT:C1216($session; $Obj_manifest; $Obj_authKey)
 	C_BOOLEAN:C305($isObject; $isText)
@@ -63,13 +61,13 @@ Class constructor
 			
 			Case of 
 					
-				: (Value type:C1509($1)=Is text:K8:3)
+				: (Value type:C1509($id)=Is text:K8:3)
 					
 					$isText:=True:C214
 					
 					Case of 
 							
-						: (Lowercase:C14($1)="ios")
+						: (Lowercase:C14($id)="ios")
 							
 							This:C1470.isAndroid:=False:C215
 							
@@ -79,7 +77,7 @@ Class constructor
 								$sessions.push($session)
 							End if 
 							
-						: (Lowercase:C14($1)="android")
+						: (Lowercase:C14($id)="android")
 							
 							This:C1470.isIos:=False:C215
 							
@@ -91,24 +89,24 @@ Class constructor
 							
 						Else 
 							
-							$session:=MobileAppServer.Session.new($1)
+							$session:=MobileAppServer.Session.new($id)
 							
 							$sessions.push($session)
 							
 							// Adding sessions with teamId prefix
-							$session:=MobileAppServer.Session.new("___."+$1)
+							$session:=MobileAppServer.Session.new("___."+$id)
 							If ($session.sessionDir#Null:C1517)
 								$sessions.push($session)
 							End if 
 							
 					End case 
 					
-				: (Value type:C1509($1)=Is collection:K8:32)
+				: (Value type:C1509($id)=Is collection:K8:32)
 					
 					$isText:=True:C214
 					
-					This:C1470.isAndroid:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
-					This:C1470.isIos:=Bool:C1537($1.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
+					This:C1470.isAndroid:=Bool:C1537($id.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
+					This:C1470.isIos:=Bool:C1537($id.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
 					
 					$session:=MobileAppServer.Session.new()
 					
@@ -116,7 +114,7 @@ Class constructor
 						$sessions.push($session)
 					End if 
 					
-				: (Value type:C1509($1)=Is object:K8:27)
+				: (Value type:C1509($id)=Is object:K8:27)
 					
 					$isObject:=True:C214
 					
@@ -126,21 +124,21 @@ Class constructor
 			
 			Case of 
 					
-				: (Value type:C1509($1)=Is text:K8:3)
+				: (Value type:C1509($id)=Is text:K8:3)
 					
 					$isText:=True:C214
 					
-					$session:=MobileAppServer.Session.new($1)
+					$session:=MobileAppServer.Session.new($id)
 					
 					$sessions.push($session)
 					
 					// Adding sessions with teamId prefix
-					$session:=MobileAppServer.Session.new("___."+$1)
+					$session:=MobileAppServer.Session.new("___."+$id)
 					If ($session.sessionDir#Null:C1517)
 						$sessions.push($session)
 					End if 
 					
-				: (Value type:C1509($1)=Is object:K8:27)
+				: (Value type:C1509($id)=Is object:K8:27)
 					
 					$isObject:=True:C214
 					
@@ -148,15 +146,15 @@ Class constructor
 			
 			Case of 
 					
-				: (Value type:C1509($2)=Is text:K8:3)
+				: (Value type:C1509($target)=Is text:K8:3)
 					
-					This:C1470.isAndroid:=Not:C34(Bool:C1537(Lowercase:C14($2)="ios"))
-					This:C1470.isIos:=Not:C34(Bool:C1537(Lowercase:C14($2)="android"))
+					This:C1470.isAndroid:=Not:C34(Bool:C1537(Lowercase:C14($target)="ios"))
+					This:C1470.isIos:=Not:C34(Bool:C1537(Lowercase:C14($target)="android"))
 					
-				: (Value type:C1509($2)=Is collection:K8:32)
+				: (Value type:C1509($target)=Is collection:K8:32)
 					
-					This:C1470.isAndroid:=Bool:C1537($2.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
-					This:C1470.isIos:=Bool:C1537($2.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
+					This:C1470.isAndroid:=Bool:C1537($target.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("android")#-1)
+					This:C1470.isIos:=Bool:C1537($target.map(Formula:C1597(Lowercase:C14($1.value))).lastIndexOf("ios")#-1)
 					
 			End case 
 			
@@ -231,14 +229,14 @@ Class constructor
 			
 		: ($isObject)
 			
-			If (Bool:C1537($1.isTesting))
+			If (Bool:C1537($id.isTesting))
 				This:C1470.onlySimulator:=True:C214
 				This:C1470.auth.jwt:="testing"
 			End if 
 			
-			If (Length:C16(String:C10($1.bundleId))>0)
+			If (Length:C16(String:C10($id.bundleId))>0)
 				
-				This:C1470.auth.bundleId:=$1.bundleId
+				This:C1470.auth.bundleId:=$id.bundleId
 				
 			Else 
 				
@@ -248,9 +246,9 @@ Class constructor
 			
 			If (This:C1470.isIos)
 				
-				If ((Length:C16(String:C10($1.teamId))>0) | (Bool:C1537($1.isTesting)))
+				If ((Length:C16(String:C10($id.teamId))>0) | (Bool:C1537($id.isTesting)))
 					
-					This:C1470.auth.teamId:=$1.teamId
+					This:C1470.auth.teamId:=$id.teamId
 					
 				Else 
 					
@@ -268,9 +266,9 @@ Class constructor
 				
 				// Try to get the authentication key from the entry object
 				
-				If ($1.authKey#Null:C1517)
+				If ($id.authKey#Null:C1517)
 					
-					$Obj_authKey:=getAuthenticationKey($1.authKey)
+					$Obj_authKey:=getAuthenticationKey($id.authKey)
 					
 					If ($Obj_authKey.success)
 						
@@ -322,15 +320,15 @@ Class constructor
 			End if 
 			
 			
-			If (Bool:C1537($1.isDevelopment))
+			If (Bool:C1537($id.isDevelopment))
 				
 				This:C1470.auth.isDevelopment:=True:C214
 				
 			End if 
 			
-			If (Length:C16(String:C10($1.serverKey))>0)
+			If (Length:C16(String:C10($id.serverKey))>0)
 				
-				This:C1470.auth.serverKey:=$1.serverKey
+				This:C1470.auth.serverKey:=$id.serverKey
 				
 			End if 
 			
@@ -378,11 +376,7 @@ Class constructor
 	
 	
 	//-------------------------------------------------------------------------
-Function send
-	
-	C_OBJECT:C1216($0)
-	C_OBJECT:C1216($1)  // Notification content
-	C_VARIANT:C1683($2)  // Recipient(s)
+Function send($notification : Object; $recipients : Variant) : Object
 	
 	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 		
@@ -415,12 +409,12 @@ Function send
 			//________________________________________
 		: (Count parameters:C259>1)
 			
-			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient($2); This:C1470.auth; This:C1470.targets)
+			This:C1470.lastResult:=Mobile App Push Notification($notification; manageEntryRecipient($recipients); This:C1470.auth; This:C1470.targets)
 			
 			//________________________________________
 		: (This:C1470.recipients#Null:C1517)  // Recipients were set, but not given in send() function parameters
 			
-			This:C1470.lastResult:=Mobile App Push Notification($1; manageEntryRecipient(This:C1470.recipients); This:C1470.auth; This:C1470.targets)
+			This:C1470.lastResult:=Mobile App Push Notification($notification; manageEntryRecipient(This:C1470.recipients); This:C1470.auth; This:C1470.targets)
 			
 			//________________________________________
 		Else 
@@ -430,13 +424,10 @@ Function send
 			//________________________________________
 	End case 
 	
-	$0:=This:C1470.lastResult
+	return This:C1470.lastResult
 	
 	//-------------------------------------------------------------------------
-Function sendAll
-	
-	C_OBJECT:C1216($0)
-	C_OBJECT:C1216($1)  // Notification content
+Function sendAll($notification : Object) : Object
 	
 	If ((This:C1470.auth.jwt=Null:C1517) & (Not:C34(This:C1470.onlySimulator)) & (This:C1470.isIos))
 		
@@ -497,7 +488,7 @@ Function sendAll
 	
 	If ($col_deviceTokens.count()>0)
 		
-		This:C1470.lastResult:=This:C1470.send($1; $col_deviceTokens)
+		This:C1470.lastResult:=This:C1470.send($notification; $col_deviceTokens)
 		
 	Else 
 		
@@ -505,7 +496,7 @@ Function sendAll
 		
 	End if 
 	
-	$0:=This:C1470.lastResult
+	return This:C1470.lastResult
 	
 	//-------------------------------------------------------------------------
 	
@@ -517,15 +508,8 @@ Sends a push notification to open a DataClass List form or an Entity Detail form
 	
 Context can be a DataClass name, a DataClass object, or an Entity object.
 */
-Function open
+Function open($context : Variant; $notification : Object; $recipients : Variant)->$result : Object
 	
-	C_OBJECT:C1216($0)
-	C_VARIANT:C1683($1)
-	C_OBJECT:C1216($2)  // Notification content
-	C_VARIANT:C1683($3)  // Recipient(s)
-	
-	C_VARIANT:C1683($context)
-	C_OBJECT:C1216($userInfo; $result)
 	
 	If (Count parameters:C259<3)
 		
@@ -534,16 +518,16 @@ Function open
 		// Else : all ok
 	End if 
 	
-	$context:=$1
 	
-	$userInfo:=$2.userInfo
+	var $userInfo : Object
+	$userInfo:=$notification.userInfo
 	
 	$result:=New object:C1471("success"; True:C214)
 	
 	If ($userInfo=Null:C1517)
 		
 		$userInfo:=New object:C1471
-		$2.userInfo:=$userInfo
+		$notification.userInfo:=$userInfo
 		
 	End if 
 	
@@ -615,10 +599,6 @@ Function open
 	
 	If ($result.success)
 		
-		$0:=This:C1470.send($2; $3)
-		
-	Else 
-		
-		$0:=$result
+		$result:=This:C1470.send($notification; $recipients)
 		
 	End if 
