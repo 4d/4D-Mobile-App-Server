@@ -31,11 +31,27 @@ Without classes some functionnalities are still available.
 
 ## Installation
 
+### With "Project dependencies"
+
+Add the dependency into your base `Project/Sources/dependencies.json` file
+
+```json
+"dependencies" {
+...
+  "4D Mobile App Server": { "github": "4d/4D-Mobile-App-Server" }
+...
+}
+```
+
+or use graphical user interface "Project dependencies" when adding GitHub dependency is available
+
+### Without "Project dependencies"
+
 Download this component and add it to your base `Components` folder. Be sure to name it `.4dbase`
 
 What follows contains more detailled instructions
 
-### Download artefact or sources
+#### Download artefact or sources
 
 1️⃣ Download sources using github `Download` button, or by going to a specific release and getting sources
 - for instance for main version `Download` button will download https://github.com/4d/4D-Mobile-App-Server/archive/refs/heads/main.zip
@@ -53,7 +69,7 @@ What follows contains more detailled instructions
 curl -sL https://raw.githubusercontent.com/4d/4D-Mobile-App-Server/main/download.sh | sh
 ```
 
-### Using git
+#### Using git
 
 Go to your component root folder (`cd /your/base/path/`)
 
