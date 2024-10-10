@@ -60,6 +60,16 @@ You need to provide your server key in order to send push notifications.
 $pushNotification.auth.serverKey:="your_server_key"
 ```
 
+## Project key (**Android only**)
+
+You need to provide your project key in order to send v1 push notifications.
+
+```4d
+$pushNotification.auth.project:="your_project_key"
+```
+
+> 💡 The key is mentionned in URL, for instance "myproject-b5ae1" in https://fcm.googleapis.com/v1/projects/myproject-b5ae1/messages:send
+
 ## Instanciate the PushNotification class
 
 If you have **only one application** in your Session files (`MobileApps/`), you can call the constructor with no parameter. However, if you have **more than one**, you will need to provide parameters to identify which application you want to send push notifications to.

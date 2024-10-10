@@ -1,18 +1,13 @@
 //%attributes = {"invisible":true,"preemptive":"capable"}
-C_OBJECT:C1216($0)  // Returned object
-C_OBJECT:C1216($1)  // Notification content
-C_OBJECT:C1216($2)  // Recipients collections
-C_OBJECT:C1216($3)  // Authentication object
-C_COLLECTION:C1488($4)  // Targets collection
+#DECLARE($Obj_notification : Object; $Obj_recipients : Object; $Obj_auth : Object; $targets : Collection)->$Obj_result : Object
 
-C_COLLECTION:C1488($mails; $deviceTokens)
-C_OBJECT:C1216($Obj_result; $Obj_auth; $status; $Obj_notification; $Obj_recipients_result)
-
+var $mails; $deviceTokens : Collection
+var $status; $Obj_recipients_result : Object
 
 // PARAMETERS
 //________________________________________
 
-C_LONGINT:C283($Lon_parameters)
+var $Lon_parameters : Integer
 
 $Lon_parameters:=Count parameters:C259
 
@@ -22,16 +17,10 @@ If (Asserted:C1132($Lon_parameters>=4; "Missing parameter"))
 	$Obj_result.errors:=New collection:C1472
 	$Obj_result.warnings:=New collection:C1472
 	
+	$deviceTokens:=$Obj_recipients.deviceTokens
+	$mails:=$Obj_recipients.mails
 	
-	$Obj_notification:=$1
-	
-	$deviceTokens:=$2.deviceTokens
-	$mails:=$2.mails
-	
-	$Obj_auth:=$3
-	
-	
-	C_BOOLEAN:C305($isMissingRecipients)
+	var $isMissingRecipients : Boolean
 	
 	If (Not:C34($mails.length>0) & (Not:C34($deviceTokens.length>0)))  // Both mails and deviceTokens collections are empty
 		
@@ -53,7 +42,7 @@ If (Not:C34($isMissingRecipients))
 	// Build (mails + deviceTokens) collection
 	//________________________________________
 	
-	$Obj_recipients_result:=buildRecipients($2; $Obj_auth.teamId; $Obj_auth.bundleId; $4)
+	$Obj_recipients_result:=buildRecipients($Obj_recipients; $Obj_auth.teamId; $Obj_auth.bundleId; $targets)
 	
 	$Obj_result.warnings:=$Obj_recipients_result.warnings
 	
@@ -61,7 +50,7 @@ If (Not:C34($isMissingRecipients))
 	// SEND NOTIFICATION
 	//________________________________________
 	
-	C_OBJECT:C1216($mailAndDeviceToken; $notificationInput; $Obj_buildNotification)
+	var $mailAndDeviceToken; $notificationInput; $Obj_buildNotification : Object
 	
 	For each ($mailAndDeviceToken; $Obj_recipients_result.recipients)  // Sending a notification for every single deviceToken
 		
@@ -75,7 +64,7 @@ If (Not:C34($isMissingRecipients))
 				
 				$Obj_buildNotification:=buildAppleNotification($Obj_notification)
 				
-				C_TEXT:C284($payload)
+				var $payload : Text
 				$payload:=JSON Stringify:C1217($Obj_buildNotification)
 				
 				$notificationInput:=New object:C1471(\
@@ -140,6 +129,7 @@ If (Not:C34($isMissingRecipients))
 					"data"; $Obj_buildNotification)
 				
 				$notificationInput:=New object:C1471(\
+					"project"; $Obj_auth.project; \
 					"serverKey"; $Obj_auth.serverKey; \
 					"message"; JSON Stringify:C1217($message))
 				
@@ -170,4 +160,3 @@ If (Not:C34($isMissingRecipients))
 	
 End if 
 
-$0:=$Obj_result
