@@ -131,7 +131,7 @@ If (Not:C34($isMissingRecipients))
 				$notificationInput:=New object:C1471(\
 					"project"; $Obj_auth.project; \
 					"serverKey"; $Obj_auth.serverKey; \
-					"message"; JSON Stringify:C1217($message))
+					"message"; $message)
 				
 				$status:=android_sendNotification($notificationInput)
 				
