@@ -3,7 +3,7 @@ name: Create Release Tag
 on:
   workflow_dispatch:
     inputs:
-      main_tag_prefix:
+      branch:
         description: 'Tag prefix to use instead of branch'
         required: false
         default: ''
@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0  # Fetch all history and tags
-        ref: ${{ inputs.branch || github.ref }}
+        ref: ${{ github.ref }}
         token: ${{ secrets.PAT_TOKEN }}
     
     - name: Create Release Tag
