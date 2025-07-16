@@ -56,10 +56,11 @@ jobs:
           # Add commit links (escaping the % characters for git log)
           git log --pretty=format:"- [%h](https://github.com/${{ github.repository }}/commit/%H) %s" "$COMMIT_RANGE" >> release_notes.md
           
-          # Handle multiline output - use a different approach
-          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          # Handle multiline output using a different approach
+          # Use printf to avoid newline issues with heredoc
+          printf "notes<<EOF\n" >> $GITHUB_OUTPUT
           cat release_notes.md >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          printf "\nEOF\n" >> $GITHUB_OUTPUT
         else
           echo "notes=Initial release" >> $GITHUB_OUTPUT
         fi
