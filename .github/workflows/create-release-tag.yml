@@ -1,0 +1,36 @@
+name: Create Release Tag
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_prefix:
+        description: 'Tag prefix to use instead of branch'
+        required: false
+        default: ''
+        type: string
+      tag_suffix:
+        description: 'Tag suffix'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  create-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Fetch all history and tags
+        ref: ${{ github.ref }}
+        token: ${{ secrets.PAT_TOKEN }}
+    
+    - name: Create Release Tag
+      id: create_tag
+      uses: e-marchand/auto-increment-tag-action@v2
+      with:
+        tag_prefix: "${{ inputs.tag_prefix }}"
+        tag_suffix: "${{ inputs.tag_suffix }}"
+        github_token: ${{ secrets.PAT_TOKEN }}
+

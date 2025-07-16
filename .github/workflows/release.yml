@@ -17,6 +17,19 @@ jobs:
         uses: 4d/build4d-action@main
         with:
           actions: "build,pack,archive"
+          product-line: vcs
+          version: vcs
+          build: official
+          token: ${{ secrets.DLTK }}
+      - name: Handle Build Failure
+        if: failure()
+        run: |
+          echo "Build and package step failed. Checking for errors..."
+          echo "Build logs and error information:"
+          ls -la build/ || echo "Build directory not found"
+          echo "Please check the build logs for more details."
+          echo "Removing release"
+          gh release delete ${{github.event.release.tag_name}} || echo "Release deletion failed"
       - name: Upload
         run: |
           gh release upload ${{github.event.release.tag_name}} "build/4D-Mobile-App-Server.zip"
