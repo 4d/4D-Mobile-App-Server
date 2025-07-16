@@ -43,6 +43,7 @@
 	},
 	"devTool": {
 		"methods": [
+			"checkGitBranch",
 			"COMPILER_dev",
 			"dev IndexName",
 			"dev UpdateStructure"
@@ -79,8 +80,11 @@
 	},
 	"push": {
 		"methods": [
+			"android_sendNotification",
 			"apple_sendNotification",
 			"authJWT",
+			"buildAndroidNotification",
+			"buildAppleNotification",
 			"buildRecipients",
 			"checkCurlWindow",
 			"checkXCodeVersionForPushNotif",
@@ -120,12 +124,16 @@
 		],
 		"methods": [
 			"Compiler_test",
+			"createTestSession",
+			"deleteTestSession",
 			"onMobileAppActionTest",
 			"test_action",
 			"test_actionParsing",
+			"test_android_pushnotification",
 			"test_app",
 			"test_authentication",
 			"test_dev",
+			"test_ios_pushnotification",
 			"test_isEmail",
 			"test_manageEntryRecipient",
 			"test_session",

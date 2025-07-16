@@ -3,20 +3,75 @@ on:
   release:
     types: [published]
 jobs:
-  publish:
-    name: Publish
-    runs-on: macos-latest
+  create:
+    name: "Create"
+    runs-on: macOS
     env:
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-    permissions:
-      contents: write # for asset upload
     steps:
       - name: ⬇️ Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+
+      - name: ⬇️ Checkout postBuild
+        uses: actions/checkout@v5
+        with:
+          repository: 4d/${{secrets.POST_BUILD_REPO}}
+          token: ${{secrets.PAT_TOKEN}}
+          sparse-checkout: ${{secrets.POST_BUILD_PATH}}
+          path: ${{secrets.POST_BUILD_REPO}}
+
       - name: BuildAndPackage
+        id: build-package
         uses: 4d/build4d-action@main
         with:
-          actions: "build,pack,archive"
-      - name: Upload
+          actions: "build,pack,sign,archive"
+          product-line: vcs
+          version: vcs
+          build: official
+          token: ${{ secrets.DLTK }}
+          sign-certificate: "Developer ID Application: 4D"
+          after-build: "${{secrets.POST_BUILD_REPO}}/${{ secrets.POST_BUILD_SCRIPT }}"
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ github.event.repository.name }}.zip"
+          path: "build/${{ github.event.repository.name }}.zip"
+          retention-days: 1
+          if-no-files-found: error
+      
+  clear:
+    needs: create
+    if: failure()
+    name: "Handle Build Failure"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # for release deletion
+    steps:
+      - name: Handle Build Failure
         run: |
-          gh release upload ${{github.event.release.tag_name}} "build/4D-Mobile-App-Server.zip"
+          echo "Build and package step failed. Checking for errors..."
+          echo "Removing release"
+          gh release delete ${{github.event.release.tag_name}} || echo "Release deletion failed"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+  publish:
+    needs: create
+    name: "Publish"
+    runs-on: ubuntu-latest
+ 
+    permissions:
+      contents: write # for asset upload
+    steps:      
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          name: "${{ github.event.repository.name }}.zip"
+          path: artifact
+      - name: Display Artifact Directory Content
+        run: ls -R artifact
+      - name: 📦 release package
+        run: |
+          gh release upload ${{github.event.release.tag_name}} "${{github.workspace}}/artifact/${{ github.event.repository.name }}.zip"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
