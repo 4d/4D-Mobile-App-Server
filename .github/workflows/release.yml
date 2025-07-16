@@ -5,7 +5,7 @@ on:
 jobs:
   publish:
     name: Publish
-    runs-on: macos-latest
+    runs-on: macOS
     env:
       GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
     permissions:
