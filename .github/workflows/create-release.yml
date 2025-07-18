@@ -77,4 +77,4 @@ jobs:
         name: ${{ steps.tag_info.outputs.tag_name }}
         body: ${{ steps.release_notes.outputs.notes }}
         draft: false
-        prerelease: ${{ contains(steps.tag_info.outputs.tag_name, 'main.') }}
+        prerelease: ${{ contains(steps.tag_info.outputs.tag_name, 'main.') || contains(steps.tag_info.outputs.tag_name, '-main') }}
