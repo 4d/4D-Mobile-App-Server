@@ -3,11 +3,9 @@ name: Create Release
 on:
   push:
     tags:
-      - 'main.[0-9]+'              # Matches tags like main.3
-      - '[0-9]+.[0-9]+.*'          # Matches tags like 21.3
-      - '[0-9]+R[0-9]+.[0-9]+.*'   # Matches tags like 21R2.4
-      - '[0-9]+R[0-9]+.*'          # Matches tags like 21R2
-      - '[0-9]+.[0-9]+.[0-9]+.*'   # Matches tags like 21.3.1
+      - 'main.[0-9]+'        # Matches tags like main.3
+      - '[0-9]+R[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9]+)?'  # Matches tags like 21R2, 21R2.4, 21R2-main, etc.
+      - '[0-9]+\.[0-9]+(\.[0-9]+)*(-[a-zA-Z0-9]+)?'  # Matches tags like 21.3, 21.3.1, 21.3-main, etc.
 
 jobs:
   create-release:
