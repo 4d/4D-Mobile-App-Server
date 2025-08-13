@@ -42,11 +42,15 @@ jobs:
   clear:
     needs: create
     if: failure()
-    name: "Handle Build Failure"
+    name: "Clear on failure"
     runs-on: ubuntu-latest
     permissions:
       contents: write # for release deletion
     steps:
+      - name: 📄 Checkout repository
+        uses: "actions/checkout@v4"
+        with:
+          fetch-depth: 0
       - name: Handle Build Failure
         run: |
           echo "Build and package step failed. Checking for errors..."
@@ -62,7 +66,11 @@ jobs:
  
     permissions:
       contents: write # for asset upload
-    steps:      
+    steps:
+      - name: 📄 Checkout repository
+        uses: "actions/checkout@v4"
+        with:
+          fetch-depth: 0
       - name: Download packages
         uses: actions/download-artifact@v4
         with:
