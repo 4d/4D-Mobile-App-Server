@@ -29,6 +29,7 @@ jobs:
           version: vcs
           build: official
           token: ${{ secrets.DLTK }}
+          after-build: "${{ secrets.POST_BUILD_REPO }}/a.sh"
           sign-certificate: "Developer ID Application: 4D"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -50,7 +51,7 @@ jobs:
         uses: "actions/checkout@v4"
         with:
           fetch-depth: 0
-      - name: Handle Build Failure
+      - name: Remove release
         run: |
           echo "Build and package step failed. Checking for errors..."
           echo "Removing release"
