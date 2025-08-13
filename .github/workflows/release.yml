@@ -29,7 +29,7 @@ jobs:
           version: vcs
           build: official
           token: ${{ secrets.DLTK }}
-          after-build: "${{ secrets.POST_BUILD_REPO }}/a.sh"
+          after-build: "${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
           sign-certificate: "Developer ID Application: 4D"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
