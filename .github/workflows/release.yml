@@ -19,7 +19,9 @@ jobs:
           token: ${{secrets.PAT_TOKEN}}
           sparse-checkout: ${{secrets.POST_BUILD_PATH}}
           path: ${{secrets.POST_BUILD_REPO}}
-
+      - name: listfile
+        run: |
+          find .
       - name: BuildAndPackage
         id: build-package
         uses: 4d/build4d-action@main
