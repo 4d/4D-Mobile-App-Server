@@ -17,8 +17,9 @@ jobs:
         with:
           repository: 4d/${{secrets.POST_BUILD_REPO}}
           token: ${{secrets.PAT_TOKEN}}
-          sparse-checkout: ${{secrets.POST_BUILD_PATH}}
-          path: ${{secrets.POST_BUILD_REPO}}
+          sparse-checkout: |
+            ${{ secrets.POST_BUILD_PATH }}
+          path: Components/${{ secrets.POST_BUILD_REPO }}
       - name: listfile
         run: |
           find .
@@ -31,7 +32,7 @@ jobs:
           version: vcs
           build: official
           token: ${{ secrets.DLTK }}
-          after-build: "./${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
+          after-build: "./Components/${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
           sign-certificate: "${{ secrets.SIGN_CERTIFICATE }}"
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
