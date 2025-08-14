@@ -62,7 +62,7 @@ jobs:
       
   publish:
     needs: create
-    name: "Publish"
+    name: "Publish package"
     runs-on: ubuntu-latest
  
     permissions:
