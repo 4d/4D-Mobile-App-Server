@@ -46,4 +46,4 @@ jobs:
         body: ${{ steps.create_tag.outputs.commit_links }}
         draft: false
         prerelease: ${{ contains(steps.create_tag.outputs.tag, 'main.') || contains(inputs.tag_suffix, '-') }}
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.PAT_TOKEN }}
