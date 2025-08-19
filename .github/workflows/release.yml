@@ -32,6 +32,8 @@ jobs:
           token: ${{ secrets.DLTK }}
           after-build: "./Components/${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
           sign-certificate: "${{ secrets.SIGN_CERTIFICATE }}"
+      - name: Display Artifact Directory Content
+        run: find build/
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
