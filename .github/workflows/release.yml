@@ -35,6 +35,17 @@ jobs:
         env:
           LOGIN_KEYCHAIN_PASSWORD: "${{ secrets.KEYCHAIN }}"
 
+      - name: Notarize
+        run: |
+          xcrun notarytool submit "build/${{ github.event.repository.name }}.zip" --keychain-profile "notary" --wait >> notary_tool.log
+          if grep -r "status: Accepted" "notary_tool.log"; then
+            echo "Notarize Success"
+            exit 0
+          else
+            echo "Notarize Failed"
+            exit 1
+          fi
+
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
