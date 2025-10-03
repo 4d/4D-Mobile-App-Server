@@ -31,7 +31,7 @@ jobs:
           build: official
           token: ${{ secrets.DLTK }}
           after-build: "./Components/${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
-          signAsBundle: true
+          sign-as-bundle: true
           sign-certificate: "${{ secrets.SIGN_CERTIFICATE }}"
         env:
           LOGIN_KEYCHAIN_PASSWORD: "${{ secrets.KEYCHAIN }}"
