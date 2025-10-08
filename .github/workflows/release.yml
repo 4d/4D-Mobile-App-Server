@@ -26,9 +26,9 @@ jobs:
         uses: 4d/build4d-action@main
         with:
           actions: "release"
-          product-line: vcs
-          version: vcs
-          build: official
+          product-line: 20Rx
+          version: 20R10
+          build: 100221
           token: ${{ secrets.DLTK }}
           after-build: "./Components/${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
           sign-as-bundle: true
