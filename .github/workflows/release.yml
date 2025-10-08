@@ -31,18 +31,20 @@ jobs:
           build: official
           token: ${{ secrets.DLTK }}
           after-build: "./Components/${{ secrets.POST_BUILD_REPO }}/${{ secrets.POST_BUILD_SCRIPT }}"
+          sign-as-bundle: true
           sign-certificate: "${{ secrets.SIGN_CERTIFICATE }}"
         env:
           LOGIN_KEYCHAIN_PASSWORD: "${{ secrets.KEYCHAIN }}"
+          RELEASE_TAG: "${{github.event.release.tag_name}}"
 
       - name: Notarize
         run: |
           xcrun notarytool submit "build/${{ github.event.repository.name }}.zip" --keychain-profile "notary4d" --wait >> notary_tool.log
           if grep -r "status: Accepted" "notary_tool.log"; then
-            echo "Notarize Success"
+            echo "✅ Notarize Success"
             exit 0
           else
-            echo "Notarize Failed"
+            echo "❌ Notarize Failed"
             exit 1
           fi
 
