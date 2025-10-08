@@ -35,7 +35,7 @@ jobs:
           sign-certificate: "${{ secrets.SIGN_CERTIFICATE }}"
         env:
           LOGIN_KEYCHAIN_PASSWORD: "${{ secrets.KEYCHAIN }}"
-          GITHUB_RELEASE_TAG: "${{github.event.release.tag_name}}"
+          RELEASE_TAG: "${{github.event.release.tag_name}}"
 
       - name: Notarize
         run: |
